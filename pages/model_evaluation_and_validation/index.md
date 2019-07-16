@@ -2,7 +2,7 @@
 
 ## Model Evaluation
 ### Confusion Matrix Summary
-![alt text](confusion_matrix.png)
+![alt text](confusion_matrix.png) <br />
 *Blue Points — labelled positive; Red Points — labelled negative*
 
 True Positive: 6 blue points <br />
@@ -83,7 +83,7 @@ R2 score close to 1, then it is a good model. <br />
 * Prevents over fitting from over-tuning the model during grid search. If we use single validation set then there is the risk that we just select the best parameters for that specific validation set. But using k-fold we perform grid search on various validation sets so we select best hyper-parameter for generalisation.
 
 ### Learning Curve
-![alt text](learning_curve.png)
+![alt text](learning_curve.png) <br />
 *For a good model, the validation error and training error converges with larger data set, and error is low.*
 
 * The training error and validation error tends to converge with more data; but more data is not always helpful if both errors are already converged to the optimal scores. <br />
