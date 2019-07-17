@@ -5,3 +5,9 @@ This is my personal blog for logging and sharing my learning experience on Machi
 ### Blogs
 
 * [Model Evaluation and Validation](pages/model_evaluation_and_validation/index.md)
+
+* [Data Processing](pages/data_processing/index.md)
+
+* [Supervised Learning](pages/supervised_learning/index.md)
+
+* [Unsupervised Learning](pages/unsupervised_learning/index.md)
