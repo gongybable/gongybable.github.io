@@ -19,32 +19,31 @@ Accuracy is not always perfect for model evaluation, especially for **imbalanced
 For example, if we have a data set, where 99% of the data is positive, 1% of the data is negative. We can simply have a model which always predict positive, then the model accuracy is 99%, while we are not catching any of the negative data.
 
 ### Precision
+> _Precision focuses on **False Positive** errors._
+
 ![alt text](eqn_precision.png)
 
-Precision focuses on **False Positive** errors.
-
 ### Recall
+> _Recall focuses on **False Negative** errors._
+
 ![alt text](eqn_recall.png)
 
-Recall focuses on **False Negative** errors.
-
 ### F1 Score
-![alt text](eqn_f1_score.png)
+> _F1 Score is a harmonic mean between Precision and Recall._
 
-F1 Score is a harmonic mean between _Precision_ and _Recall_.
+![alt text](eqn_f1_score.png)
 
 ### F beta Score
 ![alt text](eqn_f_beta__score.png)
 
-If N is close to 0, then F&#946; is close to precision, the result is more sensitive to **False Positive** errors; <br />
-If N is large, then F&#946; is close to recall, the result is more sensitive to **False Negative** errors;
+If &#946; is close to 0, then F beta is close to precision, the result is more sensitive to **False Positive** errors; <br />
+If &#946; is large, then F beta is close to recall, the result is more sensitive to **False Negative** errors;
 
-_**Examples:**_
+_**Examples:**_ <br />
+&#946; should be large if the model is to detect the malfunctioning parts in cars; <br />
+&#946; should be small if the model is to detect the potential clients to send promotion materials. <br />
 
-N should be large if the model is to detect the malfunctioning parts in cars; <br />
-N should be small if the model is to detect the potential clients to send promotion materials. <br />
-
-### ROC Curve (Classification Metrics)
+### ROC Curve
 
 To find ROC Curve:
 1. True Positive Rate = True Positives / All Positives <br />
@@ -55,8 +54,8 @@ To find ROC Curve:
    If area is close to 0.5, then the data set is random, we cannot get a good split; <br />
    If area is close to 0, we can flip the data and get a good split. <br />
 
-### R2 Score (Regression Metrics)
-> Percentage of data variation not described by the model
+### R2 Score
+> _Percentage of data variation not described by the model_
 
 ![alt text](eqn_r2.png)
 
