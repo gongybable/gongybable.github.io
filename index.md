@@ -11,3 +11,5 @@ This is my personal blog for logging and sharing my learning experience on Machi
 * [Supervised Learning](pages/supervised_learning/index.md)
 
 * [Unsupervised Learning](pages/unsupervised_learning/index.md)
+
+* [Algorithm Comparison and Model Selection](pages/algorithm_comparison/index.md)
