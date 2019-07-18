@@ -2,17 +2,17 @@
 
 ## Linear Regression
 ![alt text](eqn_linear_reg.png) <br />
-*W: weights; X: features*
+<small>*W: weights; X: features*</small>
 
 Works best when the data is linear. If the data is not linear, then we may need to transform the data, add features, or use another model. <br />
 Sensitive to outliers. Outliers contribute too much to the errors, so will impact the model. We may need to determine the outliers and remove them if necessary.
 
 ### Error functions:
 ![alt text](eqn_abs_error.png) <br />
-*Mean Absolute Error*
+<small>*Mean Absolute Error*</small>
 
 ![alt text](eqn_sqr_error.png) <br />
-*Mean Squared Error*
+<small>*Mean Squared Error*</small>
 
 ### Gradient Descent:
 > Change the weights to move in the direction that descent the error the most.
@@ -29,16 +29,16 @@ Fit the data to a higher degree polynomials.
 
 ## Decision Trees
 ![alt text](decision_tree.png) <br />
-*Decision Tree Example*
+<small>*Decision Tree Example*</small>
 
 ### Entropy
 Lower entropy means the state is more stable; higher entropy means the state has more randomness in it.
 
 ![alt text](eqn_entropy.png) <br />
-*Entropy Equation*
+<small>*Entropy Equation*</small>
 
 ![alt text](eqn_information_gain.png) <br />
-*Information Gain*
+<small>*Information Gain*</small>
 
 Decision Tree is to split the data into groups so that the information gain is maximized. However it is very easy to lead into **over fitting**.
 
@@ -54,7 +54,7 @@ Decision Tree is to split the data into groups so that the information gain is m
 
 ## Naive Bayes
 ![alt text](eqn_bayes.png) <br />
-*Bayes Theorem*
+<small>*Bayes Theorem*</small>
 
 Naive Bayes is to use the Bayes Theorem, make some assumptions (e.g. assume the features are independent, `P(A,B) = P(A)*P(B)` ), and calculate the proportions of the probability to simplify the calculation. For example: `P(A|B) ~ P(B|A)P(A)`
 
@@ -62,13 +62,13 @@ Naive Bayes is to use the Bayes Theorem, make some assumptions (e.g. assume the 
 `Error = Error(Classification) + Error(Margin)`
 
 ![alt text](svm.png) <br />
-*Margin Error (Same as L2 Regularization)*
+<small>*Margin Error (Same as L2 Regularization)*</small>
 
 ### C Parameter
 `Error =C * Error(Classification) + Error(Margin)`
 
 ![alt text](svm_c.png) <br />
-*Impact of C*
+<small>*Impact of C*</small>
 
 ### Polynomial Kernel
 Set a polynomial degree to separate the data.
@@ -77,7 +77,7 @@ Set a polynomial degree to separate the data.
 Project the points to a higher dimension with Gaussian distribution, and cut the mountains by a plane; the circles of the cuts are the boundaries.
 
 ![alt text](rbf.png) <br />
-*Larger gamma, Narrower the Gaussian*
+<small>*Larger gamma, Narrower the Gaussian*</small>
 
 ## Ensemble Methods
 Combine multiple models into a better model.

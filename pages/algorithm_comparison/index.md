@@ -61,12 +61,12 @@ Algorithms with large numbers of parameters require the most trial and error to 
 For certain types of data, the number of features can be very large compared to the number of data points (for example, textual data).The large number of features will result in long training time. Support Vector Machines are particularly well suited to this case.
 
 ## Linear Regression and Logistic Regression
-* Linear regression models the relationship between a continuous dependent variable y and one or more predictors X, by `y = WX + b`.
+* Linear regression models the relationship between a continuous dependent variable y and one or more predictors X, by `y=WX+b`.
 
 * Logistic regression is a classification algorithm. It is used to predict the probability that a given example belongs to the “1” class versus the probability that it belongs to the “-1” class. Usually represented by a sigmoid function.
 
 ## SVMs
-SVM finds the classifier represented by the normal vector W and bias b of the hyperplane that separates different classes as wide as possible. Which means we need to minimize W, where `| WX + b | > 1`.
+SVM finds the classifier represented by the normal vector W and bias b of the hyperplane that separates different classes as wide as possible. Which means we need to minimize W, where `|WX+b|>1`.
 
 When the classes are not linearly separable, a kernel trick can be used to map a non-linearly separable space into a higher dimension linearly separable space.
 

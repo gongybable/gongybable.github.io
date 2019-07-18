@@ -53,7 +53,7 @@ For padding = 'valid':
 
 ## CNN Architecture
 ![alt text](cnn.png) <br />
-*Spatial Information is lost; Gaining Feature Information*
+<small>*Spatial Information is lost; Gaining Feature Information*</small>
 
 1. Resize the images to the same size before feed into the model; usually resize the images into square with each dimension equal to a power of two.
 
@@ -111,7 +111,7 @@ model.fit_generator(
 > Transfer learning involves taking a pre-trained neural network and adapting the neural network to a new, different data set.
 
 ![alt text](transfer_learning.png) <br />
-*Four Cases when Using Transfer Learning*
+<small>*Four Cases when Using Transfer Learning*</small>
 
 ### Case 1: Small Data Set, Similar Data
 * slice off the end of the neural network
@@ -126,7 +126,7 @@ To avoid overfitting on the small data set, the weights of the original network 
 Since the data sets are similar, images from each data set will have similar higher level features. Therefore most or all of the pre-trained neural network layers already contain relevant information about the new data set and should be kept.
 
 ![alt text](case_1.png) <br />
-*Neural Network with Small Data Set, Similar Data*
+<small>*Neural Network with Small Data Set, Similar Data*</small>
 
 ### Case 2: Small Data Set, Different Data
 * slice off most of the pre-trained layers near the beginning of the network
@@ -141,7 +141,7 @@ Because the data set is small, overfitting is still a concern. To combat overfit
 But the original training set and the new data set do not share higher level features. In this case, the new network will only use the layers containing lower level features.
 
 ![alt text](case_2.png) <br />
-*Neural Network with Small Data Set, Different Data*
+<small>*Neural Network with Small Data Set, Different Data*</small>
 
 ### Case 3: Large Data Set, Similar Data
 * remove the last fully connected layer and replace with a layer matching the number of classes in the new data set
@@ -156,7 +156,7 @@ Overfitting is not as much of a concern when training on a large data set; there
 Because the original training set and the new data set share higher level features, the entire neural network is used as well.
 
 ![alt text](case_3.png) <br />
-*Neural Network with Large Data Set, Similar Data*
+<small>*Neural Network with Large Data Set, Similar Data*</small>
 
 ### Case 4: Large Data Set, Different Data
 * If the new data set is large and different from the original training data:
@@ -171,7 +171,7 @@ Even though the data set is different from the training data, initializing the w
 If using the pre-trained network as a starting point does not produce a successful model, another option is to randomly initialize the convolutional neural network weights and train the network from scratch.
 
 ![alt text](case_4.png) <br />
-*Neural Network with Large Data Set, Different Data*
+<small>*Neural Network with Large Data Set, Different Data*</small>
 
 ## Vanishing Gradient Problem
 The gradient tends to get smaller as we move backward through the hidden layers. So in deep neural network, the gradients of the loss function in initial layers approaches zero, making the network hard to train. The random initialization means the first layer throws away most information about the input image. Even if later layers have been extensively trained, they will still find it extremely difficult to identify the input image, simply because they don’t have enough information. Below are a few techniques to avoid vanishing gradient problem.

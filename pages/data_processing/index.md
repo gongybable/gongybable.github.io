@@ -57,7 +57,7 @@ Penalized models impose an additional cost on the model for making classificatio
 
 * If the outlier creates a significant association, you should drop the outlier and should not report any significance from your analysis. <br />
 ![alt text](outlier_3.png) <br />
-*Drop the Outlier*
+<small>*Drop the Outlier*</small>
 
 For cases where we cannot drop a outlier, we can do the following:
 1. Try a transformation. Square root and log transformations both pull in high numbers. This can make assumptions work better if the outlier is a dependent variable and can reduce the impact of a single point if the outlier is an independent variable.

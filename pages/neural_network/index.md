@@ -50,16 +50,16 @@ _Note: `Gradient Descent` may lead to local minimum._
 
 ### Neural Network Techniques
 ![alt text](binary_nn.png) <br />
-*Binary Classification NN (or to do Regression by Removing Activation Function on Last Layer)*
+<small>*Binary Classification NN (or to do Regression by Removing Activation Function on Last Layer)*</small>
 
 ![alt text](multiclass_nn.png) <br />
-*Multi-Class Classification (Softmax in the output layer)*
+<small>*Multi-Class Classification (Softmax in the output layer)*</small>
 
 #### Early Stopping
 >To determine the number of training epochs. If we use too few epochs, we might underfit; if we use too many epochs, we might overfit. <br />
 
 ![alt text](early_stop.png) <br />
-*Stop Training when Testing Error starts increasing*
+<small>*Stop Training when Testing Error starts increasing*</small>
 
 #### Regularization
 ![alt text](regularization.png) <br />
@@ -74,18 +74,18 @@ _Note: `Gradient Descent` may lead to local minimum._
 #### Activation Functions
 ![alt text](eqn_sigmoid.png) <br />
 ![alt text](eqn_sigmoid_d.png) <br />
-*Sigmoid Function - Binary classification*
+<small>*Sigmoid Function - Binary classification*</small>
 
 ![alt text](eqn_softmax.png) <br />
-*Softmax Function - Multi-classification*
+<small>*Softmax Function - Multi-classification*</small>
 
 > Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
 
 ![alt text](eqn_tanh.png) <br />
-*hyperbolic tangent function — zero centered, result in faster convergence*
+<small>*hyperbolic tangent function — zero centered, result in faster convergence*</small>
 
 ![alt text](eqn_relu.png) <br />
-*ReLU (rectified linear unit)*
+<small>*ReLU (rectified linear unit)*</small>
 
 #### Learning Rate Decay
 If error derivative is steep, taking long steps; <br />

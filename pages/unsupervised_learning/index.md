@@ -7,7 +7,7 @@
 
 ### Disadvantages:
 ![alt text](k_means.png) <br />
-*Getting 3 Clusters But in Local Minimum*
+<small>*Getting 3 Clusters But in Local Minimum*</small>
 
 1. Local Minimum — We can run the K-Means clustering multiple times with different initial conditions to find the best output. <br />
 2. Sensitive to noise and outliers <br />
@@ -18,7 +18,7 @@
 
 ## Hierarchical Clustering
 ![alt text](single_link.png) <br />
-*Single-Link Clustering*
+<small>*Single-Link Clustering*</small>
 
 1. _Single-Link_: Distance between two clusters are determined by the **closest points** between two clusters. Then merge the two closest clusters into one cluster.
 
