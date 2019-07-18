@@ -93,4 +93,3 @@ Split data into smaller subsets, and get the models for each subset; then to get
 
 ### Model Weights
 ![alt text](eqn_model_weights.png) <br />
-*Model Weights*
