@@ -17,3 +17,5 @@ This is my personal blog for logging and sharing my learning experience on Machi
 * [Neural Network](pages/neural_network/index.md)
 
 * [CNN](pages/cnn/index.md)
+
+* [Reinforcement Learning Basics](pages/reinforcement_learning/index.md)
