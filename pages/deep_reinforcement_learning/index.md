@@ -155,3 +155,62 @@ Modified Updated Rule due to non-uniform sampling on Priority: <br />
 > Values of most states do not vary a lot across actions; so it makes sense to try and directly estimate them.
 
 ![alt text](dueling_networks.png) <br />
+
+## Policy-Based Methods
+> Find optimal policy directly without finding value functions as an intermediate step.
+
+* Value based approach tends to learn a deterministic or near deterministic policy; policy based approach can learn the desired stochastic policy. 
+
+* In aliasd states (two or more states that we perceive to be identical but are actually different), a stochastic poliy is better.
+
+* When action space is continuous, it will be difficult to find the global optimum action in value based approach; It will benefit and saves computation time if we can map a given state to an action directly.
+
+### Policy Function Approximation
+> Under policy <code>π</code>, we need to approximate the probility of actions <code>P[a|s,θ]</code>.
+
+Linear function with softmat policy for discrete action space: <br />
+![alt text](eqn_linear_policy_function.png) <br />
+
+Linear function with gaussian policy for continuous action space: <br />
+![alt text](eqn_gaussian_policy.png) <br />
+
+Objective functions: <br />
+![alt text](eqn_objective_function.png) <br />
+
+### OptimalPolicy search
+* Stochastic policy search
+    - Start with a arbitrary policy and evaluate it
+    - Generate neighbors (with a large range) to explore, and find the best policy
+    - For the new policy, generate neignbors(gradually reduce the range) to explore, and find the best policy
+    - Repeat until we find the optimal policy
+    - Then try with a large search range under the current best policy, in case we stuck under local optimum.
+
+* Policy Gradients <br />
+![alt text](eqn_policy_gradient.png) <br />
+
+* Reinforced Algorithm <br />
+![alt text](reinforced_algorithm.png) <br />
+
+* Constrained policy
+    - only change the parameters in a certain way by a certain ammount to stablize the learning algorithm
+    - When we update policy parameters from our current policy to the better policy, by updating parameters with a learning rate <code>α</code>, we may result in a very poor performance.
+    - <code>D(π(s,a,θ),π(s,a,θ'))<δ</code>
+    - Add a penalty term: <code>J(θ)=E<sub>π</sub>[R(τ)]-βD(π(s,a,θ),π(s,a,θ'))</code>
+    - Parameter different is measured by KL-Divergence: <code>D(p||q)=<big>∫</big>p(x)(log p(x)-log q(x))dx</code>
+
+## Actor-Critic Methods
+- Actor: Policy
+- Critic: Value function
+
+![alt text](actor_critic.png) <br />
+
+1. The actor follows a random policy, and the critic oberves the behavior and provides feedbacks
+2. The actor learns from the feedbacks and update its policy
+3. The critic update its value functions to provide better feedback
+4. Repeat the steps
+
+### Advantage Function
+> When we do policy update, the expected value function <code>q(S<sub>t</sub>,A<sub>t</sub>,W)</code> may vary a lot: some state action may have a higher Q-value, some may have a lower Q-value.
+
+New policy update rule: <br />
+![alt text](eqn_advantage_function.png) <br />
