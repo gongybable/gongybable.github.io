@@ -1,0 +1,157 @@
+# Deep Reinforcement Learning
+
+## RL in Continuous Spaces
+Two ways to deal with continuous spaces: **Discretization**, **Function Approximation**
+
+### Discretization
+> Convert a continuous space into a discrete one, and then apply Reinforcement Learning Algorithm on it
+
+* [Discretization Sample](Discretization_Solution.html)
+* [Tile Coding Sample](Tile_Coding_Solution.html)
+
+### Function Approximation
+> Each element of the feature vector <code>x<sub>1</sub>(s)</code> can be produced by a separate function (e.g. <code>x<sup>2</sup></code>), which can help us capture non-linear relationships.
+
+![alt text](function_approximation.png) <br />
+<small>*The states can be represented by a vector <code>X</code>, and we can try to approximate the state value function by multiplying states with a vector of weights: <code>v=XW</code>*</small>
+
+**Value Function:** <br />
+![alt text](eqn_value_function.png)
+
+**Minimize Error:** <br />
+![alt text](eqn_error.png)
+
+**Error Gradient:** <br />
+![alt text](eqn_error_gradient.png)
+
+**Update Rule:** <br />
+![alt text](eqn_update_rule.png) <br />
+<small>*<code>∆W</code>: change of weights*</small> <br />
+<small>*<code>α</code>: learning reate*</small> <br />
+<small>*<code>v<sub>π</sub>(s)-X(s)<sup>T</sup>W</code>: away from error*</small> <br />
+<small>*<code>X(s)</code>: direction*</small> <br />
+
+![alt text](action_value_approximation.png) <br />
+<small>*Action Value Approximation*</small>
+
+**Activation Function** can also be applied to the State Value / Action Value to introduce extra non-linearity: <br />
+![alt text](eqn_activation_function.png) <br />
+
+The new gradient descent update rule: <br />
+![alt text](eqn_new_update_rule.png) <br />
+
+## Deep Q Learning
+
+### Monte Carlo Learning
+In Monte Carlo Learning, we update the state value function as below: <br />
+![alt text](eqn_mc.png) <br />
+
+Where <code>G<sub>t</sub></code> is expected return: <br />
+![alt text](eqn_mc_return.png) <br />
+
+So the update rule: <br />
+![alt text](eqn_mc_update_rule.png) <br />
+![alt text](eqn_mc_action_value_update_rule.png) <br />
+
+![alt text](MC_Function_Approximation.png) <br />
+<small>*MC is guaranteed to converge on a local optimum in general; in case of a linear function approximation, it will converge on the global optimum.*</small>
+
+### TD Learning
+Update Rule: <br />
+![alt text](eqn_td_update_rule.png) <br />
+
+![alt text](TD_Episodic_Function_Approximation.png) <br />
+<small>*TD Episodic Function Approximation*</small>
+
+![alt text](TD_Continuous_Function_Approximation.png) <br />
+<small>*TD Continuous Function Approximation*</small>
+
+### Q Learning
+> One drawback of both SARSA & Q-Learning, since they are TD approaches, is that they may not converge on the global optimum when using non-linear function approximation.
+
+![alt text](Q_Function_Approximation.png) <br />
+<small>*Q Learning Function Approximation: we use policy <code>π</code> to take actions, and use the greedy policy to update the value function. That is why it is called **off policy** algorithm*</small>
+
+### SARSA vs Q-Learning
+**SARSA**
+
+* On-policy <br />
+<small>Follow the same policy that it is learning</small>
+
+* Good online performance <br />
+<small>At any point of time, you are using the most updated policy interacting with the environment</small>
+
+* Q-values affected by exploration
+
+**Q-Learning**
+
+* Off-policy <br />
+<small>The policy it follows to choose actions is different from the policy it is learning</small>
+
+* Bad online performance <br />
+
+* Q-values unaffected by exploration
+
+**Off-policy Advantages**
+
+* More exploration when learning
+
+* Learning from demonstration
+
+* Supports offline or batch learning
+
+### Deep Q Netowrks
+#### Experience Replay
+* Interact with the environment, and take actions by following a ϵ-greedy policy <code>π</code>, save the tuples <code>(S<sub>t</sub>,A<sub>t</sub>,R<sub>t+1</sub>,S<sub>t+1</sub>)</code> into the replay buffer
+
+* Then sample batches from the buffer randomly for the agent to learn
+
+* Advantages:
+    - Since the tuples are sampled randomly from the buffer, we can avoide the dependencies winthin the sequence of the experienced tuples. Thus prevents the action values from oscillating or diverging catastrophically.
+
+    - Helps to transfer reinforcement learning into supervised learning.
+
+    - Prioritize experience tuples that are rare or more important
+
+#### Fixed Q Targets
+![alt text](eqn_fixed_target.png) <br />
+
+* Fix <code>W<sup>-</sup></code> for a certain number of learning steps to update <code>W</code>
+
+* Then update <code>W<sup>-</sup></code> with latest <code>W</code> and learn again
+
+* With fixed parameters in learning, we can decouple the target (<code>∇W</code>) from the parameters (<code>W</code>) to get a more stable learning environment
+
+#### Double DQNs
+![alt text](eqn_double_q.png) <br />
+
+* Select best action use one set of parameters and evaluate the action use another set of parameters.
+
+* Prevents the algorithm from progating incidental higher rewards that may have been obtained by chance and do not reflect long term returns.
+
+#### Prioritized Replay
+> Some important tuples may not occur as frequently as the others; we need to determin an algorithm to assign a higher probability for these tuples when we are sample the tuples.
+
+TD Error: <br />
+![alt text](eqn_TD_Error.png) <br />
+
+Priority: <br />
+![alt text](eqn_priority.png) <br />
+
+Sampling Probility: <br />
+![alt text](eqn_probability.png) <br />
+
+In case TD error is 0, for priority, we can add a samll constant: <code>p<sub>t</sub>=|δ<sub>t</sub>|+e</code>
+
+Update sampling probility to introduce randomness to avoid overfitting on a subset with high priority: <br />
+![alt text](eqn_update_probility.png) <br />
+<code>a</code> is 0: use pure uniform randomness <br />
+<code>a</code> is 1: use pure priorities
+
+Modified Updated Rule due to non-uniform sampling on Priority: <br />
+![alt text](eqn_modified_update_rule.png) <br />
+
+#### Dueling Networks
+> Values of most states do not vary a lot across actions; so it makes sense to try and directly estimate them.
+
+![alt text](dueling_networks.png) <br />
