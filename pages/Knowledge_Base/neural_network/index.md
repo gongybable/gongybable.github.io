@@ -106,7 +106,9 @@ We need to avoid getting trapped in local minima for non-convex error functions.
 
 #### Optimizers
 * SGD Stochastic Gradient Descent (or mini-batch)<br />
-instead of run all the data forward and backward, and update the weights, SGD divides the training data into small batches. During each epoch, run each batch of the data points one by one to update the weights, introducing noise into gradients. This has a very desirable effect; i.e. — with the introduction of noise during the training, the model becomes less prone to overfitting. <br />
+    - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches.
+    - During each epoch, run each batch of the data points one by one to update the weights, introducing noise into gradients. This has a very desirable effect; i.e. — with the introduction of noise during the training, the model becomes less prone to overfitting. 
+    - This also saves a lot of computation resource, and scales well with both data and model size.  <br />
 
 * Momentum <br />
 instead of define the step as the gradient descent of the current point (at local minimum, the step is 0), define the step as a sum of the previous steps `(step(n)+r*step(n-1))`, then times that with the learning rate; this gives us a good chance to go over the hump on local minimum. <br />
