@@ -1,15 +1,15 @@
 # Machine Learning Cheat Sheet — Neural Network
 
 ## Perceptron
-> Perceptron is a single layer of neural network.
-
 ![alt text](perceptron.png) <br />
+<small>*Perceptron is a single layer of neural network.*</small>
 
 ## Neural Networks
-> A neural network consists multiple layers of perceptron. It has three parts: input layer, hidden layers and output layer. The training samples define the input and output layers. <br />
-> When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
+A neural network consists multiple layers of perceptron. It has three parts: input layer, hidden layers and output layer. The training samples define the input and output layers.
 
-### Gradient Descent Deduction
+When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
+
+### Gradient Descent The Math
 Assume the following scenario, we need to classify `m` points into 2 groups, each point has `p` features, which is represented by <code>(X<sub>1</sub>,X<sub>2</sub>,...,X<sub>p</sub>)</code>. Say we are using one layer neural networks to do that.
 
 We feed in point `P1`, after the neuron we get <code>WX+b</code>; We apply activation function on <code>WX+b</code> (let us assume we use sigmoid function), and we can get the probability for P1 in class 1 is <code>y&#770;<sub>11</sub>=S(WX+b)</code>, and probability for P1 in class 2 is <code>y&#770;<sub>12</sub>=1-S(WX+b)</code>.
@@ -17,12 +17,12 @@ We feed in point `P1`, after the neuron we get <code>WX+b</code>; We apply activ
 All we need to do now is to maximize <code>G<sub>1</sub>=y<sub>11</sub>y&#770;<sub>11</sub>+(1-y<sub>11</sub>)(1-y&#770;<sub>11</sub>)</code>; <code>Y<sub>11</sub></code> is 1 for P1 belongs to class 1, and 0 for P1 belongs to class 2. So for all these m points, we need to maximize <code>G<sub>1</sub>\*G<sub>2</sub>\*...\*G<sub>m</sub></code>. We can design the Cross-Entropy as below for `m` points and `n` classes:
 
 ![alt text](eqn_cross_entropy.png) <br />
-*The lower the CE, the higher the probability*
+<small>*The lower the CE, the higher the probability*</small>
 
 Then our error function can be:  <br />
 ![alt text](eqn_error_function.png) <br />
 
-Now `Gradient Descent` is applied to find the derivatives of the Error over the weights. To simplify the calculations, we only consider the error that one point produces. <code>E=-yln(y&#770;)-(1-y)ln(1-y&#770;)</code>.
+Now `Gradient Descent` is applied to find the derivatives of the Error over the weights. To simplify the calculations, we only consider the error that one point produces: <code>E=-yln(y&#770;)-(1-y)ln(1-y&#770;)</code>.
 
 We can get the derivative of the error `E` at a point `x`, with respect to the weight <code>w<sub>j</sub></code>: <br />
 ![alt text](eqn_w_d.png) <br />
@@ -32,7 +32,7 @@ and similarly: <br />
 So we can get the gradient of `E`: <br />
 ![alt text](eqn_gradient_descent.png) <br />
 
-Then we can set a learning rate alpha, and update weights and bias. <br />
+Then we can set a **learning rate alpha**, and update weights and bias. <br />
 _Note: `Gradient Descent` may lead to local minimum._
 
 ### Back Propagation
@@ -72,20 +72,21 @@ _Note: `Gradient Descent` may lead to local minimum._
 * So we add regularization to punish on the large coefficients <br />
 
 #### Activation Functions
+**Sigmoid Function:** <br />
 ![alt text](eqn_sigmoid.png) <br />
 ![alt text](eqn_sigmoid_d.png) <br />
-<small>*Sigmoid Function - Binary classification*</small>
 
+**Softmax Function:** <br />
 ![alt text](eqn_softmax.png) <br />
-<small>*Softmax Function - Multi-classification*</small>
 
-> Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
+Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
 
+**hyperbolic tangent function:** <br />
 ![alt text](eqn_tanh.png) <br />
-<small>*hyperbolic tangent function — zero centered, result in faster convergence*</small>
+<small>*zero centered, result in faster convergence*</small>
 
+**ReLU:** <br />
 ![alt text](eqn_relu.png) <br />
-<small>*ReLU (rectified linear unit)*</small>
 
 #### Learning Rate Decay
 If error derivative is steep, taking long steps; <br />

@@ -26,3 +26,6 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 ### Cheat Sheets
 * [TensorFlow](pages/Cheat_Sheet/TensorFlow/index.md)
+
+### How To
+* [Gradient Descent](pages/How_To/gradient_descent/index.md)
