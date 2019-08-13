@@ -190,7 +190,9 @@ ReLU units can be fragile during training and can “die”. For example, a larg
 
 “Leaky” ReLUs with a small positive gradient for negative inputs (y=0.01x when x < 0 say) are one attempt to address this issue and give a chance to recover.
 
-For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights that are evenly distributed, using a uniform distribution. Units with more incoming connections should have relatively smaller weights.
+For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights for `n` inputs with below techniques:
+* uniform distribution with weights equal to `1/n`.
+* normal distribution with scale `1/√n`.
 
 ## Visualize Filters
 The filter weights are useful to visualize because well-trained networks usually display nice and smooth filters without any noisy patterns. Noisy patterns can be an indicator of a network that hasn’t been trained for long enough, or possibly a very low regularization strength that may have led to overfitting.
