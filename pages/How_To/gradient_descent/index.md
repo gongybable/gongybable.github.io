@@ -13,8 +13,7 @@ admissions = pd.read_csv('binary.csv')
 
 # Make dummy variables for rank and admit
 data = pd.concat([admissions, pd.get_dummies(admissions['rank'], prefix='rank')], axis=1)
-data = pd.concat([data, pd.get_dummies(data['admit'], prefix='admit')], axis=1)
-data = data.drop(['rank', 'admit'], axis=1)
+data = data.drop(['rank'], axis=1)
 
 # Standarize features
 for field in ['gre', 'gpa']:
@@ -26,8 +25,8 @@ sample = np.random.choice(data.index, size=int(len(data)*0.9), replace=False)
 data, test_data = data.ix[sample], data.drop(sample)
 
 # Split into features and targets
-features, targets = data.drop(['admit_0', 'admit_1'], axis=1).values, pd.concat([data['admit_0'], data['admit_1']], axis=1).values
-features_test, targets_test = test_data.drop(['admit_0', 'admit_1'], axis=1).values, pd.concat([test_data['admit_0'], test_data['admit_1']], axis=1).values
+features, targets = data.drop(['admit'], axis=1).values, data['admit'].values
+features_test, targets_test = test_data.drop(['admit'], axis=1).values, test_data['admit'].values
 ```
 
 ## Run Gradient on Perceptron
@@ -43,9 +42,7 @@ def sigmoid(h):
 
 # predition for the probability of each class
 def prediction(x, weights):
-    P1 = sigmoid(np.dot(x, weights))
-    P2 = 1 - P1
-    return P1, P2
+    return sigmoid(np.dot(x, weights))
 
 # error / loss function
 def lossFunction(outputs, y):
@@ -53,9 +50,10 @@ def lossFunction(outputs, y):
     def calculateLoss(data):
         output = data[0]
         result = data[1]
-        loss = 0
-        for i in range(len(output)):
-            loss += result[i] * np.log(output[i])
+        if result == 1:
+            loss = np.log(output)
+        else:
+            loss = np.log(1 - output)
         return loss
 
     # get the total loss
@@ -66,10 +64,10 @@ def updatePerceptron(X, y, W, learn_rate = 0.005):
     del_w = np.zeros(W.shape)
     n_records = len(X)
     for i in range(n_records):
-        P1, P2 = prediction(X[i], W)
+        pred = prediction(X[i], W)
         # error for the probability of class 1 and class 2 is the same
         # so we can calculate error with any one of them
-        error = y[i][0] - P1
+        error = y[i] - pred
         # The gradient descent step, the error times the gradient times the inputs
         del_w += error * X[i]
     # Update the weights here.
@@ -88,8 +86,7 @@ def trainAlgorithm(X, y, learn_rate = 0.005, num_epochs = 1000):
         weights = updatePerceptron(X, y, weights, learn_rate)
         # Printing out the mean square error on the training set
         if i % (num_epochs / 10) == 0:
-            P1, P2 = prediction(X, weights)
-            outputs = zip(P1, P2)
+            outputs = prediction(X, weights)
             loss = lossFunction(outputs, y)
             if last_loss and last_loss < loss:
                 print("Train loss: ", loss, "  WARNING - Loss Increasing")
@@ -101,9 +98,8 @@ def trainAlgorithm(X, y, learn_rate = 0.005, num_epochs = 1000):
 # train the network
 weights = trainAlgorithm(features, targets, 0.005, 1000)
 # Calculate accuracy on test data
-P1, P2 = prediction(features_test, weights)
-predictions = P1 > 0.5
-accuracy = np.mean(predictions == targets_test[:,0])
+predictions = prediction(features_test, weights)
+accuracy = np.mean((predictions > 0.5) == targets_test)
 print("Prediction accuracy: {:.3f}".format(accuracy))
 ```
 The running result is:
