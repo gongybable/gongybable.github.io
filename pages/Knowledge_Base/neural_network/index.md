@@ -9,6 +9,23 @@ A neural network consists multiple layers of perceptron. It has three parts: inp
 
 When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
 
+#### Activation Functions
+**Sigmoid Function:** <br />
+![alt text](eqn_sigmoid.png) <br />
+![alt text](eqn_sigmoid_d.png) <br />
+
+**Softmax Function:** <br />
+![alt text](eqn_softmax.png) <br />
+
+Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
+
+**hyperbolic tangent function:** <br />
+![alt text](eqn_tanh.png) <br />
+<small>*zero centered, result in faster convergence*</small>
+
+**ReLU:** <br />
+![alt text](eqn_relu.png) <br />
+
 ### Gradient Descent The Math
 Assume the following scenario, we need to classify `m` points into 2 groups, each point has `p` features, which is represented by <code>(X<sub>1</sub>,X<sub>2</sub>,...,X<sub>p</sub>)</code>. Say we are using one layer neural networks to do that.
 
@@ -48,6 +65,40 @@ _Note: `Gradient Descent` may lead to local minimum._
 
 6. Continue this until we have a model that is good.
 
+### Back Propagation The Math
+![alt text](backpropagation.png) <br />
+Let us assume we are doing backpropagation on the above neural network, and we still use `corss-entropy` as the error function, and our error is: <code>E=-yln(y&#770;)-(1-y)ln(1-y&#770;)</code>.
+
+Let us first calculate the gradient descent step for <code>W<sub>21</sub></code>: <br />
+![alt text](backpropagation_w2.png) <br />
+<small>*The same algorithm can be applied to <code>W<sub>21</sub>, W<sub>22</sub>, W<sub>23</sub>, W<sub>24</sub></code>.*</small>
+
+Now Let us calculate the gradient descent step for weights between input layer and hiddent layer <code>W<sub>11</sub></code>: <br />
+![alt text](backpropagation_w1.png) <br />
+
+Sample code is shown below:
+```python
+class NeuralNetwork:
+    def __init__(self, x, y):
+        self.input      = x
+        self.weights1   = np.random.rand(self.input.shape[1],4) 
+        self.weights2   = np.random.rand(4,1)                 
+        self.y          = y
+        self.output     = np.zeros(self.y.shape)
+
+    def feedforward(self):
+        self.layer1 = sigmoid(np.dot(self.input, self.weights1))
+        self.output = sigmoid(np.dot(self.layer1, self.weights2))
+
+    def backprop(self):
+        # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
+        d_weights2 = np.dot(self.layer1.T, (self.y - self.output))
+        d_weights1 = np.dot(self.input.T,  np.dot((self.y - self.output), self.weights2.T) * sigmoid_derivative(self.layer1))
+
+        # update the weights with the derivative (slope) of the loss function
+        self.weights1 += d_weights1
+        self.weights2 += d_weights2
+```
 ### Neural Network Techniques
 ![alt text](binary_nn.png) <br />
 <small>*Binary Classification NN (or to do Regression by Removing Activation Function on Last Layer)*</small>
@@ -70,23 +121,6 @@ _Note: `Gradient Descent` may lead to local minimum._
 * Bad models are usually too certain of themselves; good models are full of doubts <br />
 
 * So we add regularization to punish on the large coefficients <br />
-
-#### Activation Functions
-**Sigmoid Function:** <br />
-![alt text](eqn_sigmoid.png) <br />
-![alt text](eqn_sigmoid_d.png) <br />
-
-**Softmax Function:** <br />
-![alt text](eqn_softmax.png) <br />
-
-Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
-
-**hyperbolic tangent function:** <br />
-![alt text](eqn_tanh.png) <br />
-<small>*zero centered, result in faster convergence*</small>
-
-**ReLU:** <br />
-![alt text](eqn_relu.png) <br />
 
 #### Learning Rate Decay
 If error derivative is steep, taking long steps; <br />
@@ -143,8 +177,32 @@ Similar to Adam, it can be viewed as a combination of RMSprop and NAG <br />
 specifies activation function for the Dense layers (e.g., `model.add(Dense(128)); model.add(Activation('softmax'))` is equivalent to `model.add(Dense(128, activation="softmax"))`). By separating the activation layers allows direct access to the outputs of each layer before the activation is applied. <br />
 
 * Dropout layers <br />
-probability that each node gets dropped at each epoch during training. In a fully connected layer, neurons develop co-dependency with each other during training, and will result in over fitting. Dropout can prevent that. <br />
+    - This is the probability that each node gets dropped at each epoch during training. In a fully connected layer, neurons develop co-dependency with each other during training, and will result in over fitting. Dropout can prevent that.
+    - Dropout also forces the model to learn a redundant representation for everything to make sure that at least some of the information remains.
+    - During training, a good starting value for dropout probability is 0.5.
+    - During testing, set dropout probability to 0 to keep all units and maximize the power of the model.
 
 * Output Layer <br />
 
 ![alt text](output_layer.png) <br />
+
+### Vanishing Gradient Problem
+The gradient tends to get smaller as we move backward through the hidden layers. So in deep neural network, the gradients of the loss function in initial layers approaches zero, making the network hard to train. The random initialization means the first layer throws away most information about the input image. Even if later layers have been extensively trained, they will still find it extremely difficult to identify the input image, simply because they don’t have enough information. Below are a few techniques to avoid vanishing gradient problem.
+
+* RELU <br />
+ReLU has a derivative of 1, while sigmoid function has a derivative of 0.25 maximum.
+
+* ResNet <br />
+Residual networks provide residual connections straight to earlier layers. The residual connection directly adds the value at the beginning of the block to the end of the block `(F(x)+x)`. This residual connection doesn’t go through activation functions that “squashes” the derivatives, resulting in a higher overall derivative of the block.
+
+* Batch Normalization <br />
+The vanishing gradient problem arises when a large input space is mapped to a small one, causing the derivatives to disappear. Batch normalization reduces this problem by simply normalizing the input so `|x|` doesn’t reach the outer edges of the sigmoid function.
+
+### Dead Filters
+ReLU units can be fragile during training and can “die”. For example, a large gradient(usually caused by aggressive learning rates) flowing through a ReLU neuron could cause the weights to update in such a way that the neuron will never activate on any datapoint again. If this happens, then the gradient flowing through the unit will forever be zero from that point on. That is, the ReLU units can irreversibly die during training since they can get knocked off the data manifold. For example, you may find that as much as 40% of your network can be “dead” (i.e. neurons that never activate across the entire training dataset) if the learning rate is set too high. With a proper setting of the learning rate this is less frequently an issue.
+
+“Leaky” ReLUs with a small positive gradient for negative inputs (y=0.01x when x < 0 say) are one attempt to address this issue and give a chance to recover.
+
+For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights for `n` inputs with below techniques:
+* uniform distribution with weights equal to `1/n`.
+* normal distribution with scale `1/√n`.

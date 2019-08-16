@@ -68,7 +68,7 @@ def updatePerceptron(X, y, W, learn_rate = 0.005):
         # error for the probability of class 1 and class 2 is the same
         # so we can calculate error with any one of them
         error = y[i] - pred
-        # The gradient descent step, the error times the gradient times the inputs
+        # The gradient descent step, the error times the inputs
         del_w += error * X[i]
     # Update the weights here.
     W += learn_rate * del_w

@@ -67,6 +67,22 @@ For padding = 'valid':
 
 5. Output layer for prediction (for classification, this should be a dense layer with number of nodes the same as number of classes)
 
+## 1X1 Convoluction
+A problem with deep convolutional neural networks is that the number of feature maps often increases with the depth of the network. This problem can result in a dramatic increase in the number of parameters and computation required when larger filter sizes are used, such as 5×5 and 7×7.
+
+* The 1×1 filter can be used to create a linear projection of a stack of feature maps.
+
+* The projection created by a 1×1 can act like channel-wise pooling and be used for dimensionality reduction.
+
+* The projection created by a 1×1 can also be used directly or be used to increase the number of feature maps in a model.
+
+## Inception Module
+![alt text](inception.png) <br />
+
+The input data may have huge variation in the location of the information, choosing the right kernel size for the convolution operation becomes tough. A larger kernel is preferred for information that is distributed more globally, and a smaller kernel is preferred for information that is distributed more locally.
+
+So we use inception module to overcome it. It performs convolution on an input, with 3 different sizes of filters (1x1, 3x3, 5x5). Additionally, max pooling is also performed. The outputs are concatenated and sent to the next inception module. To make it cheaper, we can limit the number of input channels by adding an extra 1x1 convolution.
+
 ## Image Augmentation
 > To help make the models more statistically invariant, we can try introducing rotations, translations, etc. into our training images, so that the training set is expanded by augmenting the data. This will improve the model performance.
 
@@ -172,27 +188,6 @@ If using the pre-trained network as a starting point does not produce a successf
 
 ![alt text](case_4.png) <br />
 <small>*Neural Network with Large Data Set, Different Data*</small>
-
-## Vanishing Gradient Problem
-The gradient tends to get smaller as we move backward through the hidden layers. So in deep neural network, the gradients of the loss function in initial layers approaches zero, making the network hard to train. The random initialization means the first layer throws away most information about the input image. Even if later layers have been extensively trained, they will still find it extremely difficult to identify the input image, simply because they don’t have enough information. Below are a few techniques to avoid vanishing gradient problem.
-
-* RELU <br />
-ReLU has a derivative of 1, while sigmoid function has a derivative of 0.25 maximum.
-
-* ResNet <br />
-Residual networks provide residual connections straight to earlier layers. The residual connection directly adds the value at the beginning of the block to the end of the block `(F(x)+x)`. This residual connection doesn’t go through activation functions that “squashes” the derivatives, resulting in a higher overall derivative of the block.
-
-* Batch Normalization <br />
-The vanishing gradient problem arises when a large input space is mapped to a small one, causing the derivatives to disappear. Batch normalization reduces this problem by simply normalizing the input so `|x|` doesn’t reach the outer edges of the sigmoid function.
-
-## Dead Filters:
-ReLU units can be fragile during training and can “die”. For example, a large gradient flowing through a ReLU neuron could cause the weights to update in such a way that the neuron will never activate on any datapoint again. If this happens, then the gradient flowing through the unit will forever be zero from that point on. That is, the ReLU units can irreversibly die during training since they can get knocked off the data manifold. For example, you may find that as much as 40% of your network can be “dead” (i.e. neurons that never activate across the entire training dataset) if the learning rate is set too high. With a proper setting of the learning rate this is less frequently an issue.
-
-“Leaky” ReLUs with a small positive gradient for negative inputs (y=0.01x when x < 0 say) are one attempt to address this issue and give a chance to recover.
-
-For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights for `n` inputs with below techniques:
-* uniform distribution with weights equal to `1/n`.
-* normal distribution with scale `1/√n`.
 
 ## Visualize Filters
 The filter weights are useful to visualize because well-trained networks usually display nice and smooth filters without any noisy patterns. Noisy patterns can be an indicator of a network that hasn’t been trained for long enough, or possibly a very low regularization strength that may have led to overfitting.
