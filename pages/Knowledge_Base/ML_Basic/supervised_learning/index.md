@@ -1,5 +1,22 @@
 # Machine Learning Cheat Sheet — Supervised Learning
 
+## Regression vs. classification
+* A **regression** model predicts continuous values. For example, regression models make predictions for the value of a house in California.
+
+* A **classification** model predicts discrete values. For example, classification models make predictions whether an email message is spam or not spam.
+
+## Key Assumptions
+The following three basic assumptions guide generalization:
+
+* We draw examples independently and identically (i.i.d) at random from the distribution. In other words, examples don't influence each other. (An alternate explanation: i.i.d. is a way of referring to the randomness of variables.)
+* The distribution is stationary; that is the distribution doesn't change within the data set.
+* We draw examples from partitions from the same distribution.
+
+If the key assumptions of supervised ML are not met, then we **lose important theoretical guarantees** on our ability to predict on new data. For example:
+
+1. Consider a model that chooses ads to display. The i.i.d. assumption would be violated if the model bases its choice of ads, in part, on what ads the user has previously seen.
+2. Consider a data set that contains retail sales information for a year. User's purchases change seasonally, which would violate stationarity.
+
 ## Linear Regression
 ![alt text](eqn_linear_reg.png) <br />
 <small>*W: weights; X: features*</small>

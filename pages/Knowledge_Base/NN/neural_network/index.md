@@ -142,7 +142,6 @@ We need to avoid getting trapped in local minima for non-convex error functions.
 #### Optimizers
 * SGD Stochastic Gradient Descent (or mini-batch)<br />
     - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches.
-    - During each epoch, run each batch of the data points one by one to update the weights, introducing noise into gradients. This has a very desirable effect; i.e. — with the introduction of noise during the training, the model becomes less prone to overfitting. 
     - This also saves a lot of computation resource, and scales well with both data and model size.  <br />
 
 * Momentum <br />
@@ -206,20 +205,3 @@ ReLU units can be fragile during training and can “die”. For example, a larg
 For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights for `n` inputs with below techniques:
 * uniform distribution with weights equal to `1/n`.
 * normal distribution with scale `1/√n`.
-
-### Embeddings
-An embedding is a mapping of discrete categorical variables to a vector of continuous numbers. In the context of neural networks, embeddings are low-dimensional, learned continuous vector representations of discrete variables. Neural network embeddings are useful because they can reduce the dimensionality of categorical variables and meaningfully represent categories in the transformed space.
-
-Neural network embeddings have 3 primary purposes:
-
-1. Finding nearest neighbors in the embedding space. These can be used to make recommendations based on user interests or cluster categories.
-
-2. As input to a machine learning model for a supervised task.
-
-3. For visualization of concepts and relations between categories.
-
-Neural network embeddings overcome the two limitations of one-hot encoding:
-
-1. For high-cardinality variables — those with many unique categories — the dimensionality of the transformed vector becomes unmanageable.
-
-2. The mapping is completely uninformed: “similar” categories are not placed closer to each other in embedding space.

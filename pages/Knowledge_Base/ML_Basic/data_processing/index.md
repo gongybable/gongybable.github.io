@@ -12,13 +12,45 @@ There are different ways to handle skewed data:
 
 ## Data Normalization
 For tree based models, we may not need data normalization; <br />
-For linear models, we need to normalize the data, so that all the feature values fall in range _(0, 1)_. Otherwise, the model prediction results will be biased on the features with large values.
+For linear models, we need to normalize the data, so that the feature values fall in range  like _(0, 1)_. For following reasons:
+
+1. Helps gradient descent converge more quickly.
+
+2. Helps avoid the "NaN trap," in which one number in the model becomes a NaN when a value exceeds the floating-point precision limit during training.
+
+3. In case the model prediction results will be biased on the features with large values.
+
+We don't have to give every feature exactly the same scale. Nothing terrible will happen if Feature A is scaled from -1 to +1 while Feature B is scaled from -3 to +3.
 
 **Disadvantage:**  <br />
 Data normalization is sensitive to outliers.
 
 ## One-hot Encoding
 Convert categorical data into binary variables. For example, convert feature gender into two columns, male and female, with value 0 or 1.
+
+One-hot encoding converts a categorical feature into multiple columns of numerial features with 0 and 1. Why not convert categorical feature into a single column with numerical values like 1, 2, 3, 4...? The constraints are:
+
+1. We'll be learning a single weight that applies to all categories for that feature.
+2. We aren't accounting for cases where the data point belongs to multiple categories.
+
+## Data Preprocessing
+1. Drop rarely used discrete feature values <br />
+For features like `unique_id`, we can simply drop them.
+
+2. Prefer clear and obvious meanings <br />
+For features like `house_age`, we prefer it to be in years instead of epoch time.
+
+3. Clean up noises / Filling up missing values <br />
+Some feature values may should lie within a range (e.g. percentage should be within 0 and 1). If we see noises like -1 which is definitly out of range, we can replace them with: mean values (for numerical data) or a new value (for categorical data)
+
+4. Binning <br />
+For example, we can create bins to convert geo-location data (latitude, longitude) into bins to make them categorical features. The float numbers of coordinates has no linear relation ship with the target. By making them into bins makes more sense. We can bin by quantile, which ensures that the number of examples in each bucket is equal. Binning by quantile completely removes the need to worry about outliers.
+
+5. Feature Cross <br />
+Feature cross is a synthetic feature that encodes nonlinearity in the feature space by multiplying two or more input features together. (The term cross comes from cross product.) For example, corssing one hot encoded features of `country` and `language`, get us more meaningful features. Or we can also do <code>x<sup>2</sup></code>.
+
+6. Account for upstream instability <br />
+The definition of a feature shouldn't change over time. 
 
 ## Data Leakage
 Data leakage happens when your training data contains information about the target, but similar data will not be available when the model is used for prediction. This leads to high performance on the training set (and possibly even the validation data), but the model will perform poorly in production.
@@ -106,9 +138,11 @@ Penalized models impose an additional cost on the model for making classificatio
 For cases where we cannot drop a outlier, we can do the following:
 1. Try a transformation. Square root and log transformations both pull in high numbers. This can make assumptions work better if the outlier is a dependent variable and can reduce the impact of a single point if the outlier is an independent variable.
 
-2. Minkowski Error. Instead of measuring our model using the squared error, we raise error to a power less than two: say 1.5. In this way, the contribution that an outlier gives is lessened and we can keep the data.
+2. Try clipping the data. For example `value = min(value, 10)` will clip the outlier and map it to `10`.
 
-3. Try a different model.
+3. Minkowski Error. Instead of measuring our model using the squared error, we raise error to a power less than two: say 1.5. In this way, the contribution that an outlier gives is lessened and we can keep the data.
+
+4. Try a different model.
 
 ## Feature Selection / Dimension Reduction
 > A good feature set contains features that are highly correlated with the class, yet uncorrelated with each other. It will not only speed up algorithm execution, but may also improve model scores.

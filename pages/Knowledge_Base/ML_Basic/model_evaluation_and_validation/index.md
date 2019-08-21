@@ -69,6 +69,7 @@ R2 score close to 1, then it is a good model. <br />
 **Training Set:** Used to train the model. <br />
 **Validation Set:** Used to estimate the model, and tune the model hyper-parameters. <br />
 **Test Set:** Used for final testing. <br />
+> If we do not have validation set, and simply use the test results to decide on the parameters of the model, then after many iterations of this procedure, we are overfitting to the test set of data.
 
 ### K-Fold Cross Validation
 1. Split the data into training set and test test
