@@ -19,12 +19,14 @@ Accuracy is not always perfect for model evaluation, especially for **imbalanced
 For example, if we have a data set, where 99% of the data is positive, 1% of the data is negative. We can simply have a model which always predict positive, then the model accuracy is 99%, while we are not catching any of the negative data.
 
 ### Precision
-> _Precision focuses on **False Positive** errors._
+* Precision focuses on **False Positive** errors.
+* Higher threshold increases precision score.
 
 ![alt text](eqn_precision.png)
 
 ### Recall
-> _Recall focuses on **False Negative** errors._
+* Recall focuses on **False Negative** errors.
+* Higher threshold decreases recall score.
 
 ![alt text](eqn_recall.png)
 
@@ -44,15 +46,19 @@ _**Examples:**_ <br />
 &#946; should be small if the model is to detect the potential clients to send promotion materials. <br />
 
 ### ROC Curve
+> Look at every possible classification threshold and look at the true positive and false positive rates at that threshold.
 
 To find ROC Curve:
 1. True Positive Rate = True Positives / All Positives <br />
 2. False Positive Rate = False Positives / All Negatives <br />
 3. Find all the (_True Positive Rate_, _False Positive Rate_), and plot them on a plane to get a curve <br />
-4. Calculate the area under the curve <br />
+4. Calculate the area under the curve - AUC <br />
 5. If area is close to 1, then we can get a good split from the data   set; <br />
    If area is close to 0.5, then the data set is random, we cannot get a good split; <br />
    If area is close to 0, we can flip the data and get a good split. <br />
+
+#### AUC
+AUC stands for "Area under the ROC Curve." That is, AUC measures the entire two-dimensional area underneath the entire ROC curve.
 
 ### R2 Score
 > _Percentage of data variation not described by the model_

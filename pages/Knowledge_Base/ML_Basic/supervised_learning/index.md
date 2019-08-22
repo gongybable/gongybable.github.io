@@ -1,6 +1,6 @@
 # Machine Learning Cheat Sheet — Supervised Learning
 
-## Regression vs. classification
+## Regression vs. Classification
 * A **regression** model predicts continuous values. For example, regression models make predictions for the value of a house in California.
 
 * A **classification** model predicts discrete values. For example, classification models make predictions whether an email message is spam or not spam.

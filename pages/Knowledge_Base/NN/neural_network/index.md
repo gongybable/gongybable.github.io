@@ -4,6 +4,35 @@
 ![alt text](perceptron.png) <br />
 <small>*Perceptron is a single layer of neural network.*</small>
 
+### Logistic Regression
+Instead of predicting exactly 0 or 1, **logistic regression** generates a probability—a value between 0 and 1, exclusive. For example, consider a logistic regression model for spam detection. If the model infers a value of 0.932 on a particular email message, it implies a 93.2% probability that the email message is spam.
+
+We need to define a classification threshold to map a logistic regression value to a binary category. 
+
+### Prediction Bias
+![alt text](prediction_bias.png)
+
+Logistic regression predictions should be unbiased. A significant nonzero prediction bias tells you there is a bug somewhere in your model, as it indicates that the model is wrong about how frequently positive labels occur.
+
+Possible root causes of prediction bias are:
+1. Incomplete feature set
+2. Noisy data set
+3. Buggy pipeline
+4. Biased training sample
+5. Overly strong regularization
+
+### Calibration Plot
+![alt text](calibration_plot.png) <br />
+
+Calculate the prediction bias by buckets of the data, we can form buckets in the following ways:
+* Linearly breaking up the target predictions.
+* Forming quantiles.
+
+In above example plot, the predictions are poor for only part of the model. Here are a few possibilities:
+1. The training set doesn't adequately represent certain subsets of the data space.
+2. Some subsets of the data set are noisier than others.
+3. The model is overly regularized. (Consider reducing the value of lambda.)
+
 ## Neural Networks
 A neural network consists multiple layers of perceptron. It has three parts: input layer, hidden layers and output layer. The training samples define the input and output layers.
 
@@ -113,6 +142,8 @@ class NeuralNetwork:
 <small>*Stop Training when Testing Error starts increasing*</small>
 
 #### Regularization
+Without regularization, the asymptotic nature of logistic regression would keep driving loss towards 0 in high dimensions, result in over fitting.
+
 ![alt text](regularization.png) <br />
 * Model on the left (small coefficients)has larger errors, model on the right (large coefficients) has smaller errors <br />
 

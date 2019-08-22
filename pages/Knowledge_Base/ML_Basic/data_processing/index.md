@@ -47,7 +47,8 @@ Some feature values may should lie within a range (e.g. percentage should be wit
 For example, we can create bins to convert geo-location data (latitude, longitude) into bins to make them categorical features. The float numbers of coordinates has no linear relation ship with the target. By making them into bins makes more sense. We can bin by quantile, which ensures that the number of examples in each bucket is equal. Binning by quantile completely removes the need to worry about outliers.
 
 5. Feature Cross <br />
-Feature cross is a synthetic feature that encodes nonlinearity in the feature space by multiplying two or more input features together. (The term cross comes from cross product.) For example, corssing one hot encoded features of `country` and `language`, get us more meaningful features. Or we can also do <code>x<sup>2</sup></code>.
+    - Feature cross is a synthetic feature that encodes nonlinearity in the feature space by multiplying two or more input features together. (The term cross comes from cross product.) For example, corssing one hot encoded features of `country` and `language`, get us more meaningful features. Or we can also do <code>x<sup>2</sup></code>.
+    - However, this also introduces complexity into the model, which may result in a bad performance on the test data (over fitting). This is where regularization comes into play.
 
 6. Account for upstream instability <br />
 The definition of a feature shouldn't change over time. 
