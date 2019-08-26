@@ -38,13 +38,19 @@ A neural network consists multiple layers of perceptron. It has three parts: inp
 
 When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
 
-#### Activation Functions
+### Activation Functions
+Activation functions are used to add non-linearity into the model.
+
 **Sigmoid Function:** <br />
 ![alt text](eqn_sigmoid.png) <br />
 ![alt text](eqn_sigmoid_d.png) <br />
 
 **Softmax Function:** <br />
 ![alt text](eqn_softmax.png) <br />
+* **Full Softmax** is the Softmax that calculates a probability for every possible class.
+* **Candidate sampling** means that Softmax calculates a probability for all the positive labels but only for a random sample of negative labels. For example, if we are interested in determining whether an input image is a beagle or a bloodhound, we don't have to provide probabilities for every non-doggy example.
+* Candidate sampling can improve efficiency in problems having a large number of classes.
+* Softmax assumes that each example is a member of exactly one class. For many-label problem, we should use **multiple logistic regressions**.
 
 Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
 
@@ -217,7 +223,7 @@ specifies activation function for the Dense layers (e.g., `model.add(Dense(128))
 ![alt text](output_layer.png) <br />
 
 ### Vanishing Gradient Problem
-The gradient tends to get smaller as we move backward through the hidden layers. So in deep neural network, the gradients of the loss function in initial layers approaches zero, making the network hard to train. The random initialization means the first layer throws away most information about the input image. Even if later layers have been extensively trained, they will still find it extremely difficult to identify the input image, simply because they don’t have enough information. Below are a few techniques to avoid vanishing gradient problem.
+The gradient tends to get smaller as we move backward through the hidden layers. So in deep neural network, the gradients of the loss function in lower layers approaches zero, making the network hard to train. The random initialization means the first layer throws away most information about the input image. Even if top layers have been extensively trained, they will still find it extremely difficult to identify the input image, simply because they don’t have enough information. Below are a few techniques to avoid vanishing gradient problem.
 
 * RELU <br />
 ReLU has a derivative of 1, while sigmoid function has a derivative of 0.25 maximum.
@@ -228,8 +234,10 @@ Residual networks provide residual connections straight to earlier layers. The r
 * Batch Normalization <br />
 The vanishing gradient problem arises when a large input space is mapped to a small one, causing the derivatives to disappear. Batch normalization reduces this problem by simply normalizing the input so `|x|` doesn’t reach the outer edges of the sigmoid function.
 
+Similar is the case with exploding gradient, If we initialize our weight matrices with very large values, then the gradients for the lower layers involve products of many large terms. In this case you can have exploding gradients: gradients that get too large to converge. Batch normalization  and lower learning rate can help prevent exploding gradients.
+
 ### Dead Filters
-ReLU units can be fragile during training and can “die”. For example, a large gradient(usually caused by aggressive learning rates) flowing through a ReLU neuron could cause the weights to update in such a way that the neuron will never activate on any datapoint again. If this happens, then the gradient flowing through the unit will forever be zero from that point on. That is, the ReLU units can irreversibly die during training since they can get knocked off the data manifold. For example, you may find that as much as 40% of your network can be “dead” (i.e. neurons that never activate across the entire training dataset) if the learning rate is set too high. With a proper setting of the learning rate this is less frequently an issue.
+ReLU units can be fragile during training and can “die”. For example, a large gradient(usually caused by aggressive learning rates) flowing through a ReLU neuron could cause the weights to update in such a way that the neuron will never activate on any datapoint again. If this happens, then the gradient flowing through the unit will forever be zero from that point on. That is, the ReLU units can irreversibly die during training since they can get knocked off the data manifold. For example, you may find that as much as 40% of your network can be “dead” (i.e. neurons that never activate across the entire training dataset) if the learning rate is set too high. With a lower learning rate this is less frequently an issue.
 
 “Leaky” ReLUs with a small positive gradient for negative inputs (y=0.01x when x < 0 say) are one attempt to address this issue and give a chance to recover.
 

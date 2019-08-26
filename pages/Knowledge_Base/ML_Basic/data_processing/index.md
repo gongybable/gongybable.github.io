@@ -1,6 +1,7 @@
 # Machine Learning Cheat Sheet — Data Processing Techniques
 
-## Skewed Data
+## Numerical Data
+### Skewed Data
 ![alt text](skewed_data.png)
 
 Outliers affect the distribution. If a value is significantly below the expected range, it will drag the distribution to the left, making the graph left-skewed or negative. Alternatively, if a value is significantly above the expected range, it will drag the distribution to the right, making the graph right-skewed or positive.
@@ -10,11 +11,12 @@ There are different ways to handle skewed data:
 * Hyperbolic Tangent
 * Percentile Linearization
 
-## Data Normalization
+### Data Normalization
 For tree based models, we may not need data normalization; <br />
-For linear models, we need to normalize the data, so that the feature values fall in range  like _(0, 1)_. For following reasons:
+For linear models, we need to normalize the data, so that the feature values fall in range  like _(0, 1)_.
 
-1. Helps gradient descent converge more quickly.
+#### Advantages
+1. Helps gradient descent converge more quickly when the values fall into similar range.
 
 2. Helps avoid the "NaN trap," in which one number in the model becomes a NaN when a value exceeds the floating-point precision limit during training.
 
@@ -22,10 +24,35 @@ For linear models, we need to normalize the data, so that the feature values fal
 
 We don't have to give every feature exactly the same scale. Nothing terrible will happen if Feature A is scaled from -1 to +1 while Feature B is scaled from -3 to +3.
 
-**Disadvantage:**  <br />
-Data normalization is sensitive to outliers.
+#### Disadvantage
+1. Data normalization is sensitive to outliers.
 
-## One-hot Encoding
+#### Methods
+1. scaling to a range <br/>
+Scaling to a range is a good choice when both of the following conditions are met:
+    - You know the approximate upper and lower bounds on your data with few or no outliers.
+    - Your data is approximately uniformly distributed across that range.
+
+2. clipping <br/>
+If your data set contains extreme outliers, you might try feature clipping, which caps all feature values above (or below) a certain value to fixed value. For example, you could clip all temperature values above 40 to be exactly 40.
+
+3. log scaling <br/>
+Log scaling is helpful when a handful of your values have many points, while most other values have few points. Log scaling changes the distribution, helping to improve linear model performance.
+
+4. z-score <br/>
+You use z-score to ensure your feature distributions have `mean = 0` and `std = 1`. 
+
+### Binning / Bucketing
+For example, we can create bins to convert geo-location data (latitude, longitude) into bins to make them categorical features. The float numbers of coordinates has no linear relation ship with the target. By making them into bins makes more sense.
+
+1. Buckets with equally spaced boundaries <br/>
+The boundaries are fixed and encompass the same range. Some buckets could contain many points, while others could have few or none.
+
+2. Buckets with quantile boundaries <br/>
+Each bucket has the same number of points. The boundaries are not fixed and could encompass a narrow or wide span of values. Bucketing by quantile completely removes the need to worry about outliers.
+
+## Categorical Data
+### One-hot Encoding
 Convert categorical data into binary variables. For example, convert feature gender into two columns, male and female, with value 0 or 1.
 
 One-hot encoding converts a categorical feature into multiple columns of numerial features with 0 and 1. Why not convert categorical feature into a single column with numerical values like 1, 2, 3, 4...? The constraints are:
@@ -43,14 +70,11 @@ For features like `house_age`, we prefer it to be in years instead of epoch time
 3. Clean up noises / Filling up missing values <br />
 Some feature values may should lie within a range (e.g. percentage should be within 0 and 1). If we see noises like -1 which is definitly out of range, we can replace them with: mean values (for numerical data) or a new value (for categorical data)
 
-4. Binning <br />
-For example, we can create bins to convert geo-location data (latitude, longitude) into bins to make them categorical features. The float numbers of coordinates has no linear relation ship with the target. By making them into bins makes more sense. We can bin by quantile, which ensures that the number of examples in each bucket is equal. Binning by quantile completely removes the need to worry about outliers.
-
-5. Feature Cross <br />
+4. Feature Cross <br />
     - Feature cross is a synthetic feature that encodes nonlinearity in the feature space by multiplying two or more input features together. (The term cross comes from cross product.) For example, corssing one hot encoded features of `country` and `language`, get us more meaningful features. Or we can also do <code>x<sup>2</sup></code>.
     - However, this also introduces complexity into the model, which may result in a bad performance on the test data (over fitting). This is where regularization comes into play.
 
-6. Account for upstream instability <br />
+5. Account for upstream instability <br />
 The definition of a feature shouldn't change over time. 
 
 ## Data Leakage
