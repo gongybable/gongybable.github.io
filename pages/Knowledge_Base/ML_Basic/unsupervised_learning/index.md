@@ -53,9 +53,10 @@ You can preserve privacy by clustering users, and associating user data with clu
 * Computationally intensive `O(N²)` <br />
 
 ### DBSCAN
-> Inputs: <br />
-> _Epsilon_ - the search distance around point <br />
-> _MinPoints_ - Minimum number of points required to form a cluster <br />
+
+`Inputs:` <br />
+`Epsilon - the search distance around point` <br />
+`MinPoints - Minimum number of points required to form a cluster` <br />
 
 Scan through all the points, and determine each point whether it is a noise point, core point or border point.
 
@@ -93,6 +94,19 @@ A cluster can contain another cluster in it <br />
 * Sensitive to initialization values <br />
 * Possible to converge to a local optimum <br />
 * Slow convergence rate <br />
+
+### K-Means Vs GMM
+- K-Means advantages:
+
+    - It is easy to implement.
+    - With large number of variables, it is computationally faster.
+    - Consistent and scale-invariant.
+    - It is guaranteed to converge.
+
+- GMM advantages:
+
+    - It is much more flexible in terms of cluster covariance, which means that each cluster can have unconstrained covariance structure.
+    - Soft assignment — points can belong to different clusters, with different level of membership. This level of membership is the probability of each point to belong to each cluster.
 
 ## Cluster Validation
 1. External indices: Scoring methods for labelled data <br />

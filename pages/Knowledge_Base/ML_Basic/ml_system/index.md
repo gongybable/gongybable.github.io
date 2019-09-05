@@ -21,5 +21,3 @@
     - Pro: Can make a prediction on any new item as it comes in — great for long tail.
     - Con: Compute intensive, latency sensitive—may limit model complexity.
     - Con: Monitoring needs are more intensive.
-
-##

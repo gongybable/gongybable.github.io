@@ -122,7 +122,8 @@ A non-leaky evaluation of machine learning algorithms in this situation would ca
 5. **Use a Holdout Dataset**. Hold back an unseen validation dataset as a final sanity check of your model before you use it.
 
 ## Imbalanced Data Set
-> Data is not well distributed among different classes. For example, only less than 0.1% of all the bacnk transactions are fraud.
+Imbalanced data set means the data is not well distributed among different classes. For example, only less than 0.1% of all the bacnk transactions are fraud.
+
 1. **Use proper evaluation metrics**
 
 2. **Under-sampling** <br />
@@ -170,7 +171,7 @@ For cases where we cannot drop a outlier, we can do the following:
 4. Try a different model.
 
 ## Feature Selection / Dimension Reduction
-> A good feature set contains features that are highly correlated with the class, yet uncorrelated with each other. It will not only speed up algorithm execution, but may also improve model scores.
+A good feature set contains features that are highly correlated with the class, yet uncorrelated with each other. It will not only speed up algorithm execution, but may also improve model scores.
 
 1. **Missing Values Ratio** <br />
 Data columns with too many missing values can be removed.

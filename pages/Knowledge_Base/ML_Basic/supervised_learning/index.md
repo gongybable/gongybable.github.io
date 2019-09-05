@@ -21,8 +21,9 @@ If the key assumptions of supervised ML are not met, then we **lose important th
 ![alt text](eqn_linear_reg.png) <br />
 <small>*W: weights; X: features*</small>
 
-Works best when the data is linear. If the data is not linear, then we may need to transform the data, add features, or use another model. <br />
-Sensitive to outliers. Outliers contribute too much to the errors, so will impact the model. We may need to determine the outliers and remove them if necessary.
+* Works best when the data is linear. If the data is not linear, then we may need to transform the data, add features, or use another model.
+
+* Sensitive to outliers. Outliers contribute too much to the errors, so will impact the model. We may need to determine the outliers and remove them if necessary.
 
 ### Error functions:
 ![alt text](eqn_abs_error.png) <br />
@@ -32,9 +33,9 @@ Sensitive to outliers. Outliers contribute too much to the errors, so will impac
 <small>*Mean Squared Error*</small>
 
 ### Gradient Descent:
-> Change the weights to move in the direction that descent the error the most.
-
 ![alt text](eqn_gradient_descent.png)
+
+Gradient Descent changes the weights to move in the direction that descent the error the most.
 
 In linear regression, split the data into many small batches. Each batch, with roughly the same number of points. Then, use each batch to update your weights. This is still called mini-batch gradient descent.
 
@@ -44,30 +45,10 @@ We can solve W (weights) by setting derivatives of the Error to weights to 0. Th
 ### Polynomial Regression:
 Fit the data to a higher degree polynomials.
 
-## Decision Trees
-![alt text](decision_tree.png) <br />
-<small>*Decision Tree Example*</small>
+### Linear Regression and Logistic Regression
+* Linear regression models the relationship between a continuous dependent variable y and one or more predictors X, by `y=WX+b`.
 
-### Entropy
-Lower entropy means the state is more stable; higher entropy means the state has more randomness in it.
-
-![alt text](eqn_entropy.png) <br />
-<small>*Entropy Equation*</small>
-
-![alt text](eqn_information_gain.png) <br />
-<small>*Information Gain*</small>
-
-Decision Tree is to split the data into groups so that the information gain is maximized. However it is very easy to lead into **over fitting**.
-
-### Random Forest to Avoid Over Fitting
-1. Split features into groups
-2. Each group forms a decision tree
-3. Let the results from each decision tree to vote
-
-### Decision Tree Hyper-parameters to Avoid Over Fitting
-1. Maximum Depth — The largest possible length between the root to a leaf
-2. Minimum number of samples to split
-3. Minimum number of samples per leaf
+* Logistic regression is a classification algorithm. It is used to predict the probability that a given example belongs to the “1” class versus the probability that it belongs to the “-1” class. Usually represented by a sigmoid function.
 
 ## Naive Bayes
 ![alt text](eqn_bayes.png) <br />
@@ -76,10 +57,14 @@ Decision Tree is to split the data into groups so that the information gain is m
 Naive Bayes is to use the Bayes Theorem, make some assumptions (e.g. assume the features are independent, `P(A,B) = P(A)*P(B)` ), and calculate the proportions of the probability to simplify the calculation. For example: `P(A|B) ~ P(B|A)P(A)`
 
 ## Support Vector Machines
-`Error = Error(Classification) + Error(Margin)`
-
 ![alt text](svm.png) <br />
 <small>*Margin Error (Same as L2 Regularization)*</small>
+
+`Error = Error(Classification) + Error(Margin)`
+
+SVM finds the classifier represented by the normal vector W and bias b of the hyperplane that separates different classes as wide as possible. Which means we need to minimize W, where `|WX+b|>1`.
+
+When the classes are not linearly separable, a kernel trick can be used to map a non-linearly separable space into a higher dimension linearly separable space.
 
 ### C Parameter
 `Error =C * Error(Classification) + Error(Margin)`
@@ -96,8 +81,35 @@ Project the points to a higher dimension with Gaussian distribution, and cut the
 ![alt text](rbf.png) <br />
 <small>*Larger gamma, Narrower the Gaussian*</small>
 
+## Decision Trees
+![alt text](decision_tree.png) <br />
+<small>*Decision Tree Example*</small>
+
+Decision trees are easy to understand and implement. However, they tend to over fit data when we exhaust the branches and go very deep with the trees.
+
+### Entropy
+![alt text](eqn_entropy.png) <br />
+<small>*Entropy Equation*</small>
+
+![alt text](eqn_information_gain.png) <br />
+<small>*Information Gain*</small>
+
+Lower entropy means the state is more stable; higher entropy means the state has more randomness in it.
+
+Decision Tree is to split the data into groups so that the information gain is maximized. However it is very easy to lead into **over fitting**.
+
+### Random Forest to Avoid Over Fitting
+1. Split features into groups
+2. Each group forms a decision tree
+3. Let the results from each decision tree to vote
+
+### Decision Tree Hyper-parameters to Avoid Over Fitting
+1. Maximum Depth — The largest possible length between the root to a leaf
+2. Minimum number of samples to split
+3. Minimum number of samples per leaf
+
 ## Ensemble Methods
-Combine multiple models into a better model.
+Combine multiple models into a better model. Compared with desicion trees, random forrest and gradient boosting are two popular ways to use tree algorithms to achieve good accuracy as well as overcoming the over-fitting problem.
 
 ### Bagging
 Split data into smaller subsets, and get the models for each subset; then to get the predictions, run under all the models and vote for the final prediction.
