@@ -37,7 +37,7 @@ Scaling to a range is a good choice when both of the following conditions are me
 If your data set contains extreme outliers, you might try feature clipping, which caps all feature values above (or below) a certain value to fixed value. For example, you could clip all temperature values above 40 to be exactly 40.
 
 3. log scaling <br/>
-Log scaling is helpful when a handful of your values have many points, while most other values have few points. Log scaling changes the distribution, helping to improve linear model performance.
+Log scaling is helpful when a handful of your values have many points, while most other values have few points (e.g. power law distribution). Log scaling changes the distribution, helping to improve linear model performance.
 
 4. z-score <br/>
 You use z-score to ensure your feature distributions have `mean = 0` and `std = 1`. 

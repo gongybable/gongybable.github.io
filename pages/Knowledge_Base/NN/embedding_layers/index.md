@@ -15,6 +15,48 @@ Neural network embeddings overcome the two limitations of one-hot encoding:
 
 2. The mapping is completely uninformed: “similar” categories are not placed closer to each other in embedding space.
 
+## Choose DNN
+### Autoencoder
+A DNN that learns embeddings of input data by predicting the input data itself is called an **autoencoder**. Because an autoencoder’s hidden layers are smaller than the input and output layers, the autoencoder is forced to learn a compressed representation of the input feature data. Once the DNN is trained, you extract the embeddings from the last hidden layer to calculate similarity.
+
+### Predictor
+An autoencoder isn't the optimal choice when certain features could be more important than others in determining similarity. For example, in house data, let's assume “price” is more important than “postal code". In such cases, use only the important feature as the training label for the DNN. Since this DNN predicts a specific input feature instead of predicting all input features, it is called a **predictor** DNN. Use the following guidelines to choose a feature as the label:
+
+* Prefer numeric features to categorical features as labels because loss is easier to calculate and interpret for numeric features.
+
+* Do not use categorical features with cardinality  100 as labels. If you do, the DNN will not be forced to reduce your input data to embeddings because a DNN can easily predict low-cardinality categorical labels.
+
+* Remove the feature that you use as the label from the input to the DNN; otherwise, the DNN will perfectly predict the output.
+
+### Loss Function for DNN
+To train the DNN, you need to create a loss function by following these steps:
+
+1. Calculate the loss for every output of the DNN. For outputs that are:
+    - Numeric, use mean square error (MSE).
+    - Univalent categorical, use log loss.
+    - Multivalent categorical, use softmax cross entropy loss.
+
+2. Calculate the total loss by summing the loss for every output.
+    - When summing the losses, ensure that each feature contributes proportionately to the loss. For example, if you convert color data to RGB values, then you have three outputs. After summing the loss for three outputs you should then multiply by 1/3.
+
+### Similarity Measurement
+![alt text](similarity.png) <br />
+1. Items that appear very frequently in the training set tend to have embeddings with large norms. If capturing popularity information is desirable, then you should prefer dot product. However, if you're not careful, the popular items may end up dominating the recommendations. In practice, you can use other variants of similarity measures that put less emphasis on the norm of the item: <code>s(q,x)=||q||<sup>α</sup>||x||<sup>α</sup>cos(q,x)</code> for some <code>α ∈ (0, 1)</code>.
+
+2. Items that appear very rarely may not be updated frequently during training. Consequently, if they are initialized with a large norm, the system may recommend rare items over more relevant items. To avoid this problem, be careful about embedding initialization, and use appropriate regularization.
+
+## Recommendation System
+### Candidate Generation
+1. Content-based Filtering <br />
+Uses similarity between items to recommend items similar to what the user likes. If user A watches two cute cat videos, then the system can recommend cute animal videos to that user.
+
+2. Collaborative Filtering <br />
+Uses similarities between queries and items simultaneously to provide recommendations. If user A is similar to user B, and user B likes video 1, then the system can recommend video 1 to user A
+
+3. Softmax Model <br />
+    - Matrix factorization is usually the better choice for large corpora. It is easier to scale, cheaper to query, and less prone to folding.
+
+    - DNN models can better capture personalized preferences, but are harder to train and more expensive to query. DNN models are preferable to matrix factorization for scoring because DNN models can use more features to better capture relevance. Also, it is usually acceptable for DNN models to fold, since you mostly care about ranking a pre-filtered set of candidates assumed to be relevant.
 
 ## Sample Code
 ![alt text](embedding_layers.png) <br />

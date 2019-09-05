@@ -179,6 +179,7 @@ We need to avoid getting trapped in local minima for non-convex error functions.
 #### Optimizers
 * SGD Stochastic Gradient Descent (or mini-batch)<br />
     - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches.
+    - Models trained with smaller batches can generalize better.
     - This also saves a lot of computation resource, and scales well with both data and model size.  <br />
 
 * Momentum <br />
