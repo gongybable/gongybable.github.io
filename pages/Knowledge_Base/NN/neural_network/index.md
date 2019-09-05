@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — Neural Network
+# Neural Network Basics
 
 ## Perceptron
 ![alt text](perceptron.png) <br />
@@ -41,24 +41,24 @@ When the output layer is a categorical variable, then the neural network is a wa
 ### Activation Functions
 Activation functions are used to add non-linearity into the model.
 
-**Sigmoid Function:** <br />
+1. **Sigmoid Function:** <br />
 ![alt text](eqn_sigmoid.png) <br />
 ![alt text](eqn_sigmoid_d.png) <br />
 
-**Softmax Function:** <br />
+2. **Softmax Function:** <br />
 ![alt text](eqn_softmax.png) <br />
-* **Full Softmax** is the Softmax that calculates a probability for every possible class.
-* **Candidate sampling** means that Softmax calculates a probability for all the positive labels but only for a random sample of negative labels. For example, if we are interested in determining whether an input image is a beagle or a bloodhound, we don't have to provide probabilities for every non-doggy example.
-* Candidate sampling can improve efficiency in problems having a large number of classes.
-* Softmax assumes that each example is a member of exactly one class. For many-label problem, we should use **multiple logistic regressions**.
+    - **Full Softmax** is the Softmax that calculates a probability for every possible class.
+    - **Candidate sampling** means that Softmax calculates a probability for all the positive labels but only for a random sample of negative labels. For example, if we are interested in determining whether an input image is a beagle or a bloodhound, we don't have to provide probabilities for every non-doggy example.
+    - Candidate sampling can improve efficiency in problems having a large number of classes.
+    - Softmax assumes that each example is a member of exactly one class. For many-label problem, we should use **multiple logistic regressions**.
 
 Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
 
-**hyperbolic tangent function:** <br />
+3. **hyperbolic tangent function:** <br />
 ![alt text](eqn_tanh.png) <br />
 <small>*zero centered, result in faster convergence*</small>
 
-**ReLU:** <br />
+4. **ReLU:** <br />
 ![alt text](eqn_relu.png) <br />
 
 ### Gradient Descent The Math

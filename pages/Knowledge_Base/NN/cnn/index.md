@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — CNN
+# CNN
 
 ## MLP Vs CNN
 * MLP only use fully connected layers
