@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — Algorithm Comparison and Selection
+# Algorithm Comparison and Selection
 
 <a href="https://download.microsoft.com/download/A/6/1/A613E11E-8F9C-424A-B99D-65344785C288/microsoft-machine-learning-algorithm-cheat-sheet-v7.pdf" download>Microsoft Machine Learning Algorithm Cheat Sheet</a>
 

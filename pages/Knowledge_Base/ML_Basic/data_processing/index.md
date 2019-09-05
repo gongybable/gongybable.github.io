@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — Data Processing Techniques
+# Data Processing Techniques
 
 ## Numerical Data
 ### Skewed Data

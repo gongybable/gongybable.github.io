@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — Model Evaluation and Validation
+# Model Evaluation and Validation
 
 ## Model Evaluation
 ### Confusion Matrix Summary
@@ -19,21 +19,21 @@ Accuracy is not always perfect for model evaluation, especially for **imbalanced
 For example, if we have a data set, where 99% of the data is positive, 1% of the data is negative. We can simply have a model which always predict positive, then the model accuracy is 99%, while we are not catching any of the negative data.
 
 ### Precision
+![alt text](eqn_precision.png)
+
 * Precision focuses on **False Positive** errors.
 * Higher threshold increases precision score.
 
-![alt text](eqn_precision.png)
-
 ### Recall
+![alt text](eqn_recall.png)
+
 * Recall focuses on **False Negative** errors.
 * Higher threshold decreases recall score.
 
-![alt text](eqn_recall.png)
-
 ### F1 Score
-> _F1 Score is a harmonic mean between Precision and Recall._
-
 ![alt text](eqn_f1_score.png)
+
+F1 Score is a harmonic mean between Precision and Recall.
 
 ### F beta Score
 ![alt text](eqn_f_beta__score.png)
@@ -46,7 +46,7 @@ _**Examples:**_ <br />
 &#946; should be small if the model is to detect the potential clients to send promotion materials. <br />
 
 ### ROC Curve
-> Look at every possible classification threshold and look at the true positive and false positive rates at that threshold.
+Look at every possible classification threshold and look at the true positive and false positive rates at that threshold.
 
 To find ROC Curve:
 1. True Positive Rate = True Positives / All Positives <br />
@@ -57,20 +57,18 @@ To find ROC Curve:
    If area is close to 0.5, then the data set is random, we cannot get a good split; <br />
    If area is close to 0, we can flip the data and get a good split. <br />
 
-#### AUC
-AUC stands for "Area under the ROC Curve." That is, AUC measures the entire two-dimensional area underneath the entire ROC curve.
+**AUC** stands for "Area under the ROC Curve." That is, AUC measures the entire two-dimensional area underneath the entire ROC curve.
 
 ### R2 Score
-> _Percentage of data variation not described by the model_
-
 ![alt text](eqn_r2.png)
 
-R2 score close to 0, then it is a bad model; <br />
-R2 score close to 1, then it is a good model. <br />
+R2 Score measures the percentage of data variation not described by the model:
+* R2 score close to 0, then it is a bad model; <br />
+* R2 score close to 1, then it is a good model. <br />
 
 ## Model Validation
 **Under Fitting:** Model is too simple; high training error. <br />
-**Over Fitting:** Model is too complicated, and memorise the training data; high test error.
+**Over Fitting:** Model is too complicated, and memorise the training data; has high test error.
 
 **Training Set:** Used to train the model. <br />
 **Validation Set:** Used to estimate the model, and tune the model hyper-parameters. <br />

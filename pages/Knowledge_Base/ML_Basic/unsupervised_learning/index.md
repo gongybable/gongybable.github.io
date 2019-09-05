@@ -1,4 +1,4 @@
-# Machine Learning Cheat Sheet — Unsupervised Learning
+# Unsupervised Learning
 
 ## Benefits of Clustering
 1. Generalization <br/>

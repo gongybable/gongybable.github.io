@@ -1,4 +1,4 @@
-Implement Gradient Descent in Python
+# Implement Gradient Descent in Python
 
 [Input Data](binary.csv)
 
