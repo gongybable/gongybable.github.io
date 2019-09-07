@@ -39,7 +39,7 @@ A neural network consists multiple layers of perceptron. It has three parts: inp
 When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
 
 ### Activation Functions
-Activation functions are used to add non-linearity into the model.
+Activation functions are used to add non-linearity into the model. Otherwise, no matter how many layers of neurons you add, the output is always linear to the inputs.
 
 1. **Sigmoid Function:** <br />
 ![alt text](eqn_sigmoid.png) <br />
@@ -52,26 +52,32 @@ Activation functions are used to add non-linearity into the model.
     - Candidate sampling can improve efficiency in problems having a large number of classes.
     - Softmax assumes that each example is a member of exactly one class. For many-label problem, we should use **multiple logistic regressions**.
 
-Since the sigmoid function has very low derivatives when value is large (result in small steps), we have other activation funcations:
-
 3. **hyperbolic tangent function:** <br />
 ![alt text](eqn_tanh.png) <br />
-<small>*zero centered, result in faster convergence*</small>
+    - Zero centered, result in faster convergence than sigmoid.
+    - Usually use tanh instead of sigmoid unluess at the output layer for classification
 
 4. **ReLU:** <br />
 ![alt text](eqn_relu.png) <br />
+    - Since the tanh and sigmoid function has very low derivatives when value is large (result in small steps and learning is very slow), we use ReLU to overcome this.
 
 ### Gradient Descent The Math
 Assume the following scenario, we need to classify `m` points into 2 groups, each point has `p` features, which is represented by <code>(X<sub>1</sub>,X<sub>2</sub>,...,X<sub>p</sub>)</code>. Say we are using one layer neural networks to do that.
 
 We feed in point `P1`, after the neuron we get <code>WX+b</code>; We apply activation function on <code>WX+b</code> (let us assume we use sigmoid function), and we can get the probability for P1 in class 1 is <code>y&#770;<sub>11</sub>=S(WX+b)</code>, and probability for P1 in class 2 is <code>y&#770;<sub>12</sub>=1-S(WX+b)</code>.
 
-All we need to do now is to maximize <code>G<sub>1</sub>=y<sub>11</sub>y&#770;<sub>11</sub>+(1-y<sub>11</sub>)(1-y&#770;<sub>11</sub>)</code>; <code>Y<sub>11</sub></code> is 1 for P1 belongs to class 1, and 0 for P1 belongs to class 2. So for all these m points, we need to maximize <code>G<sub>1</sub>\*G<sub>2</sub>\*...\*G<sub>m</sub></code>. We can design the Cross-Entropy as below for `m` points and `n` classes:
+So to summerize:<br/>
+<code>If y=1: p(y|x) = y&#770;</code><br/>
+<code>If y=0: p(y|x) = 1-y&#770;</code><br/>
+We can get:<br/>
+<code>p(y|x) = y&#770;<sup>y</sup>(1-y&#770;)<sup>1-y</sup></code>
+
+Equivalently, all we need to do now is to maximize <code>G<sub>1</sub>=y<sub>11</sub>y&#770;<sub>11</sub>+(1-y<sub>11</sub>)(1-y&#770;<sub>11</sub>)</code>; <code>Y<sub>11</sub></code> is 1 for P1 belongs to class 1, and 0 for P1 belongs to class 2. So for all these m points, we need to maximize <code>G<sub>1</sub>\*G<sub>2</sub>\*...\*G<sub>m</sub></code>. We can design the Cross-Entropy as below for `m` points and `n` classes:
 
 ![alt text](eqn_cross_entropy.png) <br />
 <small>*The lower the CE, the higher the probability*</small>
 
-Then our error function can be:  <br />
+Then our error function can be (_we are not using MSE for the error function because MSE is non-convex and difficult for Gradient Descent_):  <br />
 ![alt text](eqn_error_function.png) <br />
 
 Now `Gradient Descent` is applied to find the derivatives of the Error over the weights. To simplify the calculations, we only consider the error that one point produces: <code>E=-yln(y&#770;)-(1-y)ln(1-y&#770;)</code>.
@@ -116,24 +122,38 @@ Sample code is shown below:
 class NeuralNetwork:
     def __init__(self, x, y):
         self.input      = x
-        self.weights1   = np.random.rand(self.input.shape[1],4) 
-        self.weights2   = np.random.rand(4,1)                 
+        self.weights1   = np.random.rand(self.input.shape[1],4)
+        self.b1         = np.zeros((1, 4))
+        self.weights2   = np.random.rand(4,1)      
+        self.b2         = 0           
         self.y          = y
         self.output     = np.zeros(self.y.shape)
 
     def feedforward(self):
-        self.layer1 = sigmoid(np.dot(self.input, self.weights1))
-        self.output = sigmoid(np.dot(self.layer1, self.weights2))
+        self.layer1 = sigmoid(np.dot(self.input, self.weights1) + self.b1)
+        self.output = sigmoid(np.dot(self.layer1, self.weights2) + self.b2)
 
     def backprop(self):
         # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
-        d_weights2 = np.dot(self.layer1.T, (self.y - self.output))
-        d_weights1 = np.dot(self.input.T,  np.dot((self.y - self.output), self.weights2.T) * sigmoid_derivative(self.layer1))
+        d_weights2 = np.dot(self.layer1.T, (self.output - self.y))/self.input.shape[0]
+        d_b2 = np.sum(self.output - self.y, axis=1, keepdims=True)/self.input.shape[0]
+        d_weights1 = np.dot(self.input.T,  np.dot((self.output - self.y), self.weights2.T) * sigmoid_derivative(self.layer1))/self.input.shape[0]
+        d_b1 = np.sum(np.dot((self.output - self.y), self.weights2.T) * sigmoid_derivative(self.layer1), axis=1, keepdims=True)/self.input.shape[0]
 
         # update the weights with the derivative (slope) of the loss function
-        self.weights1 += d_weights1
-        self.weights2 += d_weights2
+        self.weights1 -= d_weights1
+        self.weights2 -= d_weights2
+        self.b1 -= d_b1
+        self.b2 -= d_b2   
 ```
+
+### Weight Initialization
+In logistic regression, it was okay to initialize the weights to zero.
+
+But for a neural network, if we initialize the weights to all 0s and then apply gradient descent, it won't work. By initializing the weights to 0s, the hidden units will start off by computing exactly the same function. And then, when you compute backpropagation, it turns out that all the updates will be symmetric. So no matter how long you train your neural network, the hidden units are still computing exactly the same function. And so in this case, there's really no point to having more than one hidden unit. Because they are all computing the same thing.
+
+So we usually initialize with small random values: `np.random.randn((a,b)) * 0.01`
+
 ### Neural Network Techniques
 ![alt text](binary_nn.png) <br />
 <small>*Binary Classification NN (or to do Regression by Removing Activation Function on Last Layer)*</small>
@@ -240,7 +260,7 @@ Similar is the case with exploding gradient, If we initialize our weight matrice
 ### Dead Filters
 ReLU units can be fragile during training and can “die”. For example, a large gradient(usually caused by aggressive learning rates) flowing through a ReLU neuron could cause the weights to update in such a way that the neuron will never activate on any datapoint again. If this happens, then the gradient flowing through the unit will forever be zero from that point on. That is, the ReLU units can irreversibly die during training since they can get knocked off the data manifold. For example, you may find that as much as 40% of your network can be “dead” (i.e. neurons that never activate across the entire training dataset) if the learning rate is set too high. With a lower learning rate this is less frequently an issue.
 
-“Leaky” ReLUs with a small positive gradient for negative inputs (y=0.01x when x < 0 say) are one attempt to address this issue and give a chance to recover.
+**Leaky ReLUs** with a small positive gradient for negative inputs (e.g. `y= max{0.01x, x}`) are one attempt to address this issue and give a chance to recover.
 
 For sigmoid units, if weights are very large numbers, then the sigmoid will saturate(tail regions), resulting into dead as well. Therefore, we usually initialize the weights for `n` inputs with below techniques:
 * uniform distribution with weights equal to `1/n`.
