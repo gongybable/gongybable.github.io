@@ -45,17 +45,3 @@ Algorithms with large numbers of parameters require the most trial and error to 
 
 * Number of features <br />
 For certain types of data, the number of features can be very large compared to the number of data points (for example, textual data).The large number of features will result in long training time. Support Vector Machines are particularly well suited to this case.
-
-## Regularization
-Regularization takes the coefficients into part of the error, as large coefficients may result in over fitting.
-
-**L1 Regularization** — Add the absolute of the coefficients into the error. <br />
-**L2 Regularization** — Add the squares of the coefficients into the error.
-
-![alt text](regularization.png) <br />
-
-***Computation Efficiency**: Absolute values are difficult to calculate the derivation. <br />*
-
-***Sparse Outputs**: Lots of features, but only a few is relevant to the results. <br />*
-
-***Feature Selection**: L1 Regularization can find the features that are important and relevant. For example, for weights `(1, 0)` and `(0.5, 0.5)`, they are the same amount of errors in in L1, but in L2, `(0.5, 0.5)` is favored. <br />*

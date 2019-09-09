@@ -19,6 +19,8 @@ This is my personal blog for logging and sharing my learning experience on Machi
 ### Neural Networks
 * [Neural Network Basic](pages/Knowledge_Base/NN/neural_network/index.md)
 
+* [Neural Network Optimization](pages/Knowledge_Base/NN/neural_network_optimization/index.md)
+
 * [CNN](pages/Knowledge_Base/NN/cnn/index.md)
 
 * [Embedding Layers](pages/Knowledge_Base/NN/embedding_layers/index.md)
@@ -37,3 +39,5 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 ## How To
 * [Gradient Descent](pages/How_To/gradient_descent/index.md)
+
+* [Simple Neural Network](pages/How_To/simple_neural_network/index.md)

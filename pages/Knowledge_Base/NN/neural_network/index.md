@@ -38,6 +38,8 @@ A neural network consists multiple layers of perceptron. It has three parts: inp
 
 When the output layer is a categorical variable, then the neural network is a way to address classification problems. When the output layer is a continuous variable, then the network can be used to do regression. When the output layer is the same as the input layer, the network can be used to extract intrinsic features. The number of hidden layers defines the model complexity and modeling capacity.
 
+There are functions you can compute with a small deep neural network hat shallower networks require exponentially more hidden units to compute.
+
 ### Activation Functions
 Activation functions are used to add non-linearity into the model. Otherwise, no matter how many layers of neurons you add, the output is always linear to the inputs.
 
@@ -152,7 +154,9 @@ In logistic regression, it was okay to initialize the weights to zero.
 
 But for a neural network, if we initialize the weights to all 0s and then apply gradient descent, it won't work. By initializing the weights to 0s, the hidden units will start off by computing exactly the same function. And then, when you compute backpropagation, it turns out that all the updates will be symmetric. So no matter how long you train your neural network, the hidden units are still computing exactly the same function. And so in this case, there's really no point to having more than one hidden unit. Because they are all computing the same thing.
 
-So we usually initialize with small random values: `np.random.randn((a,b)) * 0.01`
+So we usually initialize with small random values around gaussian distribution to avoid vanishing/exploding gradients:
+* For tanh activation functions: <code>w<sup>l</sup> = np.random.randn((a,b)) * 1/√n<sup>l-1</sup></code>
+* For relu activation functions <code>w<sup>l</sup> = np.random.randn((a,b)) * 2/√n<sup>l-1</sup></code>
 
 ### Neural Network Techniques
 ![alt text](binary_nn.png) <br />
@@ -162,22 +166,10 @@ So we usually initialize with small random values: `np.random.randn((a,b)) * 0.0
 <small>*Multi-Class Classification (Softmax in the output layer)*</small>
 
 #### Early Stopping
->To determine the number of training epochs. If we use too few epochs, we might underfit; if we use too many epochs, we might overfit. <br />
+To determine the number of training epochs. If we use too few epochs, we might underfit (`w` starts small when we initialize); if we use too many epochs, we might overfit (`w` becomes larger and larger after training when it is trying to minimize the error). <br />
 
 ![alt text](early_stop.png) <br />
 <small>*Stop Training when Testing Error starts increasing*</small>
-
-#### Regularization
-Without regularization, the asymptotic nature of logistic regression would keep driving loss towards 0 in high dimensions, result in over fitting.
-
-![alt text](regularization.png) <br />
-* Model on the left (small coefficients)has larger errors, model on the right (large coefficients) has smaller errors <br />
-
-* Model on the right is better than the model on the right; Model on the right is too certain, and has little room to apply gradient descent; easily results in over fitting <br />
-
-* Bad models are usually too certain of themselves; good models are full of doubts <br />
-
-* So we add regularization to punish on the large coefficients <br />
 
 #### Learning Rate Decay
 If error derivative is steep, taking long steps; <br />
@@ -232,12 +224,6 @@ Similar to Adam, it can be viewed as a combination of RMSprop and NAG <br />
 
 * Activation layers <br />
 specifies activation function for the Dense layers (e.g., `model.add(Dense(128)); model.add(Activation('softmax'))` is equivalent to `model.add(Dense(128, activation="softmax"))`). By separating the activation layers allows direct access to the outputs of each layer before the activation is applied. <br />
-
-* Dropout layers <br />
-    - This is the probability that each node gets dropped at each epoch during training. In a fully connected layer, neurons develop co-dependency with each other during training, and will result in over fitting. Dropout can prevent that.
-    - Dropout also forces the model to learn a redundant representation for everything to make sure that at least some of the information remains.
-    - During training, a good starting value for dropout probability is 0.5.
-    - During testing, set dropout probability to 0 to keep all units and maximize the power of the model.
 
 * Output Layer <br />
 

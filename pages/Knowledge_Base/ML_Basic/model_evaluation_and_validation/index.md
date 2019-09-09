@@ -73,7 +73,9 @@ R2 Score measures the percentage of data variation not described by the model:
 **Training Set:** Used to train the model. <br />
 **Validation Set:** Used to estimate the model, and tune the model hyper-parameters. <br />
 **Test Set:** Used for final testing. <br />
-> If we do not have validation set, and simply use the test results to decide on the parameters of the model, then after many iterations of this procedure, we are overfitting to the test set of data.
+* If we do not have validation set, and simply use the test results to decide on the parameters of the model, then after many iterations of this procedure, we are overfitting to the test set of data.
+
+* Usually the data split is `60-20-20`; in the big data era, we may now only need 1% or even less for validation and test dataset, when the entire data set is very large.
 
 ### K-Fold Cross Validation
 1. Split the data into training set and test test
@@ -93,6 +95,17 @@ R2 Score measures the percentage of data variation not described by the model:
 * The training error and validation error tends to converge with more data; but more data is not always helpful if both errors are already converged to the optimal scores. <br />
 * From learning curve, if the model is under fitting, then we can try increase the model complexity by adding more features, or decrease the regularisation parameter. <br />
 * If the model is over fitting, we can try simplify the model by setting a smaller set of features, or increase the regularisation parameter.
+
+### Basic Recipt for ML
+1. If there is high bias:
+    - Try bigger network
+    - Try train longer
+    - Try different network architecture
+
+2. If there is high variance:
+    - Try more data
+    - Try regularization
+    - Try different network architecture
 
 ### Grid Search
 Training the model on different combinations of hyper-parameters, and select the combination with highest score on the validation set.
