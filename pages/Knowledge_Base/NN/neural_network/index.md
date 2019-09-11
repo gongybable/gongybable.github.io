@@ -197,7 +197,7 @@ We need to avoid getting trapped in local minima for non-convex error functions.
 * SGD Stochastic Gradient Descent (or mini-batch)<br />
     - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches, then update the weights on the gradients for each batch.
     - Models trained with smaller batches can generalize better.
-    - This also runs faster, saves a lot of computation resource, and scales well with both data and model size.
+    - This also saves a lot of computation resource, and scales well with both data and model size.
     - Usually the size of batches is `64, 128, ..., 512` (make sure it can fit in GPU/CPU memory for each batch)<br />
     - 1 epoch equals to running through the entire data set for one time.
 
@@ -221,8 +221,8 @@ It is an extension of Adagrad that adapts learning rates based on a moving windo
 * RMSProp (RMS stands for Root Mean Squared Error) <br />
 <code>S<sub>dw</sub> = β<sub>2</sub>*S<sub>dw</sub> + (1-β<sub>2</sub>)*dw<sup>2</sup></code><br />
 <code>S<sub>db</sub> = β<sub>2</sub>*S<sub>db</sub> + (1-β<sub>2</sub>)*db<sup>2</sup></code><br />
-<code>W = W - α\*dw/√(S<sub>dw</sub>+ε)</code><br />
-<code>b = b - α\*db/√(S<sub>db</sub>+ε)</code><br />
+<code>W = W - α\*dw/(√S<sub>dw</sub>+ε)</code><br />
+<code>b = b - α\*db/(√S<sub>db</sub>+ε)</code><br />
 Decreases the learning rate by dividing it by an exponentially weighted average of squared gradients, so that we can smooth the fluctuations on the path to the global minimum.<br />
 
 * Adam (Adaptive Moment Estimation) <br />
