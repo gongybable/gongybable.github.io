@@ -53,7 +53,7 @@ al /= keep_prob
 
 6. Usually do not use dropout unless the algorithm is overfitting. It is mainly used in Computer Vision as you usually just don't have enough data (for all these pixels with all the possible values), so you're almost always overfitting.
 
-7. Disvantage of dropout is that the cost function will not be well defined.
+7. Disadvantage of dropout is that the cost function will not be well defined.
 
 ## Normalizing Inputs
 Steps to normalize the input data:

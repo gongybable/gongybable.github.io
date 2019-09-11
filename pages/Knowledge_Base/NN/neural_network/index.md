@@ -171,9 +171,14 @@ To determine the number of training epochs. If we use too few epochs, we might u
 ![alt text](early_stop.png) <br />
 <small>*Stop Training when Testing Error starts increasing*</small>
 
-#### Learning Rate Decay
-If error derivative is steep, taking long steps; <br />
+#### Learning Rate Decay/ Schedules
+1. If error derivative is steep, taking long steps; <br />
 If error derivative is plain, taking small steps.
+
+2. <code>α = α<sub>0</sub> / (1 + decay_rate*num_epoch)</code> <br />
+<code>α = α<sub>0</sub> * decay_rate^num_epoch</code> <br />
+<code>α = α<sub>0</sub> * k / √num_epoch</code> <br />
+use a discrete staircase <br />
 
 #### Neural Network Training Challenges
 * Learning Rate <br />
@@ -186,31 +191,43 @@ Learning rate schedules try to adjust the learning rate during training, i.e. re
 The same learning rate applies to all parameter updates. If our data is sparse and our features have very different frequencies, we need to perform a larger update for rarely occurring features. <br />
 
 * Local Minimum <br />
-We need to avoid getting trapped in local minima for non-convex error functions. Especially for saddle points, i.e. points where one dimension slopes up and another slopes down. These saddle points are usually surrounded by a plateau of the same error, which makes it notoriously hard for SGD to escape, as the gradient is close to zero in all dimensions. <br />
+We need to avoid getting trapped in local minima for non-convex error functions. In Neural Network, since there are usually high dimensional features, it is more likely to get into saddle points, rather than tranditional bowl like local minima, i.e. points where one dimension slopes up and another slopes down. These saddle points are usually surrounded by plateaus (regions where derivatives are close to 0), which makes the learning very slow and hard to escape the plateaus. <br />
 
 #### Optimizers
 * SGD Stochastic Gradient Descent (or mini-batch)<br />
-    - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches.
+    - Instead of run all the data forward and backward, and update the weights, SGD randomly shuffle the data and divides the training data into small batches, then update the weights on the gradients for each batch.
     - Models trained with smaller batches can generalize better.
-    - This also saves a lot of computation resource, and scales well with both data and model size.  <br />
+    - This also runs faster, saves a lot of computation resource, and scales well with both data and model size.
+    - Usually the size of batches is `64, 128, ..., 512` (make sure it can fit in GPU/CPU memory for each batch)<br />
+    - 1 epoch equals to running through the entire data set for one time.
+
+* Exponentially Weighted Averages<br />
+<code>V<sub>t</sub> = β*V<sub>t-1</sub> + (1-β)*θ<sub>t</sub></code><br />
+<code>V<sub>t</sub> = V<sub>t</sub>/(1-β<sup>t</sup>)</code>: for bias correction as <code>V<sub>0</sub>=0</code>
+    - Yellow line: `β = 0.5`, averaging over 2 days
+    - Red line: `β = 0.9`, averaging over 10 days
+    - Green line: `β = 0.98`, averaging over 50 days<br />
+![alt text](weighted_average.png) <br />
 
 * Momentum <br />
-instead of define the step as the gradient descent of the current point (at local minimum, the step is 0), define the step as a sum of the previous steps `(step(n)+r*step(n-1))`, then times that with the learning rate; this gives us a good chance to go over the hump on local minimum. <br />
-
-* Nesterov accelerated gradient <br />
-when computing the gradient, take `r*step(n-1)` into consideration, the new step is `step_new(n)+r*step(n-1)` <br />
+Instead of define the step as the gradient descent of the current point (at local minimum, the step is 0), define the step as a sum of the previous steps `(β*step(n)+(1-β)*step(n-1))`, then times that with the learning rate; this gives us a good chance to go over the hump on local minimum. Also it smoothes out the fluctuations in the gradients (as shown above in weighted averages) and have the gradients move towards the correct direction more quickly.<br />
 
 * Adagrad <br />
-an optimizer with parameter-specific learning rates, which are adapted relative to how frequently a parameter gets updated during training. The more updates a parameter receives, the smaller the learning rate. For this reason, it is well-suited for dealing with sparse data. The weakness is that the learning rate will shrink to very small during training. <br />
+An optimizer with parameter-specific learning rates, which are adapted relative to how frequently a parameter gets updated during training. The more updates a parameter receives, the smaller the learning rate. For this reason, it is well-suited for dealing with sparse data. The weakness is that the learning rate will shrink to very small during training. <br />
 
 * Adadelta <br />
-it is an extension of Adagrad that adapts learning rates based on a moving window of gradient updates, instead of accumulating all past gradients. This way, Adadelta continues learning even when many updates have been done. <br />
+It is an extension of Adagrad that adapts learning rates based on a moving window of gradient updates, instead of accumulating all past gradients. This way, Adadelta continues learning even when many updates have been done. <br />
 
 * RMSProp (RMS stands for Root Mean Squared Error) <br />
-decreases the learning rate by dividing it by an exponentially decaying average of squared gradients. <br />
+<code>S<sub>dw</sub> = β<sub>2</sub>*S<sub>dw</sub> + (1-β<sub>2</sub>)*dw<sup>2</sup></code><br />
+<code>S<sub>db</sub> = β<sub>2</sub>*S<sub>db</sub> + (1-β<sub>2</sub>)*db<sup>2</sup></code><br />
+<code>W = W - α\*dw/√(S<sub>dw</sub>+ε)</code><br />
+<code>b = b - α\*db/√(S<sub>db</sub>+ε)</code><br />
+Decreases the learning rate by dividing it by an exponentially weighted average of squared gradients, so that we can smooth the fluctuations on the path to the global minimum.<br />
 
 * Adam (Adaptive Moment Estimation) <br />
-uses a more complicated exponential decay that consists of not just considering the average (first moment), but also the variance (second moment) of the previous steps. It can be viewed as a combination of RMSprop and momentum. <br />
+Uses a more complicated exponential decay that consists of not just considering the average (first moment), but also the variance (second moment) of the previous steps. It can be viewed as a combination of RMSprop and momentum. Usually we just tune on learning rate `α`, and use the default values for <code>β<sub>1</sub>=0.9, β<sub>2</sub>=0.999, and ε=10<sup>-8</sup></code>.<br />
+![alt text](adam.png) <br />
 
 * Nadam <br />
 Similar to Adam, it can be viewed as a combination of RMSprop and NAG <br />

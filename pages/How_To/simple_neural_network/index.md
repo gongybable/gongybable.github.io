@@ -104,3 +104,39 @@ parameters = nn_model(X_train, Y_train, 4, num_iterations=10000, print_cost=True
 
 predictions = predict(parameters, X_test)
 ```
+
+```python
+# Gradient Check
+def gradient_check_n(parameters, gradients, X, Y, epsilon = 1e-7):
+    parameters_values, _ = dictionary_to_vector(parameters)
+    grad = gradients_to_vector(gradients)
+    num_parameters = parameters_values.shape[0]
+    J_plus = np.zeros((num_parameters, 1))
+    J_minus = np.zeros((num_parameters, 1))
+    gradapprox = np.zeros((num_parameters, 1))
+    
+    # Compute gradapprox
+    for i in range(num_parameters):
+        thetaplus =  np.copy(parameters_values)
+        thetaplus[i][0] = thetaplus[i][0] + epsilon
+        A, _ = forward_propagation_n(X, vector_to_dictionary(thetaplus))
+        J_plus[i] = compute_cost(A, Y, parameters)
+
+        thetaminus =  np.copy(parameters_values)
+        thetaminus[i][0] = thetaminus[i][0] - epsilon
+        A, _ = forward_propagation_n(X, vector_to_dictionary(thetaminus))
+        J_minus[i] = compute_cost(A, Y, parameters)
+
+        gradapprox[i] = (J_plus[i] - J_minus[i]) / (2 * epsilon)
+
+    numerator = np.linalg.norm(grad-gradapprox)
+    denominator = np.linalg.norm(grad) + np.linalg.norm(gradapprox)
+    difference = numerator/denominator
+    print(grad-gradapprox)
+    if difference > 2e-7:
+        print ("\033[93m" + "There is a mistake in the backward propagation! difference = " + str(difference) + "\033[0m")
+    else:
+        print ("\033[92m" + "Your backward propagation works perfectly fine! difference = " + str(difference) + "\033[0m")
+    
+    return difference
+```
