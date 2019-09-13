@@ -72,3 +72,44 @@ The reason to normalize the input data is that:
 1. If the features are on very different scales, and we do not normalized input features, then the range of values for the parameters w1 and w2 will end up taking on very different values. And the cost function will look like a very squished out bowl. The gradient descent will have to use a very small learning rate and need a lot of steps to find the minimum.
 
 2. If you normalize the features, then your cost function will on average look more symmetric, and looks like spherical contours. The gradient descent can take much larger steps to get to the minimum.
+
+## Batch Normalization
+### Training
+1. We normalize the data before activation function in each neuron **for each mini-batch**.
+
+2. Normalize the values `z` to `z_norm` for the mini-batch, and then update it to `γ * z_norm + β`
+    - To set the mean and variance of z to whatever we want.
+    - `γ` and `β` (shapes are the same as `z`) are learnt during the training.
+    - We add `γ` and `β` because if `z` is 0-mean and standard deviation, then all the values will fall around 0; after sigmoid function, this will act like linear function.
+    - We do not need to train `b` (set them to 0) as we normalize them anyway.
+
+### Testing
+During training, the `μ` and `σ` for normalization is computed on each mini-batch, so during training, we use exponationally weighted average across mini-batches to compute the `μ` and `σ` that is used for testing.
+
+### Why Batch Normalization
+1. To make weights in later layers more robust to changes in weights in earlier layers (covariant shit), as the inputs to later layers will have stable mean and variance.
+
+2. Since the mean/ variance are computed on each mini-batch during training, this introduces some noises and will have some regularization effect.
+
+## Hyperparameters Tuning
+1. Instead of using grid search, we can try sample the hyperparameters randomly.
+
+2. Instead of sampling uniformly random, it makes more sense to sample on a log scale:
+    - for sampling on `0.0001` to `0.1`
+        - `r = np.random.rand() * b + a` range in `(a, a+b)`.
+        - then take the value of `10^r` to get log scale samples.
+    - for sampling on `0.9` to `0.9999`
+        - sample on `0.0001` to `0.1` first
+        - then `1 - sampel_value`
+
+3. While training models in practice, you can either babysitting one model (tune the parameters while the model is running) if computation resources are limited and model is large; or traing models in parallel.
+
+When training error is far away from bayes error (high bias):
+1. Try bigger model
+2. Try better optimization algorithms (Adam)
+3. Try different NN architecture/ hyperparameter search
+
+When test error is far away from training error (high variance):
+1. Try more data
+2. Try regularization
+3. Try different NN architecture/ hyperparameter search

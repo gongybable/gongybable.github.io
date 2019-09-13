@@ -21,12 +21,14 @@ For example, if we have a data set, where 99% of the data is positive, 1% of the
 ### Precision
 ![alt text](eqn_precision.png)
 
+Of all the items classified as Y, what % of them are actually Y.
 * Precision focuses on **False Positive** errors.
 * Higher threshold increases precision score.
 
 ### Recall
 ![alt text](eqn_recall.png)
 
+Of all the items are Y, what % of them are actually classified as Y.
 * Recall focuses on **False Negative** errors.
 * Higher threshold decreases recall score.
 

@@ -146,7 +146,7 @@ Building n models that use all the samples of the rare class and n-differing sam
 Cluster the abundant class in r groups, and for each group, only the medoid (centre of cluster) is kept. The model is then trained with the rare class and the medoids only.
 
 7. **Use penalized models** <br />
-Penalized models impose an additional cost on the model for making classification mistakes on the minority class during training. These penalties can bias the model to pay more attention to the minority class. There are penalized versions of algorithms such as penalized-SVM and penalized-LDA.
+Penalized models impose an additional cost on the model for making classification mistakes on the minority class during training. These penalties can bias the model to pay more attention to the minority class. For example, give a high weight to the errors on the minority class on the loss function. There are penalized versions of algorithms such as penalized-SVM and penalized-LDA.
 
 ## Outliers: To Drop or Not to Drop
 * If it is obvious that the outlier is due to incorrectly entered or measured data, you should drop the outlier.
