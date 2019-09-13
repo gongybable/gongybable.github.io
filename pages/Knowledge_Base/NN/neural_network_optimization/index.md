@@ -104,12 +104,28 @@ During training, the `μ` and `σ` for normalization is computed on each mini-ba
 
 3. While training models in practice, you can either babysitting one model (tune the parameters while the model is running) if computation resources are limited and model is large; or traing models in parallel.
 
+### Bias Variance Analysis
 When training error is far away from bayes error (high bias):
 1. Try bigger model
 2. Try better optimization algorithms (Adam)
 3. Try different NN architecture/ hyperparameter search
 
-When test error is far away from training error (high variance):
+When validation error is far away from training error (high variance):
 1. Try more data
 2. Try regularization
 3. Try different NN architecture/ hyperparameter search
+
+### Error Analysis
+Check whrere are the errors are from and decide which to improve.
+
+For training data with label errors, usually it is okay to ignore them if the training data is large enough and the errors are random; However if the errors are systematic (i.e. consistantly label white dogs as cats), then we need to fix these errors.
+
+### Data Mismatch
+When we do not have enough data for train, validation and test from the same data srouce, and we have a lot of similar data from a different source, what we can do is:
+1. Take all the data from different source, and a small portion from the target source to form the training set; and further split it into **training set** and **training-validation set**.
+
+2. Take the rest of data from the target source to split into **validation set** and **test set**.
+
+3. Now we have 4 sets of data and 5 sets of errors: bayes error, train error, train-validation error, validation error and test error; Base on this, we can clearly define bias, variance, or error is from data mismatch.
+
+4. If there is data mismatch error, we can analysis the difference of the data source, and maybe simulate/manually manipulate/collect the data source to make it similar to the target data source.

@@ -124,7 +124,13 @@ model.fit_generator(
 ```
 
 ## Transfer Learning
-> Transfer learning involves taking a pre-trained neural network and adapting the neural network to a new, different data set.
+Transfer learning involves taking a pre-trained neural network and adapting the neural network to a new, different data set. It works when:
+
+1. Task A and Task B have same input format.
+
+2. You have a lot more data for Task A than Task B.
+
+3. Low level features for A could be helpful for learning B.
 
 ![alt text](transfer_learning.png) <br />
 <small>*Four Cases when Using Transfer Learning*</small>
