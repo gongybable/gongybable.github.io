@@ -23,6 +23,8 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 * [CNN](pages/Knowledge_Base/NN/cnn/index.md)
 
+* [ResNets and Inception Networks](pages/Knowledge_Base/NN/resnet_and_inception_network/index.md)
+
 * [Embedding Layers](pages/Knowledge_Base/NN/embedding_layers/index.md)
 
 * [GANs](pages/Knowledge_Base/NN/gans/index.md)
@@ -41,3 +43,5 @@ This is my personal blog for logging and sharing my learning experience on Machi
 * [Gradient Descent](pages/How_To/gradient_descent/index.md)
 
 * [Simple Neural Network](pages/How_To/simple_neural_network/index.md)
+
+* [Convolutional Neural Network](pages/How_To/convolutional_neural_network/index.md)

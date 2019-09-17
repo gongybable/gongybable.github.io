@@ -9,6 +9,55 @@
 
 * CNN accept matrix as input
 
+## Convolutions
+Usually a little bit higher weight in the central pixels to make it more robust.
+<table>
+    <tr>
+        <th>Vertical Edge Detection</th>
+        <th>Horizontal Edge Detection</th>
+    </tr>
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td align="center">1</td>
+                    <td align="center">0</td>
+                    <td align="center">-1</td>
+                </tr>
+                <tr>
+                    <td align="center">2</td>
+                    <td align="center">0</td>
+                    <td align="center">-2</td>
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td align="center">0</td>
+                    <td align="center">-1</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table align="center">
+                <tr>
+                    <td align="center">1</td>
+                    <td align="center">2</td>
+                    <td align="center">1</td>
+                </tr>
+                <tr>
+                    <td align="center">0</td>
+                    <td align="center">0</td>
+                    <td align="center">0</td>
+                </tr>
+                <tr>
+                    <td align="center">-1</td>
+                    <td align="center">-2</td>
+                    <td align="center">-1</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
 ## Convolutional Layer
 ![alt text](convolutional_layer.png) <br />
 * Filter determines the pattern to detect; filter weights are learnt during training while it tries to minimize the loss function
@@ -24,7 +73,9 @@
 
 * Stride — Amount by which the filter slides over the image, default is 1. Smaller stride will help with block artifact.
 
-* Padding — When set to `Valid` (default), we loose some information of edge nodes when the edge nodes cannot fully cover the filter; When set to `same`, we padding the image with 0s to give the filter more space to move.
+* Padding — Avoid output shrink and information loss on the edge.
+    - When set to `Valid` (default), we loose some information of edge nodes when the edge nodes cannot fully cover the filter. 
+    - When set to `same`, we padding the image with 0s to give the filter more space to move.
 
 * activation — Activation function, usually set to `relu`.
 
@@ -37,24 +88,16 @@ number of parameters = number_of_filters * filter_width * filter_width * prev_la
 * Shape of a Convolutional Layer
 ```
 depth = number_of_filters
-For padding = 'same':
-    height = ceil(float(prev_layer_height) / float(stride))
-    width = ceil(float(prev_layer_width) / float(stride)
-For padding = 'valid':
-    height = ceil(float(prev_layer_height-filter_width+1) / float(stride))
-    width = ceil(float(prev_layer_width-filter_width+1) / float(stride)
+height = ceil(float(prev_layer_height+2*padding-filter_width+1) / float(stride))
 ```
 
-* Pooling Layer
+* Pooling Layer - If some features detected anywhere in this filter, then keep a high number; if this feature is not detected, then the max of all those numbers is still itself quite small.
     - Max Pooling Layer: Take the maximum value in the window
     - Average Pooling Layer: Take average in the window
     - Global Max Pooling Layer: Take the maximum of the entire map in the stack
     - Global Average Pooling Layer: Take the average of the entire map in the stack
 
 ## CNN Architecture
-![alt text](cnn.png) <br />
-<small>*Spatial Information is lost; Gaining Feature Information*</small>
-
 1. Resize the images to the same size before feed into the model; usually resize the images into square with each dimension equal to a power of two.
 
 2. Input layer is followed by a sequence of convolutional layers and pooling layers, to generate feature maps <br />
@@ -67,24 +110,16 @@ For padding = 'valid':
 
 5. Output layer for prediction (for classification, this should be a dense layer with number of nodes the same as number of classes)
 
-## 1X1 Convoluction
-A problem with deep convolutional neural networks is that the number of feature maps often increases with the depth of the network. This problem can result in a dramatic increase in the number of parameters and computation required when larger filter sizes are used, such as 5×5 and 7×7.
+## Advantages of Convolutions
+![alt text](cnn.png) <br />
+<small>*Spatial Information is lost; Gaining Feature Information*</small>
 
-* The 1×1 filter can be used to create a linear projection of a stack of feature maps.
+1. Parameter sharing: A feature detector (one filter) that is useful in one part of the image is probably useful in another part of the image. Less parameters, reduces overfitting.
 
-* The projection created by a 1×1 can act like channel-wise pooling and be used for dimensionality reduction.
-
-* The projection created by a 1×1 can also be used directly or be used to increase the number of feature maps in a model.
-
-## Inception Module
-![alt text](inception.png) <br />
-
-The input data may have huge variation in the location of the information, choosing the right kernel size for the convolution operation becomes tough. A larger kernel is preferred for information that is distributed more globally, and a smaller kernel is preferred for information that is distributed more locally.
-
-So we use inception module to overcome it. It performs convolution on an input, with 3 different sizes of filters (1x1, 3x3, 5x5). Additionally, max pooling is also performed. The outputs are concatenated and sent to the next inception module. To make it cheaper, we can limit the number of input channels by adding an extra 1x1 convolution.
+2. Sparsity of connections: In each layer, each output value depends only on a small number of inputs.
 
 ## Image Augmentation
-> To help make the models more statistically invariant, we can try introducing rotations, translations, etc. into our training images, so that the training set is expanded by augmenting the data. This will improve the model performance.
+To help make the models more statistically invariant, we can try introducing rotations, translations, etc. into our training images, so that the training set is expanded by augmenting the data. This will improve the model performance.
 
 ```python
 from keras.preprocessing.image import ImageDataGenerator
@@ -131,6 +166,8 @@ Transfer learning involves taking a pre-trained neural network and adapting the 
 2. You have a lot more data for Task A than Task B.
 
 3. Low level features for A could be helpful for learning B.
+
+You can also save the intermediate results for the freeze layers on to disk, and then use them to train the later layers to avoid duplicate computing on these layers.
 
 ![alt text](transfer_learning.png) <br />
 <small>*Four Cases when Using Transfer Learning*</small>
