@@ -45,3 +45,5 @@ This is my personal blog for logging and sharing my learning experience on Machi
 * [Simple Neural Network](pages/How_To/simple_neural_network/index.md)
 
 * [Convolutional Neural Network](pages/How_To/convolutional_neural_network/index.md)
+
+* [ResNet](pages/How_To/resnet/index.md)
