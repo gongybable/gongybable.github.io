@@ -25,6 +25,8 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 * [ResNets and Inception Networks](pages/Knowledge_Base/NN/resnet_and_inception_network/index.md)
 
+* [Object Detection](pages/Knowledge_Base/NN/object_detection/index.md)
+
 * [Embedding Layers](pages/Knowledge_Base/NN/embedding_layers/index.md)
 
 * [GANs](pages/Knowledge_Base/NN/gans/index.md)
