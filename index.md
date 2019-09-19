@@ -27,6 +27,10 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 * [Object Detection](pages/Knowledge_Base/NN/object_detection/index.md)
 
+* [Face Recognition](pages/Knowledge_Base/NN/face_recognition/index.md)
+
+* [Neural Style Transfer](pages/Knowledge_Base/NN/neural_style_transfer/index.md)
+
 * [Embedding Layers](pages/Knowledge_Base/NN/embedding_layers/index.md)
 
 * [GANs](pages/Knowledge_Base/NN/gans/index.md)

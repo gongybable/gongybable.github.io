@@ -233,6 +233,8 @@ If using the pre-trained network as a starting point does not produce a successf
 <small>*Neural Network with Large Data Set, Different Data*</small>
 
 ## Visualize Filters
+![alt text](visualize_filters.png) <br />
+
 The filter weights are useful to visualize because well-trained networks usually display nice and smooth filters without any noisy patterns. Noisy patterns can be an indicator of a network that hasn’t been trained for long enough, or possibly a very low regularization strength that may have led to overfitting.
 
 [This blog](https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html?source=post_page---------------------------) shows how we use gradient ascent to generate images that maximize the activation of a filter.
