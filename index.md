@@ -31,6 +31,8 @@ This is my personal blog for logging and sharing my learning experience on Machi
 
 * [Neural Style Transfer](pages/Knowledge_Base/NN/neural_style_transfer/index.md)
 
+* [Recurrent Neural Networks](pages/Knowledge_Base/NN/rnn/index.md)
+
 * [Embedding Layers](pages/Knowledge_Base/NN/embedding_layers/index.md)
 
 * [GANs](pages/Knowledge_Base/NN/gans/index.md)
