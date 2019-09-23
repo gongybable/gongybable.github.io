@@ -16,6 +16,43 @@ Neural network embeddings overcome the two limitations of one-hot encoding:
 2. The mapping is completely uninformed: “similar” categories are not placed closer to each other in embedding space.
 
 ## Choose DNN
+### Word2Vec
+We can use word embedding together with RNN to do predicitons on sentiment: <br />
+![alt text](sentiment.png) <br />
+<small>*many to one RNN architecture*</small>
+
+Word embedding process:
+1. Randomly pick a word as **content**, and randomly pick another word within a certain range as **tartget**.
+
+2. Now we have one-hot vector of the content <code>O<sub>c</sub></code>, an embedding matrix `E`, and we can get the embedding vector <code>e<sub>c</sub></code>.
+
+3. Feed <code>e<sub>c</sub></code> to the softmax neural network, and get the prediction <code>y&#770;</code>. And by minimizing the loss we can get a prediction of <code>e<sub>c</sub></code>. (Note. we can use hierarchical softmax for faster computation.) <br />
+![alt text](eqn_wv_cost.png) <br />
+
+#### Negative Sampling
+We can use nagetive sampling as well, since the softmax in the above algorithm is too slow.
+
+1. Generate a positive example by randomly picking a word as **content**, and randomly picking another word within a certain range as **tartget**, and label it 1.
+
+2. Generate negative examples by randomly picking target words in the dictionary (~5 negative exmaples for large training set; ~15 negative examples for small training set), and label them 0s, with sampling probability depends partially on the word frequency: <br />
+![alt text](eqn_sample_frequency.png) <br />
+
+3. The output probability is: <br />
+![alt text](eqn_negative_sampling.png) <br />
+
+#### GloVe Algorithm
+1. Let <code>X<sub>ij</sub></code> be the number of times `j` appears in context of `i` within a certain range.
+
+2. Minimize the following algorithm: <br />
+![alt text](eqn_glove.png) <br />
+
+#### Addressing Bias in Word Embeddings
+1. Identify bias direction. e.g. find the vector between `he` `she`, `male` `female` etc. and average them.
+
+2. Neutralize: For every word that is not definitional, project then to the axis perpendicular to the bias to get rid of the bias.
+
+3. Equalize pairs. e.g. for word like `father` `mother`, they should have equal distance to word `babysitter`. We need to move these two words so that they have same distance to the axis perpendicular to the bias.
+
 ### Autoencoder
 A DNN that learns embeddings of input data by predicting the input data itself is called an **autoencoder**. Because an autoencoder’s hidden layers are smaller than the input and output layers, the autoencoder is forced to learn a compressed representation of the input feature data. Once the DNN is trained, you extract the embeddings from the last hidden layer to calculate similarity.
 
@@ -41,6 +78,9 @@ To train the DNN, you need to create a loss function by following these steps:
 
 ### Similarity Measurement
 ![alt text](similarity.png) <br />
+
+For word embedding, to find the word for `king`, which has the same relationship like `man` and `woman`, we just need to find the word which max the similarity `argmax sim(w, king-man+woman)`.
+
 1. Items that appear very frequently in the training set tend to have embeddings with large norms. If capturing popularity information is desirable, then you should prefer dot product. However, if you're not careful, the popular items may end up dominating the recommendations. In practice, you can use other variants of similarity measures that put less emphasis on the norm of the item: <code>s(q,x)=||q||<sup>α</sup>||x||<sup>α</sup>cos(q,x)</code> for some <code>α ∈ (0, 1)</code>.
 
 2. Items that appear very rarely may not be updated frequently during training. Consequently, if they are initialized with a large norm, the system may recommend rare items over more relevant items. To avoid this problem, be careful about embedding initialization, and use appropriate regularization.
@@ -60,6 +100,9 @@ Uses similarities between queries and items simultaneously to provide recommenda
 
 ## Sample Code
 ![alt text](embedding_layers.png) <br />
+
+<details>
+    <summary>Sample Code</summary>
 
 ```python
 hidden_units = (32,4)
@@ -130,9 +173,13 @@ history = model.fit(
     validation_split=.05,
 )
 ```
+</details>
 
 ## Matrix Factorization
 ![alt text](matrix_factorization.png) <br />
+
+<details>
+    <summary>Sample Code</summary>
 
 ```python
 movie_embedding_size = user_embedding_size = 8
@@ -168,8 +215,8 @@ model.compile(
 )
 model.summary(line_length=88)
 ```
-## Cosine Distance
-The embedding layers will give us vector reporesentations of spatial data. We use the **cosine distance** to judge the similarities of two vectors. We can use **Gensim** to explore the embeddings.
+
+</details>
 
 ## Tips
 ### Embedding Size
@@ -189,6 +236,9 @@ By adding L2 regularization, we can fix the obscure recommendation problem.
 In the absence of regularization, even if a movie has only a single rating, the model will try to move its embedding around to match that one rating. However, if the model has a budget for movie weights, it's not very efficient to spend it on improving the accuracy of one rating out of 20,000,000. Popular movies will be worth assigning large weights. Obscure movies should have weights close to 0.
 
 If a movie's embedding vector is all zeros, our model's output will always be zero after dot product. For output value of 0, it corresponds to a predicted rating equal to the overall average in the training set. This seems like a reasonable behaviour to tend toward for movies we have little information about.
+
+<details>
+    <summary>Sample Code</summary>
 
 ```python
 movie_embedding_size = user_embedding_size = 8
@@ -222,3 +272,4 @@ l2_model = keras.Model(
     outputs = out,
 )
 ```
+</details>

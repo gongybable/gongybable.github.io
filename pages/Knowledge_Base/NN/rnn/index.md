@@ -39,6 +39,9 @@ RNN overcomes two main disadvantages of regular neural networks:
 3. Repeat step 2.
 
 ## Vanishing Gradients in RNNs
+### Backward Pass
+![alt text](rnn_backprop.png) <br />
+
 Due to vanishing gradients, in RNN model, the later sequences cannot have much impact on very early sequence. Below are a few techniques for this problem.
 
 *For exploding gradients, we can simply use **gradient clipping**.*
@@ -55,6 +58,8 @@ We use sigmoid function to calculate `Γu` because sigmoid result can easily fal
 ### Long Short Term Memory
 ![alt text](lstm.png) <br />
 
+![alt text](lstm_backprop.png) <br />
+
 We have three gates in LSTM: update gate, forget gate, and output gate.
 
 ## Bidirectional RNN
@@ -66,5 +71,589 @@ One disadvantage is that we need the entire sentence to make the prediction.
 ![alt text](deep_rnn.png) <br />
 
 ## Python Implementation
+Building a RNN - Step by Step 
 ```python
+def rnn_cell_forward(xt, a_prev, parameters):
+    """
+    Arguments:
+    xt -- your input data at timestep "t", numpy array of shape (n_x, m).
+    a_prev -- Hidden state at timestep "t-1", numpy array of shape (n_a, m)
+    parameters -- python dictionary containing:
+                        Wax -- Weight matrix multiplying the input, numpy array of shape (n_a, n_x)
+                        Waa -- Weight matrix multiplying the hidden state, numpy array of shape (n_a, n_a)
+                        Wya -- Weight matrix relating the hidden-state to the output, numpy array of shape (n_y, n_a)
+                        ba --  Bias, numpy array of shape (n_a, 1)
+                        by -- Bias relating the hidden-state to the output, numpy array of shape (n_y, 1)
+    Returns:
+    a_next -- next hidden state, of shape (n_a, m)
+    yt_pred -- prediction at timestep "t", numpy array of shape (n_y, m)
+    cache -- tuple of values needed for the backward pass, contains (a_next, a_prev, xt, parameters)
+    """
+    # Retrieve parameters from "parameters"
+    Wax = parameters["Wax"]
+    Waa = parameters["Waa"]
+    Wya = parameters["Wya"]
+    ba = parameters["ba"]
+    by = parameters["by"]
+
+    a_next = np.tanh(np.dot(Wax, xt) + np.dot(Waa, a_prev) + ba) 
+    yt_pred = softmax(np.dot(Wya, a_next) + by)   
+    cache = (a_next, a_prev, xt, parameters)
+    
+    return a_next, yt_pred, cache
+
+def rnn_forward(x, a0, parameters):
+    """
+    Arguments:
+    x -- Input data for every time-step, of shape (n_x, m, T_x).
+    a0 -- Initial hidden state, of shape (n_a, m)
+
+    Returns:
+    a -- Hidden states for every time-step, numpy array of shape (n_a, m, T_x)
+    y_pred -- Predictions for every time-step, numpy array of shape (n_y, m, T_x)
+    caches -- tuple of values needed for the backward pass, contains (list of caches, x)
+    """
+    caches = []
+    n_x, m, T_x = x.shape
+    n_y, n_a = parameters["Wya"].shape
+
+    a = np.zeros((n_a, m, T_x))
+    y_pred = np.zeros((n_y, m, T_x))
+    a_next = a0
+    
+    for t in range(T_x):
+        a_next, yt_pred, cache = rnn_cell_forward(x[:,:,t], a_next, parameters)
+        a[:,:,t] = a_next
+        y_pred[:,:,t] = yt_pred
+        caches.append(cache)
+
+    caches = (caches, x)
+    
+    return a, y_pred, caches
+
+def rnn_cell_backward(da_next, cache):
+    """
+    Arguments:
+    da_next -- Gradient of loss with respect to next hidden state
+    cache -- python dictionary containing useful values (output of rnn_cell_forward())
+
+    Returns:
+    gradients -- python dictionary containing:
+                        dx -- Gradients of input data, of shape (n_x, m)
+                        da_prev -- Gradients of previous hidden state, of shape (n_a, m)
+                        dWax -- Gradients of input-to-hidden weights, of shape (n_a, n_x)
+                        dWaa -- Gradients of hidden-to-hidden weights, of shape (n_a, n_a)
+                        dba -- Gradients of bias vector, of shape (n_a, 1)
+    """
+    (a_next, a_prev, xt, parameters) = cache
+
+    Wax = parameters["Wax"]
+    Waa = parameters["Waa"]
+    Wya = parameters["Wya"]
+    ba = parameters["ba"]
+    by = parameters["by"]
+
+    dtanh = (1 - a_next ** 2) * da_next
+    dxt = np.dot(Wax.T, dtanh) 
+    dWax = np.dot(dtanh, xt.T)
+    da_prev =  np.dot(Waa.T, dtanh)
+    dWaa = np.dot(dtanh, a_prev.T)
+    dba = np.sum(dtanh, axis = 1,keepdims=1)
+    gradients = {"dxt": dxt, "da_prev": da_prev, "dWax": dWax, "dWaa": dWaa, "dba": dba}
+    
+    return gradients
+
+def rnn_backward(da, caches):
+    """
+    Arguments:
+    da -- Upstream gradients of all hidden states, of shape (n_a, m, T_x)
+    caches -- tuple containing information from the forward pass (rnn_forward)
+    
+    Returns:
+    gradients -- python dictionary containing:
+                        dx -- Gradient w.r.t. the input data, numpy-array of shape (n_x, m, T_x)
+                        da0 -- Gradient w.r.t the initial hidden state, numpy-array of shape (n_a, m)
+                        dWax -- Gradient w.r.t the input's weight matrix, numpy-array of shape (n_a, n_x)
+                        dWaa -- Gradient w.r.t the hidden state's weight matrix, numpy-arrayof shape (n_a, n_a)
+                        dba -- Gradient w.r.t the bias, of shape (n_a, 1)
+    """
+    (caches, x) = caches
+    (a1, a0, x1, parameters) = caches[0]
+
+    n_a, m, T_x = da.shape
+    n_x, m = x1.shape
+
+    dx = np.zeros((n_x, m, T_x))
+    dWax = np.zeros((n_a, n_x))
+    dWaa = np.zeros((n_a, n_a))
+    dba = np.zeros((n_a, 1))
+    da0 = np.zeros((n_a, m))
+    da_prevt = np.zeros((n_a, m))
+    
+    for t in reversed(range(T_x)):
+        gradients = rnn_cell_backward(da[:,:,t] + da_prevt, caches[t])
+        dxt, da_prevt, dWaxt, dWaat, dbat = gradients["dxt"], gradients["da_prev"], gradients["dWax"], gradients["dWaa"], gradients["dba"]
+        dx[:, :, t] = dxt
+        dWax += dWaxt
+        dWaa += dWaat
+        dba += dbat
+
+    da0 = da_prevt
+    gradients = {"dx": dx, "da0": da0, "dWax": dWax, "dWaa": dWaa,"dba": dba}
+    
+    return gradients
+
+def lstm_cell_forward(xt, a_prev, c_prev, parameters):
+    """
+    Arguments:
+    xt -- your input data at timestep "t", numpy array of shape (n_x, m).
+    a_prev -- Hidden state at timestep "t-1", numpy array of shape (n_a, m)
+    c_prev -- Memory state at timestep "t-1", numpy array of shape (n_a, m)
+    parameters -- python dictionary containing:
+                        Wf -- Weight matrix of the forget gate, numpy array of shape (n_a, n_a + n_x)
+                        bf -- Bias of the forget gate, numpy array of shape (n_a, 1)
+                        Wi -- Weight matrix of the update gate, numpy array of shape (n_a, n_a + n_x)
+                        bi -- Bias of the update gate, numpy array of shape (n_a, 1)
+                        Wc -- Weight matrix of the first "tanh", numpy array of shape (n_a, n_a + n_x)
+                        bc --  Bias of the first "tanh", numpy array of shape (n_a, 1)
+                        Wo -- Weight matrix of the output gate, numpy array of shape (n_a, n_a + n_x)
+                        bo --  Bias of the output gate, numpy array of shape (n_a, 1)
+                        Wy -- Weight matrix relating the hidden-state to the output, numpy array of shape (n_y, n_a)
+                        by -- Bias relating the hidden-state to the output, numpy array of shape (n_y, 1)
+                        
+    Returns:
+    a_next -- next hidden state, of shape (n_a, m)
+    c_next -- next memory state, of shape (n_a, m)
+    yt_pred -- prediction at timestep "t", numpy array of shape (n_y, m)
+    cache -- tuple of values needed for the backward pass, contains (a_next, c_next, a_prev, c_prev, xt, parameters)
+    
+    Note: ft/it/ot stand for the forget/update/output gates, cct stands for the candidate value (c tilde),
+          c stands for the memory value
+    """
+    Wf = parameters["Wf"]
+    bf = parameters["bf"]
+    Wi = parameters["Wi"]
+    bi = parameters["bi"]
+    Wc = parameters["Wc"]
+    bc = parameters["bc"]
+    Wo = parameters["Wo"]
+    bo = parameters["bo"]
+    Wy = parameters["Wy"]
+    by = parameters["by"]
+
+    n_x, m = xt.shape
+    n_y, n_a = Wy.shape
+
+    concat = np.zeros((n_a + n_x, m))
+    concat[: n_a, :] = a_prev
+    concat[n_a :, :] = xt
+
+    ft = sigmoid(np.dot(Wf, concat) + bf)
+    it = sigmoid(np.dot(Wi, concat) + bi)
+    cct = np.tanh(np.dot(Wc, concat) + bc)
+    c_next = ft * c_prev + it * cct
+    ot = sigmoid(np.dot(Wo, concat) + bo)
+    a_next = ot * np.tanh(c_next)
+    yt_pred = softmax(np.dot(Wy, a_next) + by)
+
+    cache = (a_next, c_next, a_prev, c_prev, ft, it, cct, ot, xt, parameters)
+
+    return a_next, c_next, yt_pred, cache
+
+def lstm_forward(x, a0, parameters):
+    """
+    Arguments:
+    x -- Input data for every time-step, of shape (n_x, m, T_x).
+    a0 -- Initial hidden state, of shape (n_a, m)
+    parameters -- python dictionary containing:
+                        Wf -- Weight matrix of the forget gate, numpy array of shape (n_a, n_a + n_x)
+                        bf -- Bias of the forget gate, numpy array of shape (n_a, 1)
+                        Wi -- Weight matrix of the update gate, numpy array of shape (n_a, n_a + n_x)
+                        bi -- Bias of the update gate, numpy array of shape (n_a, 1)
+                        Wc -- Weight matrix of the first "tanh", numpy array of shape (n_a, n_a + n_x)
+                        bc -- Bias of the first "tanh", numpy array of shape (n_a, 1)
+                        Wo -- Weight matrix of the output gate, numpy array of shape (n_a, n_a + n_x)
+                        bo -- Bias of the output gate, numpy array of shape (n_a, 1)
+                        Wy -- Weight matrix relating the hidden-state to the output, numpy array of shape (n_y, n_a)
+                        by -- Bias relating the hidden-state to the output, numpy array of shape (n_y, 1)
+                        
+    Returns:
+    a -- Hidden states for every time-step, numpy array of shape (n_a, m, T_x)
+    y -- Predictions for every time-step, numpy array of shape (n_y, m, T_x)
+    caches -- tuple of values needed for the backward pass, contains (list of all the caches, x)
+    """
+    caches = []
+
+    n_x, m, T_x = x.shape
+    n_y, n_a = parameters['Wy'].shape
+    
+    a = np.zeros((n_a, m, T_x))
+    c = np.zeros((n_a, m, T_x))
+    y = np.zeros((n_y, m, T_x))
+    a_next = a0
+    c_next = np.zeros(a_next.shape)
+    
+    for t in range(T_x):
+        a_next, c_next, yt, cache = lstm_cell_forward(x[:,:,t], a_next, c_next, parameters)
+        a[:,:,t] = a_next
+        y[:,:,t] = yt
+        c[:,:,t]  = c_next
+        caches.append(cache)
+
+    caches = (caches, x)
+
+    return a, y, c, caches
+
+def lstm_cell_backward(da_next, dc_next, cache):
+    """
+    Implement the backward pass for the LSTM-cell (single time-step).
+
+    Arguments:
+    da_next -- Gradients of next hidden state, of shape (n_a, m)
+    dc_next -- Gradients of next cell state, of shape (n_a, m)
+    cache -- cache storing information from the forward pass
+
+    Returns:
+    gradients -- python dictionary containing:
+                        dxt -- Gradient of input data at time-step t, of shape (n_x, m)
+                        da_prev -- Gradient w.r.t. the previous hidden state, numpy array of shape (n_a, m)
+                        dc_prev -- Gradient w.r.t. the previous memory state, of shape (n_a, m, T_x)
+                        dWf -- Gradient w.r.t. the weight matrix of the forget gate, numpy array of shape (n_a, n_a + n_x)
+                        dWi -- Gradient w.r.t. the weight matrix of the update gate, numpy array of shape (n_a, n_a + n_x)
+                        dWc -- Gradient w.r.t. the weight matrix of the memory gate, numpy array of shape (n_a, n_a + n_x)
+                        dWo -- Gradient w.r.t. the weight matrix of the output gate, numpy array of shape (n_a, n_a + n_x)
+                        dbf -- Gradient w.r.t. biases of the forget gate, of shape (n_a, 1)
+                        dbi -- Gradient w.r.t. biases of the update gate, of shape (n_a, 1)
+                        dbc -- Gradient w.r.t. biases of the memory gate, of shape (n_a, 1)
+                        dbo -- Gradient w.r.t. biases of the output gate, of shape (n_a, 1)
+    """
+    (a_next, c_next, a_prev, c_prev, ft, it, cct, ot, xt, parameters) = cache
+
+    n_x, m = xt.shape
+    n_a, m = a_next.shape
+
+    dot = da_next * np.tanh(c_next) * ot * (1 - ot)
+    dcct = (da_next * ot * (1 - np.tanh(c_next) ** 2) + dc_next) * it * (1 - cct ** 2)
+    dit = (da_next * ot * (1 - np.tanh(c_next) ** 2) + dc_next) * cct * (1 - it) * it
+    dft = (da_next * ot * (1 - np.tanh(c_next) ** 2) + dc_next) * c_prev * ft * (1 - ft)
+
+    dWf = np.dot(dft, np.hstack([a_prev.T, xt.T]))
+    dWi = np.dot(dit, np.hstack([a_prev.T, xt.T]))
+    dWc = np.dot(dcct, np.hstack([a_prev.T, xt.T]))
+    dWo = np.dot(dot, np.hstack([a_prev.T, xt.T]))
+    dbf = np.sum(dft, axis=1, keepdims=True)
+    dbi = np.sum(dit, axis=1, keepdims=True)
+    dbc = np.sum(dcct, axis=1, keepdims=True)
+    dbo = np.sum(dot, axis=1, keepdims=True)
+
+    da_prev = np.dot(Wf[:, :n_a].T, dft) + np.dot(Wc[:, :n_a].T, dcct) + np.dot(Wi[:, :n_a].T, dit) + np.dot(Wo[:, :n_a].T, dot)
+    dc_prev = (da_next * ot * (1 - np.tanh(c_next) ** 2) + dc_next) * ft
+    dxt = np.dot(Wf[:, n_a:].T, dft) + np.dot(Wc[:, n_a:].T, dcct) + np.dot(Wi[:, n_a:].T, dit) + np.dot(Wo[:, n_a:].T, dot)
+
+    gradients = {"dxt": dxt, "da_prev": da_prev, "dc_prev": dc_prev, "dWf": dWf,"dbf": dbf, "dWi": dWi,"dbi": dbi,
+                "dWc": dWc,"dbc": dbc, "dWo": dWo,"dbo": dbo}
+
+    return gradients
+
+def lstm_backward(da, caches):
+    
+    """
+    Implement the backward pass for the RNN with LSTM-cell (over a whole sequence).
+
+    Arguments:
+    da -- Gradients w.r.t the hidden states, numpy-array of shape (n_a, m, T_x)
+    caches -- cache storing information from the forward pass (lstm_forward)
+
+    Returns:
+    gradients -- python dictionary containing:
+                        dx -- Gradient of inputs, of shape (n_x, m, T_x)
+                        da0 -- Gradient w.r.t. the previous hidden state, numpy array of shape (n_a, m)
+                        dWf -- Gradient w.r.t. the weight matrix of the forget gate, numpy array of shape (n_a, n_a + n_x)
+                        dWi -- Gradient w.r.t. the weight matrix of the update gate, numpy array of shape (n_a, n_a + n_x)
+                        dWc -- Gradient w.r.t. the weight matrix of the memory gate, numpy array of shape (n_a, n_a + n_x)
+                        dWo -- Gradient w.r.t. the weight matrix of the save gate, numpy array of shape (n_a, n_a + n_x)
+                        dbf -- Gradient w.r.t. biases of the forget gate, of shape (n_a, 1)
+                        dbi -- Gradient w.r.t. biases of the update gate, of shape (n_a, 1)
+                        dbc -- Gradient w.r.t. biases of the memory gate, of shape (n_a, 1)
+                        dbo -- Gradient w.r.t. biases of the save gate, of shape (n_a, 1)
+    """
+    (caches, x) = caches
+    (a1, c1, a0, c0, f1, i1, cc1, o1, x1, parameters) = caches[0]
+
+    n_a, m, T_x = da.shape
+    n_x, m = x1.shape
+
+    dx = np.zeros((n_x, m, T_x))
+    da0 = np.zeros((n_a, m))
+    da_prevt = np.zeros((n_a, m))
+    dc_prevt = np.zeros((n_a, m))
+    dWf = np.zeros((n_a, n_a + n_x))
+    dWi = np.zeros((n_a, n_a + n_x))
+    dWc = np.zeros((n_a, n_a + n_x))
+    dWo = np.zeros((n_a, n_a + n_x))
+    dbf = np.zeros((n_a, 1))
+    dbi = np.zeros((n_a, 1))
+    dbc = np.zeros((n_a, 1))
+    dbo = np.zeros((n_a, 1))
+    
+    for t in reversed(range(T_x)):
+        gradients = lstm_cell_backward(da[:,:,t] + da_prevt, dc_prevt, caches[t])
+        dx[:,:,t] = gradients["dxt"]
+        dWf += gradients["dWf"]
+        dWi += gradients["dWi"]
+        dWc += gradients["dWc"]
+        dWo += gradients["dWo"]
+        dbf += gradients["dbf"]
+        dbi += gradients["dbi"]
+        dbc += gradients["dbc"]
+        dbo += gradients["dbo"]
+    da0 = gradients["da_prev"]
+
+    gradients = {"dx": dx, "da0": da0, "dWf": dWf,"dbf": dbf, "dWi": dWi,"dbi": dbi,
+                "dWc": dWc,"dbc": dbc, "dWo": dWo,"dbo": dbo}
+    
+    return gradients
+```
+
+Language Model
+```python
+def clip(gradients, maxValue):
+    '''
+    Clips the gradients' values between minimum and maximum.
+    
+    Arguments:
+    gradients -- a dictionary containing the gradients "dWaa", "dWax", "dWya", "db", "dby"
+    maxValue -- everything above this number is set to this number, and everything less than -maxValue is set to -maxValue
+    
+    Returns: 
+    gradients -- a dictionary with the clipped gradients.
+    '''
+    
+    dWaa, dWax, dWya, db, dby = gradients['dWaa'], gradients['dWax'], gradients['dWya'], gradients['db'], gradients['dby']
+    for gradient in [dWax, dWaa, dWya, db, dby]:
+        np.clip(gradient, -maxValue, maxValue, out=gradient)
+    
+    gradients = {"dWaa": dWaa, "dWax": dWax, "dWya": dWya, "db": db, "dby": dby}
+    
+    return gradients
+
+def sample(parameters, char_to_ix, seed):
+    """
+    Sample a sequence of characters according to a sequence of probability distributions output of the RNN
+
+    Arguments:
+    parameters -- python dictionary containing the parameters Waa, Wax, Wya, by, and b. 
+    char_to_ix -- python dictionary mapping each character to an index.
+    seed -- used for grading purposes. Do not worry about it.
+
+    Returns:
+    indices -- a list of length n containing the indices of the sampled characters.
+    """
+    Waa, Wax, Wya, by, b = parameters['Waa'], parameters['Wax'], parameters['Wya'], parameters['by'], parameters['b']
+    vocab_size = by.shape[0]
+    n_a = Waa.shape[1]
+
+    x = np.zeros((vocab_size, 1))
+    a_prev = np.zeros((n_a, 1))
+    indices = []
+    idx = -1 
+    counter = 0
+    newline_character = char_to_ix['\n']
+    
+    while (idx != newline_character and counter != 50):
+        a = np.tanh(np.dot(Wax, x) + np.dot(Waa, a_prev) + b)
+        z = np.dot(Wya, a) + by
+        y = softmax(z)
+
+        np.random.seed(counter+seed) 
+        
+        idx = np.random.choice(list(range(vocab_size)), p=y.ravel())
+        indices.append(idx)
+        x = np.zeros((vocab_size, 1))
+        x[idx] = 1
+        a_prev = a
+        seed += 1
+        counter +=1
+
+    if (counter == 50):
+        indices.append(char_to_ix['\n'])
+    
+    return indices
+
+def optimize(X, Y, a_prev, parameters, learning_rate = 0.01):
+    """
+    Execute one step of the optimization to train the model.
+    
+    Arguments:
+    X -- list of integers, where each integer is a number that maps to a character in the vocabulary.
+    Y -- list of integers, exactly the same as X but shifted one index to the left.
+    a_prev -- previous hidden state.
+    parameters -- python dictionary containing:
+                        Wax -- Weight matrix multiplying the input, numpy array of shape (n_a, n_x)
+                        Waa -- Weight matrix multiplying the hidden state, numpy array of shape (n_a, n_a)
+                        Wya -- Weight matrix relating the hidden-state to the output, numpy array of shape (n_y, n_a)
+                        b --  Bias, numpy array of shape (n_a, 1)
+                        by -- Bias relating the hidden-state to the output, numpy array of shape (n_y, 1)
+    learning_rate -- learning rate for the model.
+    
+    Returns:
+    loss -- value of the loss function (cross-entropy)
+    gradients -- python dictionary containing:
+                        dWax -- Gradients of input-to-hidden weights, of shape (n_a, n_x)
+                        dWaa -- Gradients of hidden-to-hidden weights, of shape (n_a, n_a)
+                        dWya -- Gradients of hidden-to-output weights, of shape (n_y, n_a)
+                        db -- Gradients of bias vector, of shape (n_a, 1)
+                        dby -- Gradients of output bias vector, of shape (n_y, 1)
+    a[len(X)-1] -- the last hidden state, of shape (n_a, 1)
+    """
+    loss, cache = rnn_forward(X, Y, a_prev, parameters)
+    gradients, a = rnn_backward(X, Y, parameters, cache)
+    gradients = clip(gradients, 5)
+    parameters = update_parameters(parameters, gradients, learning_rate)
+    
+    return loss, gradients, a[len(X)-1]
+
+def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_names = 7, vocab_size = 27):
+    """
+    Trains the model and generates dinosaur names. 
+    
+    Arguments:
+    data -- text corpus
+    ix_to_char -- dictionary that maps the index to a character
+    char_to_ix -- dictionary that maps a character to an index
+    num_iterations -- number of iterations to train the model for
+    n_a -- number of units of the RNN cell
+    dino_names -- number of dinosaur names you want to sample at each iteration. 
+    vocab_size -- number of unique characters found in the text, size of the vocabulary
+    
+    Returns:
+    parameters -- learned parameters
+    """
+    n_x, n_y = vocab_size, vocab_size
+    parameters = initialize_parameters(n_a, n_x, n_y)
+    loss = get_initial_loss(vocab_size, dino_names)
+    with open("dinos.txt") as f:
+        examples = f.readlines()
+    examples = [x.lower().strip() for x in examples]
+
+    np.random.seed(0)
+    np.random.shuffle(examples)
+    a_prev = np.zeros((n_a, 1))
+    for j in range(num_iterations):
+        index = j % len(examples)
+        X = [None] + [char_to_ix[ch] for ch in examples[index]] 
+        Y = X[1:] + [char_to_ix["\n"]]
+        curr_loss, gradients, a_prev = optimize(X, Y, a_prev, parameters)
+        loss = smooth(loss, curr_loss)
+
+        if j % 2000 == 0:
+            print('Iteration: %d, Loss: %f' % (j, loss) + '\n')
+            seed = 0
+            for name in range(dino_names):
+                sampled_indices = sample(parameters, char_to_ix, seed)
+                print_sample(sampled_indices, ix_to_char)
+                seed += 1  # To get the same result for grading purposed, increment the seed by one. 
+            print('\n')
+    return parameters
+```
+
+Jazz Generation
+```python
+reshapor = Reshape((1, 78))
+LSTM_cell = LSTM(n_a, return_state = True)
+densor = Dense(n_values, activation='softmax') 
+
+def djmodel(Tx, n_a, n_values):
+    """    
+    Arguments:
+    Tx -- length of the sequence in a corpus
+    n_a -- the number of activations used in our model
+    n_values -- number of unique values in the music data 
+    
+    Returns:
+    model -- a keras model with the 
+    """
+    X = Input(shape=(Tx, n_values))
+    a0 = Input(shape=(n_a,), name='a0')
+    c0 = Input(shape=(n_a,), name='c0')
+    a = a0
+    c = c0
+    outputs = []
+    
+    for t in range(Tx):
+        x = Lambda(lambda x: X[:,t,:])(X)
+        x = reshapor(x)
+        a, _, c = LSTM_cell(x, initial_state=[a, c])
+        out = densor(a)
+        outputs.append(out)
+        
+    model = Model(inputs=[X, a0, c0], outputs=outputs)
+    
+    return model
+
+model = djmodel(Tx = 30 , n_a = 64, n_values = 78)
+opt = Adam(lr=0.01, beta_1=0.9, beta_2=0.999, decay=0.01)
+model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+m = 60
+a0 = np.zeros((m, n_a))
+c0 = np.zeros((m, n_a))
+model.fit([X, a0, c0], list(Y), epochs=100)
+
+
+def music_inference_model(LSTM_cell, densor, n_values = 78, n_a = 64, Ty = 100):
+    """
+    Uses the trained "LSTM_cell" and "densor" from model() to generate a sequence of values.
+    
+    Arguments:
+    LSTM_cell -- the trained "LSTM_cell" from model(), Keras layer object
+    densor -- the trained "densor" from model(), Keras layer object
+    n_values -- integer, umber of unique values
+    n_a -- number of units in the LSTM_cell
+    Ty -- integer, number of time steps to generate
+    
+    Returns:
+    inference_model -- Keras model instance
+    """
+    x0 = Input(shape=(1, n_values))
+    a0 = Input(shape=(n_a,), name='a0')
+    c0 = Input(shape=(n_a,), name='c0')
+    a = a0
+    c = c0
+    x = x0
+    outputs = []
+    
+    for t in range(Ty):
+        a, _, c = LSTM_cell(x, initial_state=[a, c])
+        out = densor(a)
+        outputs.append(out)
+        x = Lambda(one_hot)(out)
+        
+    inference_model = Model(inputs=[x0, a0, c0], outputs=outputs)
+    return inference_model
+
+inference_model = music_inference_model(LSTM_cell, densor, n_values = 78, n_a = 64, Ty = 50)
+x_initializer = np.zeros((1, 1, 78))
+a_initializer = np.zeros((1, n_a))
+c_initializer = np.zeros((1, n_a))
+
+def predict_and_sample(inference_model, x_initializer = x_initializer, a_initializer = a_initializer, 
+                       c_initializer = c_initializer):
+    """
+    Predicts the next value of values using the inference model.
+    
+    Arguments:
+    inference_model -- Keras model instance for inference time
+    x_initializer -- numpy array of shape (1, 1, 78), one-hot vector initializing the values generation
+    a_initializer -- numpy array of shape (1, n_a), initializing the hidden state of the LSTM_cell
+    c_initializer -- numpy array of shape (1, n_a), initializing the cell state of the LSTM_cel
+    
+    Returns:
+    results -- numpy-array of shape (Ty, 78), matrix of one-hot vectors representing the values generated
+    indices -- numpy-array of shape (Ty, 1), matrix of indices representing the values generated
+    """
+    pred = inference_model.predict([x_initializer, a_initializer, c_initializer])
+    indices = np.argmax(pred, axis=-1)
+    results = to_categorical(indices, num_classes=78)
+    
+    return results, indices
 ```
