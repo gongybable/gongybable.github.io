@@ -51,7 +51,7 @@ We can use nagetive sampling as well, since the softmax in the above algorithm i
 
 2. Neutralize: For every word that is not definitional, project then to the axis perpendicular to the bias to get rid of the bias.
 
-3. Equalize pairs. e.g. for word like `father` `mother`, they should have equal distance to word `babysitter`. We need to move these two words so that they have same distance to the axis perpendicular to the bias.
+3. Equalize pairs. e.g. for word like `father` and `mother`, they should only differ in bias, and have equal distance to the axis perpendicular to the bias.
 
 ### Autoencoder
 A DNN that learns embeddings of input data by predicting the input data itself is called an **autoencoder**. Because an autoencoder’s hidden layers are smaller than the input and output layers, the autoencoder is forced to learn a compressed representation of the input feature data. Once the DNN is trained, you extract the embeddings from the last hidden layer to calculate similarity.
