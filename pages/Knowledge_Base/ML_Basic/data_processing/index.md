@@ -1,4 +1,5 @@
 # Data Processing Techniques
+We should preprocess the data inside the model so that when we export the model it includes the preprocessing. This way we can pass the raw data directly to the model.
 
 ## Numerical Data
 ### Skewed Data
@@ -16,7 +17,8 @@ For tree based models, we may not need data normalization; <br />
 For linear models, we need to normalize the data, so that the feature values fall in range  like _(0, 1)_.
 
 #### Advantages
-1. Helps gradient descent converge more quickly when the values fall into similar range.
+1. Helps gradient descent converge more quickly when the values fall into similar range. <br/>
+![alt text](feature_scaleing.png)
 
 2. Helps avoid the "NaN trap," in which one number in the model becomes a NaN when a value exceeds the floating-point precision limit during training.
 
@@ -32,6 +34,7 @@ We don't have to give every feature exactly the same scale. Nothing terrible wil
 Scaling to a range is a good choice when both of the following conditions are met:
     - You know the approximate upper and lower bounds on your data with few or no outliers.
     - Your data is approximately uniformly distributed across that range.
+    - `x = (x - mean)/(max- min)`
 
 2. clipping <br/>
 If your data set contains extreme outliers, you might try feature clipping, which caps all feature values above (or below) a certain value to fixed value. For example, you could clip all temperature values above 40 to be exactly 40.

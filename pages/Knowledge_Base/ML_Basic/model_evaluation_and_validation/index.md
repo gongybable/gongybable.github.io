@@ -111,3 +111,14 @@ R2 Score measures the percentage of data variation not described by the model:
 
 ### Grid Search
 Training the model on different combinations of hyper-parameters, and select the combination with highest score on the validation set.
+
+### Debugging Gradient Descent
+We can plot the loss function over iterations to troubleshoot how our gradient descent is working. If the loss is increasing over iterations, then we should try a smaller learning rate.
+
+We can declear that the loss function is converged if it decreases by less than E in one iteration, where E is some small value such as 10−3.
+
+![alt text](learning_rate.png) <br />
+
+- A: Good learning rate
+- B: Learning rate too small, slow convergence
+- C: Learning rate too large, loss is diverging

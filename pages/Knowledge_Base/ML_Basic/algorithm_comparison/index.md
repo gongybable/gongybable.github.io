@@ -9,10 +9,10 @@
 Supervised learning trains on labelled data.
 
 1. **Classification** <br />
-For predicting a category. When there are only two labels, this is called binomial classification. When there are more than two categories, the problems are called multi-class classification. 
+For predicting a category. When there are only two labels, this is called binomial classification. When there are more than two categories, the problems are called multi-class classification. Usually we use crossentropy as the loss function.
 
 2. **Regression** <br />
-For predicting values.
+For predicting values. Usually we use MSE as the loss function.
 
 3. **Forecasting** <br />
 For making predictions about the future based on the past and present data. It is most commonly used to analyse trends.
