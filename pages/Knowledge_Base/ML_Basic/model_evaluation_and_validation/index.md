@@ -16,7 +16,7 @@ False Negative (Type 2 Error): 1 blue point <br />
 
 Accuracy is not always perfect for model evaluation, especially for **imbalanced data sets**.
 
-For example, if we have a data set, where 99% of the data is positive, 1% of the data is negative. We can simply have a model which always predict positive, then the model accuracy is 99%, while we are not catching any of the negative data.
+For example, if we have a data set, where 99% of the data is positive, 1% of the data is negative (skewed data). We can simply have a model which always predict positive, then the model accuracy is 99%, while we are not catching any of the negative data.
 
 ### Precision
 ![alt text](eqn_precision.png)
@@ -73,8 +73,8 @@ R2 Score measures the percentage of data variation not described by the model:
 **Over Fitting:** Model is too complicated, and memorise the training data; has high test error.
 
 **Training Set:** Used to train the model. <br />
-**Validation Set:** Used to estimate the model, and tune the model hyper-parameters. <br />
-**Test Set:** Used for final testing. <br />
+**Validation Set:** Used for model selection, tune the hyper-parameters. <br />
+**Test Set:** Test the model on un-seen data. <br />
 * If we do not have validation set, and simply use the test results to decide on the parameters of the model, then after many iterations of this procedure, we are overfitting to the test set of data.
 
 * Usually the data split is `60-20-20`; in the big data era, we may now only need 1% or even less for validation and test dataset, when the entire data set is very large.
@@ -92,20 +92,23 @@ R2 Score measures the percentage of data variation not described by the model:
 
 ### Learning Curve
 ![alt text](learning_curve.png) <br />
-<small>*For a good model, the validation error and training error converges with larger data set, and error is low.*</small>
+<small>*For a good model, the validation error and training error (may use accuracy for classification problems) converges with larger data set, and error is low.*</small>
 
 * The training error and validation error tends to converge with more data; but more data is not always helpful if both errors are already converged to the optimal scores. <br />
 * From learning curve, if the model is under fitting, then we can try increase the model complexity by adding more features, or decrease the regularisation parameter. <br />
 * If the model is over fitting, we can try simplify the model by setting a smaller set of features, or increase the regularisation parameter.
 
 ### Basic Recipt for ML
+![alt text](bias_variance.png) <br />
+
 1. If there is high bias:
-    - Try bigger network
+    - Try bigger network (more features)
     - Try train longer
     - Try different network architecture
 
 2. If there is high variance:
     - Try more data
+    - Try smaller network (less features)
     - Try regularization
     - Try different network architecture
 

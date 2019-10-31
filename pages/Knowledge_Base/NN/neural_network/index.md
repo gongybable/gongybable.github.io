@@ -96,17 +96,20 @@ Then we can set a **learning rate alpha**, and update weights and bias. <br />
 _Note: `Gradient Descent` may lead to local minimum._
 
 ### Back Propagation
-1. Doing a feedforward operation.
+![alt text](backpropagation_logic.png) <br />
 
-2. Comparing the output of the model with the desired output.
+1. For each example in the batch
+    1. Doing a feedforward operation.
 
-3. Calculating the error.
+    2. Comparing the output of the model with the desired output.
 
-4. Running the feedforward operation backwards (backpropagation) to spread the error to each of the weights.
+    3. Calculating the error.
 
-5. Use this to update the weights, and get a better model.
+    4. Running the feedforward operation backwards (backpropagation) to spread the error to each of the weights.
 
-6. Continue this until we have a model that is good.
+2. Use this to update the weights, and get a better model.
+
+3. Continue this until we have a model that is good.
 
 ### Back Propagation The Math
 ![alt text](backpropagation.png) <br />
@@ -149,14 +152,34 @@ class NeuralNetwork:
         self.b2 -= d_b2   
 ```
 
+### Gradient Check
+![alt text](gradient_check.png) <br />
+
+The gradient check process is computationally expensive, so we only use it when we need to do verifications on gradient computation.
+
 ### Weight Initialization
 In logistic regression, it was okay to initialize the weights to zero.
 
-But for a neural network, if we initialize the weights to all 0s and then apply gradient descent, it won't work. By initializing the weights to 0s, the hidden units will start off by computing exactly the same function. And then, when you compute backpropagation, it turns out that all the updates will be symmetric. So no matter how long you train your neural network, the hidden units are still computing exactly the same function. And so in this case, there's really no point to having more than one hidden unit. Because they are all computing the same thing.
+But for a neural network, if we initialize the weights to all 0s (or to the same values) and then apply gradient descent, it won't work. By initializing the weights to 0s, the hidden units in each layer will start off by computing exactly the same function. And then, when you compute backpropagation, it turns out that all the updates will be symmetric. So no matter how long you train your neural network, the hidden units are still computing exactly the same function. And so in this case, there's really no point to having more than one hidden unit. Because they are all computing the same thing.
 
 So we usually initialize with small random values around gaussian distribution to avoid vanishing/exploding gradients:
-* For tanh activation functions: <code>w<sup>l</sup> = np.random.randn((a,b)) * 1/√n<sup>l-1</sup></code>
-* For relu activation functions <code>w<sup>l</sup> = np.random.randn((a,b)) * 2/√n<sup>l-1</sup></code>
+* For tanh activation functions: <code>w<sup>l</sup> = np.random.randn((n<sup>l</sup>, n<sup>l-1</sup>)) * 1/√n<sup>l-1</sup></code>
+* For relu activation functions <code>w<sup>l</sup> = np.random.randn((n<sup>l</sup>, n<sup>l-1</sup>)) * 2/√n<sup>l-1</sup></code>
+
+### Put it together
+1. First, pick a network architecture; choose the layout of your neural network, including how many hidden units in each layer and how many layers in total you want to have.
+    - Number of input units = dimension of features x<sup>(i)</sup>
+    - Number of output units = number of classes
+    - Number of hidden units per layer = usually more the better (must balance with cost of computation as it increases with more hidden units)
+    - Defaults: 1 hidden layer. If you have more than 1 hidden layer, then it is recommended that you have the same number of units in every hidden layer.
+
+2. Training a Neural Network
+    - Randomly initialize the weights
+    - Implement forward propagation to get hΘ(x<sup>(i)</sup>) for any x<sup>(i)</sup>
+    - Implement the cost function
+    - Implement backpropagation to compute partial derivatives
+    - Use gradient checking to confirm that your backpropagation works. Then disable gradient checking.
+    - Use gradient descent or a built-in optimization function to minimize the cost function with the weights in theta.
 
 ### Neural Network Techniques
 ![alt text](binary_nn.png) <br />
