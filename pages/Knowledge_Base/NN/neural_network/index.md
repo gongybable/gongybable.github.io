@@ -222,6 +222,7 @@ We need to avoid getting trapped in local minima for non-convex error functions.
     - Models trained with smaller batches can generalize better.
     - This also saves a lot of computation resource, and scales well with both data and model size.
     - Usually the size of batches is `64, 128, ..., 512` (make sure it can fit in GPU/CPU memory for each batch)<br />
+    - Use a small batch instead of 1 sample a time, so that we can use vectorization to parallelize the computation a bit to make it more efficient (also the learning curve may be smoother).
     - 1 epoch equals to running through the entire data set for one time.
 
 * Exponentially Weighted Averages<br />
