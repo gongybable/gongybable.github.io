@@ -8,7 +8,7 @@ We should preprocess the data inside the model so that when we export the model 
 Outliers affect the distribution. If a value is significantly below the expected range, it will drag the distribution to the left, making the graph left-skewed or negative. Alternatively, if a value is significantly above the expected range, it will drag the distribution to the right, making the graph right-skewed or positive.
 
 There are different ways to handle skewed data:
-* Log Function, then Normalization
+* Log Function (`log(x+1)`), then Normalization
 * Hyperbolic Tangent
 * Percentile Linearization
 

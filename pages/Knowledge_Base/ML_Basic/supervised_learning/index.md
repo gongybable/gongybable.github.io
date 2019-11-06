@@ -122,3 +122,35 @@ Split data into smaller subsets, and get the models for each subset; then to get
 
 ### Model Weights
 ![alt text](eqn_model_weights.png) <br />
+
+## Anomaly Detection
+![alt text](anomaly_detection.png) <br />
+
+Usually there is not much anomaly data, we can split the data as in the following example:
+
+1. Data Set
+    - 10000 normal data
+    - 20 anomaly data
+
+2. Training Set - 6000 normal data (training for mean and std)
+
+3. CV Set - 2000 normal data; 10 anomaly data (pick the proper epsilon)
+
+4. Test Set - 2000 normal data; 10 anomaly data
+
+![alt text](anomaly_vs_supervised.png) <br />
+
+We apply anomaly detection under the following situations:
+1. When the dataset is imbalanced.
+
+2. Many different types of anomalies. Hard for the algorithm to learn from anomalies to know what they look like.
+
+3. Future anomalies may look nothing like any of the anomalies we have seen so far.
+
+### Multivariate Gaussian Distribution
+![alt text](eqn_MGD.png) <br />
+
+Compared with original anomaly detection model, MGD can:
+1. Automatically captures correlations between features;
+2. Computationally more expensive;
+3. The covariance matrix will not be invertible if there are reduntant features (features have linear relations with each other) or number of examples is smaller than number of features.
