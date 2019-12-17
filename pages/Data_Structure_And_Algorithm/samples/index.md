@@ -81,3 +81,106 @@ def gcd(a, b):
     if b == 0:
         return a
 ```
+
+4. Greedy Algorithm
+``` python
+# maximize the value for given capacity
+def get_optimal_value(capacity, weights, values):
+    value = 0.
+    obj = dict()
+    for i in range(len(weights)):
+        obj[i] = values[i] / weights[i]
+
+    sorted_obj = sorted(obj, key=obj.get, reverse=True)
+
+    for i in range(len(weights)):
+        item = sorted_obj[i]
+        item_weight = weights[item]
+        item_value = values[item]
+
+        if capacity >= item_weight:
+            capacity = capacity - item_weight
+            value =  value + item_value
+        else:
+            value = value + item_value / item_weight * capacity
+            return value
+
+    return value
+
+# Car Fueling problem
+def compute_min_refills(distance, tank, stops):
+    n = 0
+    current_spot = -1
+    current_distance = 0
+    stops.append(distance)
+
+    i = 0
+    while i < len(stops):
+        if stops[i] - current_distance > tank:
+            i = i - 1
+            if current_spot == i:
+                return -1
+            current_spot = i
+            current_distance = stops[i]
+            n += 1
+        i += 1
+    return n
+
+# covering segments
+from collections import namedtuple
+Segment = namedtuple('Segment', 'start end')
+
+def optimal_points(segments):
+    points = []
+    sorted_segments = sorted(segments)
+    i = 0
+    while i < len(sorted_segments) - 1:
+        if (sorted_segments[i].end >= sorted_segments[i+1].start):
+            new_segment = Segment(sorted_segments[i+1].start, min(sorted_segments[i+1].end, sorted_segments[i].end))
+            sorted_segments[i+1] = new_segment
+        else:
+            points.append(sorted_segments[i].end)
+
+        i = i + 1
+    points.append(sorted_segments[i].end)
+    return points
+
+# for given number, find max number of differnt numbers which will sum up to the number
+def optimal_summands(n):
+    summands = []
+    #write your code here
+    current_sum = 0
+    i = 1
+    while i <= n:
+        if current_sum + i == n:
+            summands.append(i)
+            return summands
+        elif current_sum + i < n:
+            current_sum = current_sum + i
+            summands.append(i)
+            i = i + 1
+        else:
+            current_sum = current_sum - (i - 1)
+            summands[-1] = n - current_sum
+            return summands
+
+# combine numbers together to get the largest number
+from functools import cmp_to_key
+def compare_two_numbers(a, b):
+    str_a = str(a)
+    str_b = str(b)
+    if str_a + str_b > str_b + str_a:
+        return -1
+    else:
+        return 1
+
+def largest_number(a):
+    sorted_a = sorted(a, key=cmp_to_key(compare_two_numbers))
+    #write your code here
+    res = ""
+    for x in sorted_a:
+        res += str(x)
+    return res
+```
+
+4. Divide-and-Conquer: Recursive
