@@ -665,7 +665,6 @@ Memory Usage: `O(n)`
 ![alt text](pattern_matching.png) <br />
 
 ## Knuth-Morris-Pratt Algorithm (Pattern Matching)
-
 1. Compute Prefix
     - running time: `O(n)` <br />
     - border is increased by 1 at maximum each step, and max border is `n`; border is decreased by 1 each step in the while loop, the maximum operation on the while loops is `n`. That is why the combination of while loop and outer loop is `O(n)`.
