@@ -34,11 +34,10 @@ def fib2(n):
         old, new = new, old + new
     return new
 
-'''
-For a fibonacci sequence, get a new sequence from Fn % m
 
-we can see that it is a pisano period sequence starts with 0, 1.
-'''
+#For a fibonacci sequence, get a new sequence from Fn % m
+#we can see that it is a pisano period sequence starts with 0, 1.
+
 def get_fibonacci_huge(n, m):
     a = 0
     b = 1
@@ -59,13 +58,10 @@ def get_fibonacci_huge(n, m):
 
     return current
 
-'''
-Sum of fibonacci sequence:
-F0 + F1 + F2 + ... Fn = F(n+2) - 1
 
-F0^2 + F1^2 + F2^2 + ... Fn^2 = FnF(n+1)
-'''
-
+#Sum of fibonacci sequence:
+#F0 + F1 + F2 + ... Fn = F(n+2) - 1
+#F0^2 + F1^2 + F2^2 + ... Fn^2 = FnF(n+1)
 ```
 
 3. Greatest Common Divisor

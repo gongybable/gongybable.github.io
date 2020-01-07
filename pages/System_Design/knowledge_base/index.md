@@ -53,9 +53,9 @@ A service is scalable if it results in increased performance in a manner proport
 ### Availability vs Consistency
 #### CAP Theorem
 In a distributed computer system, you can only support two of the following guarantees:
-* **Consistency** - A read is guaranteed to return the most recent write for a given client.
-* **Availability** - A non-failing node will return a reasonable response within a reasonable amount of time (no error or timeout).
-* **Partition Tolerance** - The system will continue to function when network partitions occur.
+* **Consistency** - A read is guaranteed to return the most recent write for a given client. All nodes see the same data at the same time. Consistency is achieved by updating several nodes before allowing further reads.
+* **Availability** - A non-failing node will return a reasonable response within a reasonable amount of time (no error or timeout). Every request gets a response on success/failure. Availability is achieved by replicating the data across different servers.
+* **Partition Tolerance** - The system will continue to function when network partitions occur. A system that is partition-tolerant can sustain any amount of network failure that doesn’t result in a failure of the entire network. Data is sufficiently replicated across combinations of nodes and networks to keep the system up through intermittent outages.
 
 1. CP - consistency and partition tolerance </br>
     - Waiting for a response from the partitioned node might result in a timeout error.
@@ -182,6 +182,19 @@ Load balancers distribute incoming client requests to computing resources such a
 
         - Downstream servers such as caches and databases need to handle more simultaneous connections as upstream servers scale out
 
+* Load Balancing Methods
+    - Least Connection Method — This method directs traffic to the server with the fewest active connections. This approach is quite useful when there are a large number of persistent client connections which are unevenly distributed between the servers.
+
+    - Least Response Time Method — This algorithm directs traffic to the server with the fewest active connections and the lowest average response time.
+
+    - Least Bandwidth Method - This method selects the server that is currently serving the least amount of traffic measured in megabits per second (Mbps).
+
+    - Round Robin Method — This method cycles through a list of servers and sends each new request to the next server. When it reaches the end of the list, it starts over at the beginning. It is most useful when the servers are of equal specification and there are not many persistent connections.
+
+    - Weighted Round Robin Method — The weighted round-robin scheduling is designed to better handle servers with different processing capacities. Each server is assigned a weight. Servers with higher weights receive new connections before those with less weights and servers with higher weights get more connections than those with less weights.
+
+    - IP Hash — Under this method, a hash of the IP address of the client is calculated to redirect the request to a server.
+
 * Advantages:
     - Preventing requests from going to unhealthy servers
 
@@ -306,19 +319,37 @@ Separating out the web layer from the application layer (also known as platform 
         - You'll need to update your application logic to determine which database to read and write.
         
         - Joining data from two databases is more complex with a server link.
+
+        - Enforce data integrity constraints such as foreign keys in a partitioned database can be extremely difficult
         
         - Federation adds more hardware and additional complexity.
 
 * Sharding
 
     ![alt text](shard.png) <br />
-    Sharding distributes data across different databases such that each database can only manage a subset of the data. Taking a users database as an example, as the number of users increases, more shards are added to the cluster.
+    Sharding distributes data across different databases such that each database can only manage a subset of the data. Taking a users database as an example, as the number of users increases, more shards are added to the cluster. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location.
 
-    Similar to the advantages of federation, sharding results in less read and write traffic, less replication, and more cache hits. Index size is also reduced, which generally improves performance with faster queries. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Like federation, there is no single central master serializing writes, allowing you to write in parallel with increased throughput.
+    - Criteria
+        - Key or Hash-based partitioning: Under this scheme, we apply a hash function to some key attributes of the entity we are storing; that yields the partition number. For example, if we have 100 DB servers and our ID is a numeric value that gets incremented by one each time a new record is inserted. In this example, the hash function could be ‘ID % 100’, which will give us the server number where we can store/read that record. This approach should ensure a uniform allocation of data among servers. The fundamental problem with this approach is that it effectively fixes the total number of DB servers, since adding new servers means changing the hash function which would require redistribution of data and downtime for the service. A workaround for this problem is to use Consistent Hashing.
 
-    Common ways to shard a table of users is either through the user's last name initial or the user's geographic location.
+        - List partitioning: In this scheme, each partition is assigned a list of values, so whenever we want to insert a new record, we will see which partition contains our key and then store it there. For example, we can decide all users living in Iceland, Norway, Sweden, Finland, or Denmark will be stored in a partition for the Nordic countries.
+
+        - Round-robin partitioning: This is a very simple strategy that ensures uniform data distribution. With ‘n’ partitions, the ‘i’ tuple is assigned to partition (i mod n).
+
+        - Composite partitioning: Under this scheme, we combine any of the above partitioning schemes to devise a new scheme. For example, first applying a list partitioning scheme and then a hash based partitioning. Consistent hashing could be considered a composite of hash and list partitioning where the hash reduces the key space to a size that can be listed.
+
+    - Advantages
+        - Less read and write traffic, less replication, and more cache hits.
+
+        - Reduces index size, which generally improves performance with faster queries.
+
+        - If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss.
+        
+        - No single central master serializing writes, allowing you to write in parallel with increased throughput.
 
     - Disadvantages
+        - If the value whose range is used for partitioning isn’t chosen carefully, then the partitioning scheme will lead to unbalanced servers
+
         - You'll need to update your application logic to work with shards, which could result in complex SQL queries.
         
         - Data distribution can become lopsided in a shard. For example, a set of power users on a shard could result in increased load to that shard compared to others.
@@ -328,6 +359,12 @@ Separating out the web layer from the application layer (also known as platform 
         - Joining data from multiple shards is more complex.
         
         - Sharding adds more hardware and additional complexity.
+
+* Directory Service
+
+    For sharding and federation, we can create a lookup service which knows your current partitioning scheme and abstracts it away from the DB access code. So, to find out where a particular data entity resides, we query the directory server that holds the mapping between each tuple key to its DB server.
+    
+    This loosely coupled approach means we can perform tasks like adding servers to the DB pool or changing our partitioning scheme without having an impact on the application.
 
 * Denormalization
 
@@ -363,7 +400,7 @@ Separating out the web layer from the application layer (also known as platform 
 
         - Set the NOT NULL constraint where applicable to improve search performance.
 
-    - Use good indices
+    - Use good indexes
         - Columns that you are querying (SELECT, GROUP BY, ORDER BY, JOIN) could be faster with indices.
 
         - Indices are usually represented as self-balancing B-tree that keeps data sorted and allows searches, sequential access, insertions, and deletions in logarithmic time.
@@ -457,7 +494,7 @@ Separating out the web layer from the application layer (also known as platform 
         - Metadata/lookup tables
 
 ### Caches
-Caching improves page load times and can reduce the load on your servers and databases. Databases often benefit from a uniform distribution of reads and writes across its partitions. Popular items can skew the distribution, causing bottlenecks. Putting a cache in front of a database can help absorb uneven loads and spikes in traffic.
+Caching improves page load times and can reduce the load on your servers and databases. Databases often benefit from a uniform distribution of reads and writes across its partitions. Popular items can skew the distribution, causing bottlenecks. Putting a cache in front of a database can help absorb uneven loads and spikes in traffic. There are two types of caches: global caches and distributed caches.
 
 - Client caching
 
@@ -465,7 +502,9 @@ Caching improves page load times and can reduce the load on your servers and dat
 
 - CDN caching
 
-    CDNs are considered a type of cache.
+    CDNs are considered a type of cache. In a typical CDN setup, a request will first ask the CDN for a piece of static media; the CDN will serve that content if it has it locally available. If it isn’t available, the CDN will query the back-end servers for the file, cache it locally, and serve it to the requesting user.
+
+    If the system we are building isn’t yet large enough to have its own CDN, we can ease a future transition by serving the static media off a separate subdomain (e.g. static.yourservice.com) using a lightweight HTTP server like Nginx, and cut-over the DNS from your servers to a CDN later.
 
 - Web server caching
 
@@ -533,7 +572,7 @@ Caching improves page load times and can reduce the load on your servers and dat
     - Write-through
 
         ![alt text](write_through.png) <br />
-        The application uses the cache as the main data store, reading and writing data to it, while the cache is responsible for reading and writing to the database:
+        The application uses the cache as the main data store, reading and writing data to it, while the cache is responsible for reading and writing to the database. Write through minimizes the risk of data loss, since every write operation must be done twice before returning success to the client:
         - Application adds/updates entry in cache
         - Cache synchronously writes entry to data store
         - Return
@@ -564,10 +603,38 @@ Caching improves page load times and can reduce the load on your servers and dat
         Disadvantages
         - Not accurately predicting which items are likely to be needed in the future can result in reduced performance than without refresh-ahead.
 
+- Cache eviction policies
+    - First In First Out
+    - Last In First Out
+    - Least Recently Used
+    - Most Recently Used
+    - Least Frequently Used
+    - Random Replacement
+
 - Disadvantages
     - Need to maintain consistency between caches and the source of truth such as the database through cache invalidation.
     - Cache invalidation is a difficult problem, there is additional complexity associated with when to update the cache.
     - Need to make application changes such as adding Redis or memcached.
+
+### Consistent Hashing
+Consistent hashing is a very useful strategy for distributed caching system and DHTs. It allows us to distribute data across a cluster in such a way that will minimize reorganization when nodes are added or removed. Hence, the caching system will be easier to scale up or scale down.
+
+- Can be used in sharding DB management
+- Can be used in distribued cache management
+
+In Consistent Hashing, objects are mapped to the same host if possible. When a host is removed from the system, the objects on that host are shared by other hosts; when a new host is added, it takes its share from a few hosts without touching other’s shares.
+
+- Given a list of cache servers, hash them to integers in the range.
+- To map a key to a server,
+    - Hash it to a single integer.
+    - Move clockwise on the ring until finding the first cache it encounters.
+    - That cache is the one that contains the key. See animation below as an example: key1 maps to cache A; key2 maps to cache C.
+
+The real data is essentially randomly distributed and thus may not be uniform. It may make the keys on caches unbalanced.
+
+To handle this issue, we add “virtual replicas” for caches. Instead of mapping each cache to a single point on the ring, we map it to multiple points on the ring, i.e. replicas. This way, each cache is associated with multiple portions of the ring.
+
+If the hash function “mixes well,” as the number of replicas increases, the keys will be more balanced.
 
 ### Asynchronism
 1. Pre-Compute the Time Consuming Requests

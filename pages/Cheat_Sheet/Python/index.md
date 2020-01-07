@@ -1,8 +1,6 @@
 # Python
 
-<details>
-    <summary>Python Basics</summary>
-
+## Python Basics
 ``` python
 17 / 3                      # 5.666667
 17 // 3                     # 5
@@ -109,11 +107,8 @@ map(func, seq)
 odd_numbers = list(filter(lambda x: x % 2, numbers))
 reduce(lambda a,b: a if (a > b) else b, [47,11,42,102,13])  # 102
 ```
-</details>
 
-<details>
-    <summary>Data Structures</summary>
-
+## Data Structures
 ``` python
 # Add an item to the end of the list. Equivalent to a[len(a):] = [x].
 list.append(x)
@@ -237,11 +232,8 @@ Comparing Sequences - first the first two items are compared, and if they differ
 (1, 2, 3) == (1.0, 2.0, 3.0)
 (1, 2, ('aa', 'ab')) < (1, 2, ('abc', 'a'), 4)
 ```
-</details>
 
-<details>
-    <summary>Deep Copy and Shallow Copy</summary>
-
+## Deep Copy and Shallow Copy
 ``` python
 # copy a list - creating a reference to the same object
 lst1 = ['a','b',['ab','ba']]
@@ -255,11 +247,8 @@ dict1 = dict2. copy()   # this is shallow copy as well
 from copy import deepcopy 
 lst2 = deepcopy(lst1)
 ```
-</details>
 
-<details>
-    <summary>Open Files</summary>
-
+## Open Files
 ``` python
 # It is good practice to use the with keyword when dealing with file objects. 
 # The advantage is that the file is properly closed after its suite finishes, even if an exception is raised at some point.
@@ -274,13 +263,8 @@ with open('workfile', 'w') as f:
     for line in f:              # loop on lines, memory efficient and fast
         pass
 ```
-</details>
 
-</details>
-
-<details>
-    <summary>Errors and Exceptions</summary>
-
+## Errors and Exceptions
 ``` python
 '''
 Try Except Else - The use of the else clause is better than adding additional code to the try clause because it avoids accidentally catching an exception that wasn’t raised by the code being protected by the try … except statement.
@@ -367,11 +351,8 @@ divide("2", "1")
 #   File "<stdin>", line 3, in divide
 # TypeError: unsupported operand type(s) for /: 'str' and 'str'
 ```
-</details>
 
-<details>
-    <summary>Scopes and Namespaces</summary>
-
+## Scopes and Namespaces
 ``` python
 def scope_test():
     def do_local():
@@ -392,11 +373,8 @@ def scope_test():
 
 scope_test()                # spam == "global spam"
 ```
-</details>
 
-<details>
-    <summary>Decorators</summary>
-
+## Decorators
 ``` python
 '''
 Simple example, below code will print:
@@ -437,11 +415,8 @@ def foo(x):
 
 foo("Hi")
 ```
-</details>
 
-<details>
-    <summary>Classes</summary>
-
+## Classes
 ``` python
 '''
 Class and Instance Variables
@@ -778,11 +753,8 @@ class Robot:
     def __str__(self):
         return "Name: " + self.name + ", Build Year: " +  str(self.build_year)
 ```
-</details>
 
-<details>
-    <summary>Recursive Function</summary>
-
+## Recursive Function
 ``` python
 '''
 Fibonacci sequence - fib2 is much more efficient than fib1
@@ -832,4 +804,3 @@ def primes(n):
         p = [x for x in range(2, n + 1) if x not in no_p]
         return p
 ```
-</details>

@@ -522,37 +522,40 @@ def scc(G):
 
 ### Shortest Path
 1. Use BFS to find the shortest path / level to the node.
-```python
-def shortest_path(parent, u, s):
-    result = []
-    while u != s:
-        result.append(u)
-        u = parent[u]
-    result = result.reverse()
-    return result
-```
+
+    ```python
+    def shortest_path(parent, u, s):
+        result = []
+        while u != s:
+            result.append(u)
+            u = parent[u]
+        result = result.reverse()
+        return result
+    ```
 
 2. Dijkstra - positive weights only
     - Running Time:
 T(make heap) + |V|*T(extract min) + |E|*T(change priority)
     - `O(V^2)` using array;  `O((V+E)logV)` using heap.
-```python
-parent = {}
-d = {}
 
-def Dijkstra(adj, W, s):
-	for v in range(len(adj)):
-        d[v] = float("inf")
-    d[s] = 0
-	Q = heap(d)
-	while len(Q) != 0:
-		u = Q.extract_min()
-		for v in adj[u]:
-			if d[v] > d[u] + W(u, v)
-                d[v] = d[u] + W(u, v)
-                parent[v] = u
-                Q.change_priority(v, d[v])
-```
+    ```python
+    parent = {}
+    d = {}
+
+    def Dijkstra(adj, W, s):
+        for v in range(len(adj)):
+            d[v] = float("inf")
+        d[s] = 0
+        Q = heap(d)
+        while len(Q) != 0:
+            u = Q.extract_min()
+            for v in adj[u]:
+                if d[v] > d[u] + W(u, v)
+                    d[v] = d[u] + W(u, v)
+                    parent[v] = u
+                    Q.change_priority(v, d[v])
+    ```
+
 3. Bi_directional Dijkstra
     - Given source `s` and destination `t`
     - Do Dijkstra with `s` on Graph and with `t` on Reversed Graph simultaneously until they reach the first common point `v`
@@ -569,82 +572,83 @@ def Dijkstra(adj, W, s):
         return u_best, distance
     ```
 
-
 4. Bellman-Ford - both positive / negative weights
     - Running Time: `O(VE)`
-```python
-parent = {}
-d = {}
 
-def BellmanFord(adj, W, s):
-	for v in range(len(adj)):
-        d[v] = float("inf")
-    d[s] = 0
-    # repeat V-1 times
-	for i in range(len(adj)-1):
+    ```python
+    parent = {}
+    d = {}
+
+    def BellmanFord(adj, W, s):
+        for v in range(len(adj)):
+            d[v] = float("inf")
+        d[s] = 0
+        # repeat V-1 times
+        for i in range(len(adj)-1):
+            # for each edge
+            for v in range(len(adj)):
+                for u in adj[v]:
+                    if d[u] > d[v] + W(u, v)
+                        d[u] = d[v] + W(u, v)
+                        parent[u] = v
+        
+        negative_nodes = []
+        results = [] # nodes can have infinite values
         # for each edge
         for v in range(len(adj)):
             for u in adj[v]:
                 if d[u] > d[v] + W(u, v)
-                    d[u] = d[v] + W(u, v)
-                    parent[u] = v
-    
-    negative_nodes = []
-    results = [] # nodes can have infinite values
-    # for each edge
-    for v in range(len(adj)):
-        for u in adj[v]:
-            if d[u] > d[v] + W(u, v)
-                # negative cycle exists
-                negative_nodes.append(u)
-    for element in negative_nodes:
-        results.append(BFS(adj, element))
-```
+                    # negative cycle exists
+                    negative_nodes.append(u)
+        for element in negative_nodes:
+            results.append(BFS(adj, element))
+    ```
 
 ### Minimum Spanning Tree
 1. Kruskal's Algorithm
     - Repeatedly add the next lightest edge if this does not produce a cycle
     - Running Time: `T(sort edges) + T(process edges) = 
 O(ElogE) + O(E*T(find) + V*T(union)) = O(ElogV^2) + O(ElogV + VlogV) = O(2ElogV) + O(ElogV + (E+1)logv) = O(ElogV)`
-```
-def kruskal(adj, W):
-	for v in V:
-        make_set(v)
-    x = set()
-    sort edges E by weight
-    for {u, v} in E:
-        if find(u) != find(v):
-            x.add({u, v})
-            union(u, v)
-    return x
-```
+
+    ```
+    def kruskal(adj, W):
+        for v in V:
+            make_set(v)
+        x = set()
+        sort edges E by weight
+        for {u, v} in E:
+            if find(u) != find(v):
+                x.add({u, v})
+                union(u, v)
+        return x
+    ```
 
 2. Prim's Algorithm
     - Select a source node, then repeatedly attach a new vertex to the current tree by selecting a lightest edge
 
-```python
-parent = {}
-d = {}
+    ```python
+    parent = {}
+    d = {}
 
-def Dijkstra(adj, W, s):
-	for v in range(len(adj)):
-        d[v] = float("inf")
-    d[s] = 0
-	Q = heap(d)
-	while len(Q) != 0:
-		u = Q.extract_min()
-		for v in adj[u]:
-			if v in Q and d[v] > W(u, v)
-                d[v] = W(u, v)
-                parent[v] = u
-                Q.change_priority(v, d[v])
-```
+    def Dijkstra(adj, W, s):
+        for v in range(len(adj)):
+            d[v] = float("inf")
+        d[s] = 0
+        Q = heap(d)
+        while len(Q) != 0:
+            u = Q.extract_min()
+            for v in adj[u]:
+                if v in Q and d[v] > W(u, v)
+                    d[v] = W(u, v)
+                    parent[v] = u
+                    Q.change_priority(v, d[v])
+    ```
 
 ## Trie
 A trie is a tree-like data structure whose nodes store the letters of an alphabet. 
 
 1. Build Trie on patterns and loop through the text to find pattern matches
-    - Running time: O(|text| * |longest_pattern|)
+    - Running time: `O(|text| * |longest_pattern|)`
 
 2. Build trie on text and loop through patterns to find matches
     - Runtime: `Generate_Suffic_Tree + Pattern_Matching = O(|Text| + |Patterns|)`
@@ -657,11 +661,14 @@ Below is an example of trie that represents a string which is used for pattern m
 We can update the suffix trie to suffix tree, so that the number of edges will be much less.
 
 Memory Usage: `O(n)`
+
 ![alt text](suffix_tree.png) <br />
+
 ![alt text](suffix_tree_2.png) <br />
 
 ### Implementation
 ![alt text](construct_trie.png) <br />
+
 ![alt text](pattern_matching.png) <br />
 
 ## Knuth-Morris-Pratt Algorithm (Pattern Matching)
