@@ -465,7 +465,8 @@ d = Dog('Fido')
 e = Dog('Buddy')
 d.add_trick('roll over')            # unexpectedly shared by all dogs
 e.tricks                            # ['roll over']
-d.tricks = ['new']                  # assigning new value to d.tricks, will not impact e.tricks
+d.tricks = ['new']
+# assigning new value to d.tricks, will not impact e.tricks
 
 # correct design
 class Dog:
@@ -477,10 +478,12 @@ class Dog:
 
 '''
 Data Encapsulation - the bundling of data with the methods that operate on that data.
-Data Hiding - some internal information or data is "hidden", so that it can't be accidentally changed.
+Data Hiding - some internal information or data is "hidden",
+    so that it can't be accidentally changed.
 Data Abstraction - Data Encapsulation + Data Hiding.
 
-name: private attributes, should only be used by the owner, i.e. inside of the class definition itself.
+name: private attributes, should only be used by the owner,
+    i.e. inside of the class definition itself.
 _name: protected attributes, should only be used under certain conditions.
 __name: public attributes, can and should be freely used.
 '''
@@ -660,7 +663,8 @@ class Robot():
     def __add__(self, other):
         first = self.name.split("-")[0]
         second = other.name.split("-")[0]
-        return type(self)(first + "-" + second)         # return the proper type after add for child classes
+        return type(self)(first + "-" + second)
+        # return the proper type after add for child classes
      
     def needs_a_nurse(self):
         if self.health_level < Robot.__crucial_health_level:
