@@ -258,7 +258,8 @@ until either sequence is exhausted
 ``` python
 # copy a list - creating a reference to the same object
 lst1 = ['a','b',['ab','ba']]
-list2 = list1       # two variables references to the same object, update in one list will impact the other one
+list2 = list1
+# two variables references to the same object, update in one list will impact the other one
 
 # shallow copy - creating references to the objects inside the object
 list2 = list1[:]    # copied the first two elements but not the 3rd one
@@ -272,7 +273,8 @@ lst2 = deepcopy(lst1)
 ## Open Files
 ``` python
 # It is good practice to use the with keyword when dealing with file objects. 
-# The advantage is that the file is properly closed after its suite finishes, even if an exception is raised at some point.
+# The advantage is that the file is properly closed after its suite finishes,
+# even if an exception is raised at some point.
 # 'r' when the file will only be read
 # 'w' for only writing (an existing file with the same name will be erased)
 # 'a' opens the file for appending
@@ -288,7 +290,10 @@ with open('workfile', 'w') as f:
 ## Errors and Exceptions
 ``` python
 '''
-Try Except Else - The use of the else clause is better than adding additional code to the try clause because it avoids accidentally catching an exception that wasn’t raised by the code being protected by the try … except statement.
+Try Except Else - The use of the else clause is better than
+adding additional code to the try clause because it avoids
+accidentally catching an exception that wasn’t raised
+by the code being protected by the try … except statement.
 '''
 try:
     f = open(arg, 'r')
@@ -325,13 +330,21 @@ class InputError(Error):
 
 '''
 Finally - the finally clause will execute as the last task before the try statement completes
-1. If an exception occurs during execution of the try clause, the exception may be handled by an except clause. If the exception is not handled by an except clause, the exception is re-raised after the finally clause has been executed.
+1. If an exception occurs during execution of the try clause,
+the exception may be handled by an except clause.
+If the exception is not handled by an except clause,
+the exception is re-raised after the finally clause has been executed.
 
-2. An exception could occur during execution of an except or else clause. Again, the exception is re-raised after the finally clause has been executed.
+2. An exception could occur during execution of an except or else clause.
+Again, the exception is re-raised after the finally clause has been executed.
 
-3. If the try statement reaches a break, continue or return statement, the finally clause will execute just prior to the break, continue or return statement’s execution.
+3. If the try statement reaches a break, continue or return statement,
+the finally clause will execute just prior to the break,
+continue or return statement’s execution.
 
-4. If a finally clause includes a return statement, the finally clause’s return statement will execute before, and instead of, the return statement in a try clause.
+4. If a finally clause includes a return statement,
+the finally clause’s return statement will execute before,
+and instead of, the return statement in a try clause.
 '''
 try:
     raise KeyboardInterrupt
