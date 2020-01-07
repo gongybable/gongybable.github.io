@@ -21,7 +21,8 @@ list(range(5))              # [0, 1, 2, 3, 4]
 '''
 Loop statements may have an else clause.
 It is executed when the loop terminates through exhaustion of the list (with for)
-or when the condition becomes false (with while), but not when the loop is terminated by a break statement.
+or when the condition becomes false (with while),
+but not when the loop is terminated by a break statement.
 '''
 for n in range(2, 10):
     for x in range(2, n):
@@ -73,7 +74,8 @@ no_side_effects(locations) # ['London', 'Leeds', 'Glasgow', 'Sheffield']
 def side_effects(cities):
     cities += ["Birmingham", "Bradford"]
 locations = ["London", "Leeds", "Glasgow", "Sheffield"]
-side_effects(locations) # ['London', 'Leeds', 'Glasgow', 'Sheffield', 'Birmingham', 'Bradford']
+# ['London', 'Leeds', 'Glasgow', 'Sheffield', 'Birmingham', 'Bradford']
+side_effects(locations)
 
 '''
 Unpacking arguments
