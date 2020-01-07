@@ -465,7 +465,8 @@ def explore(v):
             explore(w)
     postvisit(v)
 
-# we can use previsit and postvisit to handle some simple extra logics while visiting the nodes
+# we can use previsit and postvisit to handle some 
+# simple extra logics while visiting the nodes
 # below is just an examplle
 def previsit(v):
     prev[v] = clock
@@ -538,7 +539,7 @@ def scc(G):
 
 2. Dijkstra - positive weights only
     - Running Time:
-T(make heap) + |V|*T(extract min) + |E|*T(change priority)
+`T(make heap) + |V|*T(extract min) + |E|*T(change priority)`
     - `O(V^2)` using array;  `O((V+E)logV)` using heap.
 
     ```python
