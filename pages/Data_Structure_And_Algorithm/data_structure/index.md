@@ -120,6 +120,7 @@ Arrays which lengths are not fixed.
                 return
         L.append(o, v)
     ```
+
 ### Cloud Storage with Hash
 1. Compute a set of hashes for the file locally
     - It is very rare for two different files have the same has values for 3 or 5 hash functions
