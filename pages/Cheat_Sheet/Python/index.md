@@ -115,35 +115,46 @@ reduce(lambda a,b: a if (a > b) else b, [47,11,42,102,13])  # 102
 # Add an item to the end of the list. Equivalent to a[len(a):] = [x].
 list.append(x)
 
-# Extend the list by appending all the items from the iterable. Equivalent to a[len(a):] = iterable.
+# Extend the list by appending all the items from the iterable.
+# Equivalent to a[len(a):] = iterable.
 list.extend(iterable)
 
-# Insert an item at a given position. The first argument is the index of the element before which to insert, so a.insert(0, x) inserts at the front of the list, and a.insert(len(a), x) is equivalent to a.append(x).
+# Insert an item at a given position.
+# The first argument is the index of the element before which to insert,
+# so a.insert(0, x) inserts at the front of the list,
+# and a.insert(len(a), x) is equivalent to a.append(x).
 list.insert(i, x)
 
-# Remove the first item from the list whose value is equal to x. It raises a ValueError if there is no such item.
+# Remove the first item from the list whose value is equal to x.
+# It raises a ValueError if there is no such item.
 list.remove(x)
 
-# Remove the item at the given position in the list, and return it. If no index is specified, a.pop() removes and returns the last item in the list. (The square brackets around the i in the method signature denote that the parameter is optional, not that you should type square brackets at that position.)
+# Remove the item at the given position in the list, and return it.
+# If no index is specified, a.pop() removes and returns the last item in the list.
+# (The square brackets around the i in the method signature denote that
+# the parameter is optional, not that you should type square brackets at that position.)
 list.pop([i])
 
 # Remove all items from the list. Equivalent to del a[:].
 list.clear()
 
-# Return zero-based index in the list of the first item whose value is equal to x. Raises a ValueError if there is no such item.
+# Return zero-based index in the list of the first item whose value is equal to x.
+# Raises a ValueError if there is no such item.
 list.index(x[, start[, end]])
 
 # Return the number of times x appears in the list.
 list.count(x)
 
-# Sort the items of the list in place (the arguments can be used for sort customization, see sorted() for their explanation).
+# Sort the items of the list in place (the arguments can be used for
+# sort customization, see sorted() for their explanation).
 list.sort(key=None, reverse=False)
 
 # Reverse the elements of the list in place.
 list.reverse()
 
 # Return a shallow copy of the list. Equivalent to a[:].
-# In shallow copy, if any of the fields of the object are references to other objects, just the reference addresses are copied
+# In shallow copy, if any of the fields of the object are
+# references to other objects, just the reference addresses are copied
 list.copy()
 
 '''
@@ -211,9 +222,12 @@ tel.get('jack')                 # 4098, return None if key does not exist
 list(tel)                       # ['jack', 'guido', 'sape']
 sorted(tel)                     # ['guido', 'jack', 'sape']
 'guido' in tel                  # True
-dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])     # {'sape': 4139, 'guido': 4127, 'jack': 4098}, same as dict(sape=4139, guido=4127, jack=4098)
+dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])
+# {'sape': 4139, 'guido': 4127, 'jack': 4098}, same as dict
+(sape=4139, guido=4127, jack=4098)
 {x: x**2 for x in (2, 4, 6)}    # {2: 4, 4: 16, 6: 36}
-dict1.update(dict2)             # merge keys and values in dict2 into dict1, overwritting the existed keys
+dict1.update(dict2)
+# merge keys and values in dict2 into dict1, overwritting the existed keys
 
 '''
 Looping Techniques
@@ -222,13 +236,18 @@ for k, v in dict.items():       # loop on dict
     pass
 for i, v in enumerate([1, 2, 3]):       # loop on list
     pass
-for q, a in zip(sequence1, sequence2):  # loop on two sequences; zip() returns a iterator, which exhaust itself after use - become empty after used for one time
+for q, a in zip(sequence1, sequence2):
+# loop on two sequences; zip() returns a iterator,
+# which exhaust itself after use - become empty after used for one time
     pass
 for i in reversed(range(1, 10, 2)):     # loop on reversed order
     pass
 
 '''
-Comparing Sequences - first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted
+Comparing Sequences - first the first two items are compared,
+and if they differ this determines the outcome of the comparison;
+if they are equal, the next two items are compared, and so on,
+until either sequence is exhausted
 '''
 'ABC' < 'C' < 'Pascal' < 'Python'
 (1, 2, 3) == (1.0, 2.0, 3.0)
