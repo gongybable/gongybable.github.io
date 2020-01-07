@@ -136,7 +136,8 @@
         i = 0
         while i < len(sorted_segments) - 1:
             if (sorted_segments[i].end >= sorted_segments[i+1].start):
-                new_segment = Segment(sorted_segments[i+1].start, min(sorted_segments[i+1].end, sorted_segments[i].end))
+                new_segment = Segment(sorted_segments[i+1].start,
+                    min(sorted_segments[i+1].end, sorted_segments[i].end))
                 sorted_segments[i+1] = new_segment
             else:
                 points.append(sorted_segments[i].end)

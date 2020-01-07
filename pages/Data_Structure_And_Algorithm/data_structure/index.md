@@ -337,7 +337,6 @@ A node with a value and a list of child trees. Usually use recursive algorithms 
     - Post-Order: Left => Right => Root
         - For example, for tree of an math euqation with parents as the operator, we can use post-order (calculate left first, then right, then on the operator)
 
-
 2. Breadth-First: Traverse all nodes on one level before progressing to the next level
     ```python
     def bfs(tree)
