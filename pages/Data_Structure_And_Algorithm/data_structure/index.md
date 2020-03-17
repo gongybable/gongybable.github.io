@@ -210,15 +210,6 @@ Creating sets of data points, with each set as a tree, and the set ID to be the 
             rank[j_id] += 1
     ```
 
-### Path Compression
-* Get Parent of a Node: `O(logn)`
-    ```python
-    def find(i)
-        if i != parent[i]:
-            parent[i] = find(parent[i])
-        return parent[i]
-    ```
-
 ## Sort
 ### Merge Sort
 ```python
@@ -256,34 +247,30 @@ def merge(low, mid, high):
 ### Quick Sort
 ```python
 import random
-class QuickSort(object):
-    def __init__(self, numbers):
-        self.values = numbers
-    def sort(self):
-        self.quick_sort(0, len(self.values) - 1)
-        return self.values
-    def quick_sort(self, left, right):
-        if left == right:
-            return
-        i = left
-        j = right
-        v = random.randint(left, right)
-        pivot = self.values[v]
-        while i < j:
-            while self.values[i] < pivot:
-                i += 1
-            while self.values[j] > pivot:
-                j -= 1
-            if i <= j:
-                temp = self.values[i]
-                self.values[i] = self.values[j]
-                self.values[j] = temp
-                i += 1
-                j -= 1
-        if left < j:
-            self.quick_sort(left, j)
-        if right > i:
-            self.quick_sort(i, right)
+arr = [6, 3, 6, 9, 4, 2, 1, 9, 4, 2]
+def quickSort(start, end):
+    if start >= end:
+        return
+    idx = random.randint(start, end)
+    pivot = arr[idx]
+    
+    s = start - 1
+    eq = start - 1
+    i = start
+
+    while i <= end:
+        if arr[i] < pivot:
+            arr[s+1], arr[i] = arr[i], arr[s+1]
+            arr[eq+1], arr[i] = arr[i], arr[eq+1]
+            s += 1
+            eq += 1
+        elif arr[i] == pivot:
+            arr[i], arr[eq+1] = arr[eq+1], arr[i]
+            eq += 1
+        i += 1
+    quickSort(start, s)
+    quickSort(eq+1, end)
+quickSort(0, len(arr)-1)
 ```
 
 ### Counting Sort - for range of data (1 to k) not very big, O(n + k)
@@ -375,7 +362,7 @@ A binary tree that all nodes in the left sub tree of a parent node is no larger 
         p = find(k, R)
         p.left = k
     ```
-* Delete a new node
+* Delete a node
     ```python
     def delete(k, R)
         if R is None:
@@ -509,8 +496,31 @@ def BFS(s, adj):
 * Directed Acyclic Graph (Topological Sort - Task Scheduling)
 ```python
 def TopologicalSort(G):
-    result = DFS(G, order='postOrder')
-    result.reverse()
+    def dfs(c):
+        # post order
+        if c in visited and visited[c] == 1:
+            return True
+        if c in visited and visited[c] == 2:
+            return False
+        visited[c] = 1
+        
+        for n in g[c]:
+            if dfs(n):
+                return True
+        
+        visited[c] = 2
+        self.res = self.res + c
+        return False
+        
+    if len(words) == 1:
+        return words[0]
+    
+    visited = {} # 1 for visiting, 2 for finish
+    for c in nodes:
+        if dfs(c):
+            return ''
+    
+    return self.res[::-1]
 ```
 
 * Find Strongly Connected Components
@@ -543,21 +553,26 @@ def scc(G):
     - `O(V^2)` using array;  `O((V+E)logV)` using heap.
 
     ```python
-    parent = {}
-    d = {}
+    import heapq
+    def calculate_distances(graph, starting_vertex):
+        distances = {vertex: float('inf') for vertex in graph}
+        distances[starting_vertex] = 0
 
-    def Dijkstra(adj, W, s):
-        for v in range(len(adj)):
-            d[v] = float("inf")
-        d[s] = 0
-        Q = heap(d)
-        while len(Q) != 0:
-            u = Q.extract_min()
-            for v in adj[u]:
-                if d[v] > d[u] + W(u, v)
-                    d[v] = d[u] + W(u, v)
-                    parent[v] = u
-                    Q.change_priority(v, d[v])
+        pq = [(0, starting_vertex)]
+        while len(pq) > 0:
+            current_distance, current_vertex = heapq.heappop(pq)
+
+            if current_distance > distances[current_vertex]:
+                continue
+
+            for neighbor, weight in graph[current_vertex].items():
+                distance = current_distance + weight
+
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    heapq.heappush(pq, (distance, neighbor))
+
+        return distances
     ```
 
 3. Bi_directional Dijkstra
@@ -615,16 +630,37 @@ def scc(G):
 O(ElogE) + O(E*T(find) + V*T(union)) = O(ElogV^2) + O(ElogV + VlogV) = O(2ElogV) + O(ElogV + (E+1)logv) = O(ElogV)`
 
     ```
-    def kruskal(adj, W):
-        for v in V:
-            make_set(v)
-        x = set()
-        sort edges E by weight
-        for {u, v} in E:
-            if find(u) != find(v):
-                x.add({u, v})
-                union(u, v)
-        return x
+    def find(i):
+        while parent[i] != i:
+            i = parent[i]
+        return i
+    
+    def union(i, j):
+        if rank[i] == rank[j]:
+            parent[i] = j
+            rank[j] += 1
+        elif rank[i] > rank[j]:
+            parent[j] = i
+        else:
+            parent[i] = j
+    
+    connections.sort(key=lambda x: x[2])
+    count = 0
+    res = 0
+    rank = [0] * (N+1)
+    parent = [i for i in range(N+1)]
+    
+    for x, y, d in connections:
+        x = find(x)
+        y = find(y)
+        if x != y:
+            union(x, y)
+            count += 1
+            res += d
+
+    if count == N-1:
+        return res
+    return -1
     ```
 
 2. Prim's Algorithm
@@ -679,8 +715,49 @@ Memory Usage: `O(n)`
 1. Compute Prefix
     - running time: `O(n)` <br />
     - border is increased by 1 at maximum each step, and max border is `n`; border is decreased by 1 each step in the while loop, the maximum operation on the while loops is `n`. That is why the combination of while loop and outer loop is `O(n)`.
-    ![alt text](compute_prefix.png) <br />
 
 2. Find All Occurrences
     - runnint time: `O(t+p)` <br />
-    ![alt text](find_match.png) <br />
+```python
+def KMPSearch(pat, txt): 
+    M = len(pat) 
+    N = len(txt) 
+
+    lps = [0]*M 
+    computeLPSArray(pat, M, lps) 
+  
+    i = 0
+    j = 0
+    while i < N: 
+        if pat[j] == txt[i]: 
+            i += 1
+            j += 1
+  
+        if j == M: 
+            print "Found pattern at index " + str(i-j) 
+            j = lps[j-1] 
+        elif i < N and pat[j] != txt[i]: 
+            if j != 0: 
+                j = lps[j-1] 
+            else: 
+                i += 1
+  
+def computeLPSArray(pat, M, lps): 
+    len = 0 
+    i = 1
+    while i < M: 
+        if pat[i]== pat[len]: 
+            len += 1
+            lps[i] = len
+            i += 1
+        else:  
+            if len != 0: 
+                len = lps[len-1] 
+            else: 
+                lps[i] = 0
+                i += 1
+                
+txt = "ABABDABACDABABCABAB"
+pat = "ABABCABAB"
+KMPSearch(pat, txt) 
+```

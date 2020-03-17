@@ -103,20 +103,20 @@ In a distributed computer system, you can only support two of the following guar
 
         - There is a potential for loss of data if the active system fails before any newly written data can be replicated to the passive.
 
-2. Replication
+* Replication
     1. Master-Slave 
     2. Master-Master
 
-3. Availability in Parallel vs in Sequence
-* In Sequence
-    ```
-    Availability(Total) = Availability(Foo) * Availability(Bar)
-    ```
+* Availability in Parallel vs in Sequence
+    * In Sequence
+        ```
+        Availability(Total) = Availability(Foo) * Availability(Bar)
+        ```
 
-* In Parallel
-    ```
-    Availability(Total) = 1 - (1 - Availability(Foo)) * (1 - Availability(Bar))
-    ```
+    * In Parallel
+        ```
+        Availability(Total) = 1 - (1 - Availability(Foo)) * (1 - Availability(Bar))
+        ```
 
 ## Design Concepts
 ### DNS
