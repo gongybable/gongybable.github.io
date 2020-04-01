@@ -767,6 +767,9 @@ def rankTeams(votes):
 </details>
 
 * Minimum Cost to Make at Least One Valid Path in a Grid
+
+https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/
+
 <details>
 
 ```python
@@ -1349,6 +1352,9 @@ https://leetcode.com/problems/distinct-subsequences/
 https://leetcode.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/
 
 * Lights Out Puzzle
+
+https://leetcode.com/problems/minimum-number-of-flips-to-convert-binary-matrix-to-zero-matrix/
+
 <details>
 
 ```java
