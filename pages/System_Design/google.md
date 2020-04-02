@@ -407,9 +407,6 @@ public Person friendSuggestion(Person p) {
 
 https://leetcode.com/problems/evaluate-division/
 
-
-
-
 ## DP
 
 * **split array into two with min difference**
@@ -678,10 +675,28 @@ def countP(n, k):
 ```
 </details>
 
+* **min of max of path**
+<details>
 
-
-
-
+```java
+public static int minMax(int[][] arr) {
+        int[][] dp = new int[arr.length][arr[0].length]; 
+        
+        for(int i = 0; i < dp.length; i++) {
+            for(int j = 0; j < dp[i].length; j++) {
+                if(i == 0 && j == 0) {
+                    dp[i][j] = arr[i][j];
+                    continue; 
+                } 
+                int top =  i > 0 ? dp[i - 1][j] : Integer.MAX_VALUE; 
+                int left = j > 0 ? dp[i][j - 1] : Integer.MAX_VALUE; 
+                dp[i][j] = Math.min(Math.max(top, arr[i][j]), Math.max(left, arr[i][j])); 
+            }
+        }
+        return dp[dp.length - 1][dp[0].length - 1];
+    }
+```
+</details>
 
 ## backtrack
 
@@ -906,10 +921,6 @@ def solution(dominoes):
 ```
 </details>
 
-
-
-
-
 ## heapq
 
 * **Min Cost to Hire K Workers with quality**
@@ -954,19 +965,6 @@ def solver(cost,salary,severance,nums):
     return min(dp.values())
 ```
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## others
 
@@ -1270,7 +1268,7 @@ public class ShoppingCart {
 ```
 </details>
 
-* Max Sum from left or right, select k numbers with muliplication array
+* **Max Sum from left or right, select k numbers with muliplication array**
 <details>
 
 ```java
@@ -1289,7 +1287,7 @@ int solve(vector<int>& nums, int k, int sum, int i, int j, vector<vector<int>>& 
 ```
 </details>
 
-* Maximum sum of a square no larger than k
+* **Maximum sum of a square no larger than k**
 
 ```python
 Binary search on the length of the square along with 2D cumulative sum
@@ -1297,54 +1295,28 @@ Binary search on the length of the square along with 2D cumulative sum
 https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
 
 
-* Distinct Subsequences
+* **Distinct Subsequences**
 
 https://leetcode.com/problems/distinct-subsequences/
 
 
-* trapping rain water
+* **trapping rain water**
 
 https://leetcode.com/problems/trapping-rain-water/
 
 
-* min of max of path
-<details>
-
-```java
-public static int minMax(int[][] arr) {
-        int[][] dp = new int[arr.length][arr[0].length]; 
-        
-        for(int i = 0; i < dp.length; i++) {
-            for(int j = 0; j < dp[i].length; j++) {
-                if(i == 0 && j == 0) {
-                    dp[i][j] = arr[i][j];
-                    continue; 
-                } 
-                int top =  i > 0 ? dp[i - 1][j] : Integer.MAX_VALUE; 
-                int left = j > 0 ? dp[i][j - 1] : Integer.MAX_VALUE; 
-                dp[i][j] = Math.min(Math.max(top, arr[i][j]), Math.max(left, arr[i][j])); 
-            }
-        }
-        return dp[dp.length - 1][dp[0].length - 1];
-    }
-```
-</details>
-
-* word subsets
+* **word subsets**
 
 https://leetcode.com/problems/word-subsets/solution/
 
 
-* Generalized Abbreviation
+* **Generalized Abbreviation**
 
 https://leetcode.com/problems/generalized-abbreviation/
 
-* Group Anagrams
+* **Group Anagrams**
 
 https://leetcode.com/problems/group-anagrams/
-
-
-
 
 
 * **Given an Array A, find the minimum amplitude you can get after changing up to 3 elements. Amplitude is the range of the array (basically difference between largest and smallest element).**
