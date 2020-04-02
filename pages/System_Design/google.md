@@ -149,32 +149,6 @@ public int waterPlants(int[] plants, int cap1, int cap2) {
 ```
 </details>
 
-* Minimum Domino Rotations For Equal Row
-<details>
-
-```python
-def minDominoRotations(A, B):
-        def check(x):
-            rotations_a = rotations_b = 0
-            for i in range(n):
-                if A[i] != x and B[i] != x:
-                    return -1
-                elif A[i] != x:
-                    rotations_a += 1
-                elif B[i] != x:
-                    rotations_b += 1
-            return min(rotations_a, rotations_b)
-    
-        n = len(A)
-        rotations = check(A[0]) 
-
-        if rotations != -1 or A[0] == B[0]:
-            return rotations 
-        else:
-            return check(B[0])
-```
-</details>
-
 * Maximum Subarray sum
 <details>
 
