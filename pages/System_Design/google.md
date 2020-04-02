@@ -245,9 +245,9 @@ def fillMax(windowKmax, r, k):
     dq = collections.deque()
     for i in range(len(r)):
         if (i >= k && r[i - k] == dq.peekFirst()):
-            dq.pollFirst();
+            dq.popleft();
         while (!dq.isEmpty() && r[i] > dq.peekLast()):
-            dq.pollLast();
+            dq.pop();
         dq.offerLast(r[i]);
         if (i >= k - 1):
             windowKmax[i - k + 1] = dq.peekFirst();
