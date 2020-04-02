@@ -554,25 +554,25 @@ def scc(G):
 
     ```python
     import heapq
-    def calculate_distances(graph, starting_vertex):
-        distances = {vertex: float('inf') for vertex in graph}
-        distances[starting_vertex] = 0
-
-        pq = [(0, starting_vertex)]
-        while len(pq) > 0:
-            current_distance, current_vertex = heapq.heappop(pq)
-
-            if current_distance > distances[current_vertex]:
+    def calculate_distances(g, start_pos):
+        hq = [(0, start_pos)]
+        dist = {}
+        res = 0
+        while hq:
+            d, node = heapq.heappop(hq)
+            
+            if node in dist:
                 continue
+            dist[node] = d
+            res = max(res, d)
+            
+            for n, d2 in g[node]:
+                if n not in dist:
+                    heapq.heappush(hq, (d2+d, n))
 
-            for neighbor, weight in graph[current_vertex].items():
-                distance = current_distance + weight
-
-                if distance < distances[neighbor]:
-                    distances[neighbor] = distance
-                    heapq.heappush(pq, (distance, neighbor))
-
-        return distances
+        if len(dist) != N:
+            return -1
+        return res
     ```
 
 3. Bi_directional Dijkstra
