@@ -698,6 +698,33 @@ public static int minMax(int[][] arr) {
 ```
 </details>
 
+* **Max Sum from left or right, select k numbers with muliplication array**
+<details>
+
+```java
+int solve(vector<int>& nums, int k, int sum, int i, int j, vector<vector<int>>& memo) {
+	if (k == 0) return sum;
+	if (i > j) return sum;
+	if (memo[i][j] != -1) return memo[i][j];
+
+	int res = max(solve(nums, k - 1, sum + nums[i], i + 1, j, memo), solve(nums, k - 1, sum + nums[j], i, j - 1, memo));
+
+	memo[i][j] = res;
+
+	return memo[i][j];
+}
+
+```
+</details>
+
+* **Maximum sum of a square no larger than k**
+
+```python
+Binary search on the length of the square along with 2D cumulative sum
+```
+https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
+
+
 ## backtrack
 
 * **fill matrix for sudoku**
@@ -920,6 +947,29 @@ def solution(dominoes):
     return res
 ```
 </details>
+
+* **Distinct Subsequences**
+
+https://leetcode.com/problems/distinct-subsequences/
+
+
+* **trapping rain water**
+
+https://leetcode.com/problems/trapping-rain-water/
+
+
+* **word subsets**
+
+https://leetcode.com/problems/word-subsets/
+
+
+* **Generalized Abbreviation**
+
+https://leetcode.com/problems/generalized-abbreviation/
+
+* **Group Anagrams**
+
+https://leetcode.com/problems/group-anagrams/
 
 ## heapq
 
@@ -1267,57 +1317,6 @@ public class ShoppingCart {
 }
 ```
 </details>
-
-* **Max Sum from left or right, select k numbers with muliplication array**
-<details>
-
-```java
-int solve(vector<int>& nums, int k, int sum, int i, int j, vector<vector<int>>& memo) {
-	if (k == 0) return sum;
-	if (i > j) return sum;
-	if (memo[i][j] != -1) return memo[i][j];
-
-	int res = max(solve(nums, k - 1, sum + nums[i], i + 1, j, memo), solve(nums, k - 1, sum + nums[j], i, j - 1, memo));
-
-	memo[i][j] = res;
-
-	return memo[i][j];
-}
-
-```
-</details>
-
-* **Maximum sum of a square no larger than k**
-
-```python
-Binary search on the length of the square along with 2D cumulative sum
-```
-https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
-
-
-* **Distinct Subsequences**
-
-https://leetcode.com/problems/distinct-subsequences/
-
-
-* **trapping rain water**
-
-https://leetcode.com/problems/trapping-rain-water/
-
-
-* **word subsets**
-
-https://leetcode.com/problems/word-subsets/solution/
-
-
-* **Generalized Abbreviation**
-
-https://leetcode.com/problems/generalized-abbreviation/
-
-* **Group Anagrams**
-
-https://leetcode.com/problems/group-anagrams/
-
 
 * **Given an Array A, find the minimum amplitude you can get after changing up to 3 elements. Amplitude is the range of the array (basically difference between largest and smallest element).**
 
