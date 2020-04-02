@@ -282,6 +282,130 @@ public class Program {
 ```
 </details>
 
+* **house robber, Find max sum of elements in a Binary Tree, such that you don't select the adjuscent nodes**
+<details>
+
+```python
+def rob(self, root: TreeNode) -> int:
+    def dfs(node):
+        if not node:
+            return 0
+        
+        if node in resMap:
+            return resMap[node]
+        
+        res = node.val
+        
+        if node.left:
+            res += dfs(node.left.left) + dfs(node.left.right)
+            
+        if node.right:
+            res += dfs(node.right.left) + dfs(node.right.right)
+            
+        
+        res = max(res, dfs(node.left) + dfs(node.right))
+        
+        resMap[node] = res            
+        return res
+    
+    
+    resMap = dict()
+    return dfs(root)
+```
+</details>
+
+* **war house / binary tree cameras**
+
+https://leetcode.com/problems/binary-tree-cameras/
+
+<details>
+
+```python
+from typing import List, Tuple
+from enum import Enum
+
+class RoomCoverage(Enum):
+	NOT_COVERED = 1
+	IS_COVERED = 2
+	CONTAINS_BOMB = 3
+
+class Room:
+	def __init__(self, number: int, adjacent: List[int]):
+		self.number = number
+		self.adjacent = adjacent
+
+def min_bomb_coverage(rooms: List[Room]):
+	if not rooms:
+		return 0
+		
+	def dfs(room_number, parent_number):
+		room = rooms[room_number]
+		
+		if not room.adjacent or (len(room.adjacent) == 1 and room.adjacent[0] == parent_number):
+			return 0, RoomCoverage.NOT_COVERED
+		
+		count = 0
+		coverage = RoomCoverage.NOT_COVERED
+		
+		for child_count, child_coverage in (
+			dfs(child_number, room_number)
+			for child_number in room.adjacent
+			if child_number != parent_number
+		):
+			count += child_count
+			
+			if child_coverage is RoomCoverage.CONTAINS_BOMB and coverage is RoomCoverage.NOT_COVERED:
+				coverage = RoomCoverage.IS_COVERED
+			elif child_coverage is RoomCoverage.NOT_COVERED:
+				coverage = RoomCoverage.CONTAINS_BOMB
+			
+		if coverage is RoomCoverage.CONTAINS_BOMB:
+			count += 1
+		
+		return count, coverage
+	
+	count, coverage = dfs(0)
+	
+	if coverage is RoomCoverage.NOT_COVERED:
+		count += 1
+	
+	return count
+```
+</details>
+
+* **Friend Suggestion, return the person that has most friends in common**
+<details>
+
+```java
+public Person friendSuggestion(Person p) {
+    int max = -1;
+    Person output = null;
+
+    Map<Person, Integer> map = new HashMap<>();
+
+    for (Person friend : p.friends) {
+      for (Person mutual : friend.friends) {
+        if (mutual.id != p.id && !p.friends.contains(mutual)) {
+          map.put(mutual, map.getOrDefault(mutual, 0) + 1);
+        }
+      }
+    }
+
+    for (Map.Entry<Person, Integer> mutual : map.entrySet()) {
+      if (mutual.getValue() > max) {
+        max = mutual.getValue();
+        output = mutual.getKey();
+      }
+    }
+
+    return output;
+  }
+```
+</details>
+
+* **Currency Conversion / Evaluate Division**
+
+https://leetcode.com/problems/evaluate-division/
 
 
 
@@ -513,7 +637,46 @@ public int sum(int ar[]) {
 ```
 </details>
 
+* **Count number of ways to partition a set into k subsets**
+<details>
 
+```python
+def countP(n, k):  
+    # Base cases 
+    if (n == 0 or k == 0 or k > n): 
+        return 0
+    if (k == 1 or k == n): 
+        return 1
+      
+    # S(n+1, k) = k*S(n, k) + S(n, k-1) 
+    return (k * countP(n - 1, k) + 
+                countP(n - 1, k - 1)) 
+
+# O(nk)
+
+def countP(n, k): 
+    dp = [[0 for i in range(k + 1)]  
+             for j in range(n + 1)] 
+  
+    for i in range(n + 1): 
+        dp[i][0] = 0
+  
+    for i in range(k + 1): 
+        dp[0][k] = 0
+  
+    # Fill rest of the entries in  
+    # dp[][] in bottom up manner 
+    for i in range(1, n + 1): 
+        for j in range(1, k + 1): 
+            if (j == 1 or i == j): 
+                dp[i][j] = 1
+            else: 
+                dp[i][j] = (j * dp[i - 1][j] +
+                                dp[i - 1][j - 1]) 
+                  
+    return dp[n][k] 
+```
+</details>
 
 
 
@@ -720,7 +883,28 @@ def hasRepeats(nums, repeats):
 ```
 </details>
 
+* **Longest row of dominoes**
+<details>
 
+```python
+def solution(dominoes):
+    def helper(dominoes, sol):
+        nonlocal res
+        if len(sol) > len(res):
+            res = sol[:]
+
+        for i in range(len(dominoes)):
+            if not sol or sol[-1][1] == dominoes[i][0]:
+                sol.append(dominoes[i])
+                new_dominoes = dominoes[:i] + dominoes[i+1:]
+                helper(new_dominoes, sol)
+                sol.pop()
+
+    res = []
+    helper(dominoes, [])
+    return res
+```
+</details>
 
 
 
@@ -935,8 +1119,6 @@ private static int solve1(int[][] nums) {
 ```
 </details>
 
-
-
 * **Product of the Last K Numbers**
 <details>
 
@@ -1001,9 +1183,7 @@ public class SlidingWindow {
 ```
 </details>
 
-
-
-* Substring with all alphabets in sequence
+* **Substring with all alphabets in sequence**
 
 https://leetcode.com/problems/minimum-window-subsequence/
 
@@ -1042,203 +1222,13 @@ class ShortestOrderSeq {
 ```
 </details>
 
-* house robber, Find max sum of elements in a Binary Tree, such that you don't select the adjuscent nodes
-<details>
-
-```python
-def rob(self, root: TreeNode) -> int:
-    def dfs(node):
-        if not node:
-            return 0
-        
-        if node in resMap:
-            return resMap[node]
-        
-        res = node.val
-        
-        if node.left:
-            res += dfs(node.left.left) + dfs(node.left.right)
-            
-        if node.right:
-            res += dfs(node.right.left) + dfs(node.right.right)
-            
-        
-        res = max(res, dfs(node.left) + dfs(node.right))
-        
-        resMap[node] = res            
-        return res
-    
-    
-    resMap = dict()
-    return dfs(root)
-```
-</details>
-
-* Count number of ways to partition a set into k subsets
-<details>
-
-```python
-def countP(n, k):  
-    # Base cases 
-    if (n == 0 or k == 0 or k > n): 
-        return 0
-    if (k == 1 or k == n): 
-        return 1
-      
-    # S(n+1, k) = k*S(n, k) + S(n, k-1) 
-    return (k * countP(n - 1, k) + 
-                countP(n - 1, k - 1)) 
-
-# O(nk)
-
-def countP(n, k): 
-    dp = [[0 for i in range(k + 1)]  
-             for j in range(n + 1)] 
-  
-    for i in range(n + 1): 
-        dp[i][0] = 0
-  
-    for i in range(k + 1): 
-        dp[0][k] = 0
-  
-    # Fill rest of the entries in  
-    # dp[][] in bottom up manner 
-    for i in range(1, n + 1): 
-        for j in range(1, k + 1): 
-            if (j == 1 or i == j): 
-                dp[i][j] = 1
-            else: 
-                dp[i][j] = (j * dp[i - 1][j] +
-                                dp[i - 1][j - 1]) 
-                  
-    return dp[n][k] 
-```
-</details>
-
-* war house / binary tree cameras
-
-https://leetcode.com/problems/binary-tree-cameras/
-
-<details>
-
-```python
-from typing import List, Tuple
-from enum import Enum
-
-class RoomCoverage(Enum):
-	NOT_COVERED = 1
-	IS_COVERED = 2
-	CONTAINS_BOMB = 3
-
-class Room:
-	def __init__(self, number: int, adjacent: List[int]):
-		self.number = number
-		self.adjacent = adjacent
-
-def min_bomb_coverage(rooms: List[Room]):
-	if not rooms:
-		return 0
-		
-	def dfs(room_number, parent_number):
-		room = rooms[room_number]
-		
-		if not room.adjacent or (len(room.adjacent) == 1 and room.adjacent[0] == parent_number):
-			return 0, RoomCoverage.NOT_COVERED
-		
-		count = 0
-		coverage = RoomCoverage.NOT_COVERED
-		
-		for child_count, child_coverage in (
-			dfs(child_number, room_number)
-			for child_number in room.adjacent
-			if child_number != parent_number
-		):
-			count += child_count
-			
-			if child_coverage is RoomCoverage.CONTAINS_BOMB and coverage is RoomCoverage.NOT_COVERED:
-				coverage = RoomCoverage.IS_COVERED
-			elif child_coverage is RoomCoverage.NOT_COVERED:
-				coverage = RoomCoverage.CONTAINS_BOMB
-			
-		if coverage is RoomCoverage.CONTAINS_BOMB:
-			count += 1
-		
-		return count, coverage
-	
-	count, coverage = dfs(0)
-	
-	if coverage is RoomCoverage.NOT_COVERED:
-		count += 1
-	
-	return count
-```
-</details>
-
-* Friend Suggestion, return the person that has most friends in common 
-<details>
-
-```java
-public Person friendSuggestion(Person p) {
-    int max = -1;
-    Person output = null;
-
-    Map<Person, Integer> map = new HashMap<>();
-
-    for (Person friend : p.friends) {
-      for (Person mutual : friend.friends) {
-        if (mutual.id != p.id && !p.friends.contains(mutual)) {
-          map.put(mutual, map.getOrDefault(mutual, 0) + 1);
-        }
-      }
-    }
-
-    for (Map.Entry<Person, Integer> mutual : map.entrySet()) {
-      if (mutual.getValue() > max) {
-        max = mutual.getValue();
-        output = mutual.getKey();
-      }
-    }
-
-    return output;
-  }
-```
-</details>
-
-* Longest row of dominoes
-<details>
-
-```python
-def solution(dominoes):
-    def helper(dominoes, sol):
-        nonlocal res
-        if len(sol) > len(res):
-            res = sol[:]
-
-        for i in range(len(dominoes)):
-            if not sol or sol[-1][1] == dominoes[i][0]:
-                sol.append(dominoes[i])
-                new_dominoes = dominoes[:i] + dominoes[i+1:]
-                helper(new_dominoes, sol)
-                sol.pop()
-
-    res = []
-    helper(dominoes, [])
-    return res
-```
-</details>
-
-* Currency Conversion / Evaluate Division
-
-https://leetcode.com/problems/evaluate-division/
-
-
-* Divide Array in Sets of Consecutive Numbers
+* **Divide Array in Sets of Consecutive Numbers**
 
 https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
 
 https://leetcode.com/problems/split-array-into-consecutive-subsequences/
 
-* binary searchable
+* **binary searchable**
 <details>
 
 ```python
@@ -1260,8 +1250,7 @@ def bs(arr):
 ```
 </details>
 
-
-* design shopping cart
+* **design shopping cart**
 <details>
 
 ```java
@@ -1280,7 +1269,6 @@ public class ShoppingCart {
 }
 ```
 </details>
-
 
 * Max Sum from left or right, select k numbers with muliplication array
 <details>
