@@ -493,7 +493,7 @@ def BFS(s, adj):
     - If x has an adjacency node y, which is already found and not completed, then it is a cycle
 
 ### Directed Graph
-* Directed Acyclic Graph (Topological Sort - Task Scheduling)
+* Topological Sort - Task Scheduling
 ```python
 def TopologicalSort(G):
     def dfs(c):
