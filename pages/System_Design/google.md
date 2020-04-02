@@ -839,132 +839,6 @@ def maxSubArray(nums):
 ```
 </details>
 
-* **Given an Array A, find the minimum amplitude you can get after changing up to 3 elements. Amplitude is the range of the array (basically difference between largest and smallest element).**
-
-```python
-O(n) to find 4 maximums and 4 minimums
-There are 4 options, remove all 3/2/1/0 maximums
-```
-
-* **Given a string S, we can split S into 2 strings: S1 and S2. Return the number of ways S can be split such that the number of unique characters between S1 and S2 are the same.**
-
-```python
-O(n)
-count the S, set distance to be the different chars
-loop on S until it contains all the chars and number of chars is smaller than total count
-```
-
-* **a string is strickly smaller than another if the count of the smallest char is samller. e.g. b < aa, a < bb. A and B contains multiple strings with length less than 10. return total counts in A that are less than B.**
-<details>
-
-```python
-def solve(A, B):
-    wordsA = A.split(",")
-    wordsB = B.split(",")
-    freqCounter = [0] * 11
-    
-    for w in wordsA:
-        minFreq = w.count(min(w))
-        freqCounter[minFreq] += 1
-    
-    toReturn = []
-    for w in wordsB:
-        minFreq = w.count(min(w))
-        toReturn.append(sum(freqCounter[:minFreq]))
-    
-    return toReturn
-```
-</details>
-
-* **Array is larger if the first non-match element is larger. Give a array A and int K, find the largest subarray with length K.**
-<details>
-
-```python
-# for unique values:
-def largest_subarray(a, k):
-    first_idx = 0
-    for x in range(1, len(a) - k + 1):
-        if a[first_idx] < a[x]:
-            first_idx = x
-
-    return a[first_idx:first_idx+k]
-
-# non unique values
-def largest_subarray(a, k):
-    first_idx = 0
-    for x in range(1, len(a) - k + 1):
-        for i in range(k):
-            if a[first_idx + i] < a[x + i]:
-                first_idx = x
-                break
-            elif a[first_idx + i] > a[x + i]:
-                break
-
-    return a[first_idx:first_idx+k]
-```
-</details>
-
-* **maximum time**
-<details>
-
-```python
-def giveMeMaxTime(time):
-    time = list(time)
-
-    if time[0] == '?':
-        if time[1] <= '3' or time[1] == '?':
-            time[0] = '2'
-        else:
-            time[0] = '1'
-
-    time[1] == '?':
-        if time[0] == '2':
-            time[1] = '3'
-        else:
-            time[1] = '9'
-
-    if time[3] == '?':
-        time[3] = '5'
-    if time[4] == '?':
-        time[4] = '9'
-
-    return "".join(time)
-```
-</details>
-
-* **watering flowers**
-<details>
-
-```python
-public int waterPlants(int[] plants, int cap1, int cap2) {
-    // input validation not needed
-    int can1 = 0;
-    int can2 = 0;
-    int lo = 0;
-    int hi = plants.length - 1;
-    int numRefills = 0;
-  
-    while (lo < hi) {
-        if (can1 < plants[lo]) {
-            can1 = cap1;
-            ++numRefills;
-        }
-        if (can2 < plants[hi]) {
-            can2 = cap2;
-            ++numRefills;
-        }
-
-        can1 -= plants[lo++];
-        can2 -= plants[hi--];
-    }
-    if (lo == hi && (plants[lo] > can1 + can2)) {
-        return ++numRefills;
-    } else {
-        return numRefills;
-    }
-```
-</details>
-
 * **pizza shop - pizza price, and 0/1/2 toppings**
 <details>
 
@@ -1480,3 +1354,133 @@ https://leetcode.com/problems/generalized-abbreviation/
 * Group Anagrams
 
 https://leetcode.com/problems/group-anagrams/
+
+
+
+
+
+* **Given an Array A, find the minimum amplitude you can get after changing up to 3 elements. Amplitude is the range of the array (basically difference between largest and smallest element).**
+
+```python
+O(n) to find 4 maximums and 4 minimums
+There are 4 options, remove all 3/2/1/0 maximums
+```
+
+* **Given a string S, we can split S into 2 strings: S1 and S2. Return the number of ways S can be split such that the number of unique characters between S1 and S2 are the same.**
+
+```python
+O(n)
+count the S, set distance to be the different chars
+loop on S until it contains all the chars and number of chars is smaller than total count
+```
+
+* **a string is strickly smaller than another if the count of the smallest char is samller. e.g. b < aa, a < bb. A and B contains multiple strings with length less than 10. return total counts in A that are less than B.**
+<details>
+
+```python
+def solve(A, B):
+    wordsA = A.split(",")
+    wordsB = B.split(",")
+    freqCounter = [0] * 11
+    
+    for w in wordsA:
+        minFreq = w.count(min(w))
+        freqCounter[minFreq] += 1
+    
+    toReturn = []
+    for w in wordsB:
+        minFreq = w.count(min(w))
+        toReturn.append(sum(freqCounter[:minFreq]))
+    
+    return toReturn
+```
+</details>
+
+* **Array is larger if the first non-match element is larger. Give a array A and int K, find the largest subarray with length K.**
+<details>
+
+```python
+# for unique values:
+def largest_subarray(a, k):
+    first_idx = 0
+    for x in range(1, len(a) - k + 1):
+        if a[first_idx] < a[x]:
+            first_idx = x
+
+    return a[first_idx:first_idx+k]
+
+# non unique values
+def largest_subarray(a, k):
+    first_idx = 0
+    for x in range(1, len(a) - k + 1):
+        for i in range(k):
+            if a[first_idx + i] < a[x + i]:
+                first_idx = x
+                break
+            elif a[first_idx + i] > a[x + i]:
+                break
+
+    return a[first_idx:first_idx+k]
+```
+</details>
+
+* **maximum time**
+<details>
+
+```python
+def giveMeMaxTime(time):
+    time = list(time)
+
+    if time[0] == '?':
+        if time[1] <= '3' or time[1] == '?':
+            time[0] = '2'
+        else:
+            time[0] = '1'
+
+    time[1] == '?':
+        if time[0] == '2':
+            time[1] = '3'
+        else:
+            time[1] = '9'
+
+    if time[3] == '?':
+        time[3] = '5'
+    if time[4] == '?':
+        time[4] = '9'
+
+    return "".join(time)
+```
+</details>
+
+* **watering flowers**
+<details>
+
+```python
+public int waterPlants(int[] plants, int cap1, int cap2) {
+    // input validation not needed
+    int can1 = 0;
+    int can2 = 0;
+    int lo = 0;
+    int hi = plants.length - 1;
+    int numRefills = 0;
+  
+    while (lo < hi) {
+        if (can1 < plants[lo]) {
+            can1 = cap1;
+            ++numRefills;
+        }
+        if (can2 < plants[hi]) {
+            can2 = cap2;
+            ++numRefills;
+        }
+
+        can1 -= plants[lo++];
+        can2 -= plants[hi--];
+    }
+    if (lo == hi && (plants[lo] > can1 + can2)) {
+        return ++numRefills;
+    } else {
+        return numRefills;
+    }
+```
+</details>
