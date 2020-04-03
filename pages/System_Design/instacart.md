@@ -311,7 +311,7 @@ def smallest_larger(arr, val):
             lo = mid + 1
     return res
 
-def min_diff(res, val):
+def min_diff(arr, val):
     lo, hi = 0, len(arr) - 1
     while lo < hi-1:
         mid = lo + (hi - lo) // 2
@@ -319,5 +319,7 @@ def min_diff(res, val):
             hi = mid
         else:
             lo = mid
-    return min(abs(res[lo] - val), abs(res[hi] - val))
+    if abs(arr[lo] - val) <= abs(arr[hi] - val):
+        return lo
+    return hi
 ```
