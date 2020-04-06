@@ -222,6 +222,23 @@ if __name__ == '__main__':
             raise(e)
 ```
 
+```python
+def get_pairs(arr):
+    def helper(start, length, path):
+        if length == 0:
+            res.append(path[:])
+            return
+        
+        for i in range(start, len(arr)-length + 1):
+            path.append(arr[i])
+            helper(i+1, length-1, path)
+            path.pop()
+    
+    res = []
+    helper(0, 3, [])
+    return res
+```
+
 ## Q4 HTTP Requests
 https://realpython.com/python-requests/
 
