@@ -1,17 +1,3 @@
-## Q1. 
-
-1. implement a key value store
-    * get(key) -> value
-    * set(key, value) -> None
-
-2. Add setting timestamp support
-    * get(key, timestamp=None) -> value (match the timestamp)
-    * set(key, value, timestamp) -> None
-
-3. Add getting nearest timestamp support
-    * get(key, timestamp) -> value (get the closet timestamp for the key)
-    * set(key, value, timestamp) -> None
-
 ## Q2. Password
 1. Given a 2D matrix and a list of tuples, determine the password
 
@@ -51,16 +37,16 @@ def get_wpd():
     pwd = [""] * pwd_len
     for _ in range(pwd_len):
         row = input().strip().split(",")
-        i = int(row[0][1:])
-        j = int(row[1])
+        j = int(row[0][1:])
+        i = int(row[1])
         pos = int(row[2][:-1])
         pwd[pos] = matrix[i][j]
 
     res = "".join(pwd)
     return res
 
-if __name__ == '__main__':
-    print(get_wpd())
+
+print(get_wpd())
 ```
 
 
@@ -86,7 +72,7 @@ if __name__ == '__main__':
     output: ["DBCG", "FH"] # FH is a new pwd as position 1 is already set in the previous password
 
 ```python
-if __name__ == '__main__':
+def get_wpd():
     res = []
     pwd_arr = []
     pos_set = set()
@@ -104,8 +90,8 @@ if __name__ == '__main__':
             pwd_arr = pwd_arr + [""] * pwd_len
             for i in range(pwd_len):
                 row = input().strip().split(",")
-                i = int(row[0][1:])
-                j = int(row[1])
+                j = int(row[0][1:])
+                i = int(row[1])
                 pos = int(row[2][:-1])
                 if pos in pos_set:
                     pwd = "".join(pwd_arr)
@@ -121,10 +107,12 @@ if __name__ == '__main__':
         except EOFError:
             pwd = "".join(pwd_arr)
             res.append(pwd)
-            print(res)
-            break
+            return res
         except Exception as e:
             raise(e)
+
+print(get_wpd())
+
 ```
 ## Q3. Card Game
 Given a list of non-duplicate cards, find any winning hand if exists.
