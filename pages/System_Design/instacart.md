@@ -188,26 +188,23 @@ def get_valid_pairs(s, l, c):
 
     return pairs
 
-if __name__ == '__main__':
+def solution(arr):
     cards = defaultdict(int)
-    while True:
-        try:
-            card = input().strip()
-            card_tuple = card_to_tuple(card)
-            cards[card_tuple] += 1
+    res = []
 
-            valid_pairs = get_valid_pairs(*card_tuple)
-            if cards[card_tuple] == 3:
-                print([card]*3)
+    for card in arr:
+        card_tuple = card_to_tuple(card)
+        cards[card_tuple] += 1
 
-            for pair in valid_pairs:
-                if cards[pair[0]] >=1 and cards[pair[1]] >=1:
-                    print([card, tuple_to_card(*pair[0]), tuple_to_card(*pair[1])])
-            
-        except EOFError:
-            break
-        except Exception as e:
-            raise(e)
+        valid_pairs = get_valid_pairs(*card_tuple)
+
+        for pair in valid_pairs:
+            if cards[pair[0]] >=1 and cards[pair[1]] >=1:
+                res.append([card, tuple_to_card(*pair[0]), tuple_to_card(*pair[1])])
+    return res
+
+arr = ["+A", "+B", "+C", "+AA", "+AAA", "=A", "-A"]
+print(solution(arr))
 ```
 
 ```python
@@ -225,6 +222,40 @@ def get_pairs(arr):
     res = []
     helper(0, 3, [])
     return res
+
+def is_valid(p):
+    signs = set()
+    letters = set()
+    counts = set()
+    for c in p:
+        signs.add(c[0])
+        letters.add(c[1])
+        counts.add(len(c) - 1)
+    
+    if len(signs) in [1, 3] and len(letters) in [1, 3] and len(counts) in [1, 3]:
+        return True
+    
+    return False
+
+def solution(arr):
+    # res = []
+    # pairs = get_pairs(arr)
+    # for p in pairs:
+    #     if is_valid(p):
+    #         res.append(p)
+    # return res
+    
+    res = []
+    for i in range(len(arr)-2):
+        for j in range(i+1, len(arr)-1):
+            for k in range(j+1, len(arr)):
+                p = [arr[i], arr[j], arr[k]]
+                if is_valid(p):
+                    res.append(p)
+    return res
+
+arr = ["+A", "+B", "+C", "+AA", "+AAA", "=A", "-A"]
+print(solution(arr))
 ```
 
 ## Q4 HTTP Requests
