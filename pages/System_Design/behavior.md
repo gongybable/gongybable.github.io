@@ -28,3 +28,6 @@
 
 ## Tell me something you have to learn quickly but know nothing about it
 1. Able to explain AI/ deep learning concepts
+
+
+
