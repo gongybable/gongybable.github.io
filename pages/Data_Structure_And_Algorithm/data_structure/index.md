@@ -523,6 +523,30 @@ def TopologicalSort(G):
     return self.res[::-1]
 ```
 
+```python
+def TopologicalSortBFS(G):
+    indegree = collections.defaultdict(int)
+    for node, children in G:
+        for c in children:
+            indegree[c] += 1
+    q = collections.deque()
+    for n in nodes:
+        if indegree[n] == 0:
+            q.append(n)
+    res = []
+    while q:
+        n = q.popleft()
+        res.append(n)
+        for node in G[n]:
+            indegree[node] -= 1
+            if indegree[node] == 0:
+                q.append(node)
+    if len(res) != len(nodes):
+        return False
+    return res
+
+```
+
 * Find Strongly Connected Components
 ```python
 def scc(G):
