@@ -79,72 +79,42 @@ print(val)
 * **cut cake**
 <details>
 
-```Java
-// Complexity O((H*W*K)*(H+W))
-int main() {
-    int H = 10;
-    int W = 10;
-    int k = 5;
-    vector<vector<char>> cake = {
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'},
-        {'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v', 'v'}
-    };
+```python
+# Complexity O((H*W*K)*(H+W))
+def solution(cake, k):
+    R = len(cake)
+    C = len(cake[0])
+    straw = [[0] * (C+1) for _ in range(R+1)]
+    dp = [[[0] * (k+1) for i in range(C+1)] for _ in range(R+1)]
     
-    vector<vector<int>> staw(H+1, vector<int>(W+1, 0));
+    for i in range(R-1, -1, -1):
+        for j in range(C-1, -1, -1):
+            if i == R-1 and j == C-1:
+                straw[i][j] = 1 if cake[i][j] == 'v' else 0
+            elif i == R-1:
+                straw[i][j] = straw[i][j+1] + 1 if cake[i][j] == 'v' else 0
+            elif j == C-1:
+                straw[i][j] = straw[i+1][j] + 1 if cake[i][j] == 'v' else 0
+            else:
+                straw[i][j] = straw[i+1][j] + straw[i][j+1] - straw[i+1][j+1] + 1 if cake[i][j] == 'v' else 0
     
-    staw[H-1][W-1] = (cake[H-1][W-1] == 'v') ? 1 : 0;
-    
-    for(int i = H-1;i>=0;i--) {
-        for(int j = W-1;j>=0;j--) {
-            if (i == H-1 && j == W-1) {
-                staw[H-1][W-1] = (cake[H-1][W-1] == 'v') ? 1 : 0;
-            } else if (i == H-1) {
-                staw[i][j] = (cake[i][j] == 'v' ? 1 : 0) + staw[i][j+1];
-            } else if (j == W-1) {
-                staw[i][j] = (cake[i][j] == 'v' ? 1 : 0) + staw[i+1][j];
-            } else {
-                staw[i][j] = (cake[i][j] == 'v' ? 1 : 0) + staw[i+1][j] + staw[i][j+1] - staw[i+1][j+1];
-            }
-        }
-    }
-    
-    vector<vector<vector<int>>> dp(H+1, vector<vector<int>>(W+1, vector<int>(k+1, 0)));
-    
-    
-    for(int i = H-1;i>=0;i--) {
-        for(int j = W-1;j>=0;j--) {
-            dp[i][j][0] = 0;
-            dp[i][j][1] = ((staw[i][j] > 0) ? 1 : 0);
-            if (i == H-1 && j == W-1) {
-                continue;
-            }
-            for(int cuts = 2;cuts <= k; cuts++) {
-                int curr = staw[i][j];
-                for(int row = i;row < H-1;row++) {
-                    if (staw[row+1][j] < curr){
-                        dp[i][j][cuts] += dp[row+1][j][cuts-1];
-                    }
-                }
-                // Cutting Ways vertically
-                for(int col = j;col < W-1;col++) {
-                    if (staw[i][col+1] < curr){
-                        dp[i][j][cuts] += dp[i][col+1][cuts-1];
-                    }
-                }
-            }
-        }
-    }
-    
-    cout<<dp[0][0][k];
-}
+    for i in range(R-1, -1, -1):
+        for j in range(C-1, -1, -1):
+            dp[i][j][0] = 0
+            dp[i][j][1] = 1 if straw[i][j] > 0 else 0
+            if i == R-1 and j == C-1:
+                continue
+            for cuts in range(2, k+1):
+                curr = straw[i][j]
+                for row in range(i, R):
+                    if straw[row+1][j] < curr:
+                        dp[i][j][cuts] += dp[row+1][j][cuts-1]
+
+                # Cutting Ways vertically
+                for col in range(j, C):
+                    if straw[i][col+1] < curr:
+                        dp[i][j][cuts] += dp[i][col+1][cuts-1]
+    return dp[0][0][k]
 ```
 </details>
 
