@@ -218,28 +218,6 @@ def closestPrice(pizzas, toppings, x):
 ```
 </details>
 
-* **binary searchable**
-<details>
-
-```python
-def bs(arr):
-    res = [False] * len(arr)
-    def helper(left, right, upper, lower):
-        if left <= right:
-            mid = left + (right - left) // 2
-            if arr[mid] > lower and arr[mid] < upper:
-                res[mid] = True
-
-            if left < right:
-                helper(mid+1, right, upper, max(lower, arr[mid]))
-                helper(left, mid-1, min(upper, arr[mid]), lower)
-                
-    helper(0, len(arr)-1, float('inf'), float('-inf'))
-    
-    return res
-```
-</details>
-
 * **design shopping cart**
 <details>
 
@@ -266,36 +244,6 @@ public class ShoppingCart {
 O(n) to find 4 maximums and 4 minimums
 There are 4 options, remove all 3/2/1/0 maximums
 ```
-
-* **Given a string S, we can split S into 2 strings: S1 and S2. Return the number of ways S can be split such that the number of unique characters between S1 and S2 are the same.**
-
-```python
-O(n)
-count the S, set distance to be the different chars
-loop on S until it contains all the chars and number of chars is smaller than total count
-```
-
-* **a string is strickly smaller than another if the count of the smallest char is samller. e.g. b < aa, a < bb. A and B contains multiple strings with length less than 10. return total counts in A that are less than B.**
-<details>
-
-```python
-def solve(A, B):
-    wordsA = A.split(",")
-    wordsB = B.split(",")
-    freqCounter = [0] * 11
-    
-    for w in wordsA:
-        minFreq = w.count(min(w))
-        freqCounter[minFreq] += 1
-    
-    toReturn = []
-    for w in wordsB:
-        minFreq = w.count(min(w))
-        toReturn.append(sum(freqCounter[:minFreq]))
-    
-    return toReturn
-```
-</details>
 
 * **Array is larger if the first non-match element is larger. Give a array A and int K, find the largest subarray with length K.**
 <details>
@@ -324,35 +272,6 @@ def largest_subarray(a, k):
     return a[first_idx:first_idx+k]
 ```
 </details>
-
-* **maximum time**
-<details>
-
-```python
-def giveMeMaxTime(time):
-    time = list(time)
-
-    if time[0] == '?':
-        if time[1] <= '3' or time[1] == '?':
-            time[0] = '2'
-        else:
-            time[0] = '1'
-
-    time[1] == '?':
-        if time[0] == '2':
-            time[1] = '3'
-        else:
-            time[1] = '9'
-
-    if time[3] == '?':
-        time[3] = '5'
-    if time[4] == '?':
-        time[4] = '9'
-
-    return "".join(time)
-```
-</details>
-
 
 
 https://leetcode.com/problems/binary-tree-postorder-traversal/
