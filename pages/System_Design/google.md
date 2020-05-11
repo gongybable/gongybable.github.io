@@ -151,18 +151,14 @@ int main() {
 * **given set of numbers, get all possible multiplication numbers from the set**
 <details>
 
-```java
-vector<int> Get(vector<int> A) {
-  vector<int> ans{1};
-  for (int i = 0; i < A.size(); ++i) {
-    int size = ans.size();
-    for (int j = 0; j < size; ++j) {
-      ans.emplace_back(A[i] * ans[j]);
-    }
-  }
-
-  return ans;
-}
+```python
+def solution(arr):
+    res = [1]
+    for num in arr:
+        l = len(res)
+        for i in range(l):
+            res.append(res[i]*num)
+    return res
 ```
 </details>
 
