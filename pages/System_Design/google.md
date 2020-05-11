@@ -4,8 +4,6 @@
 Binary search on the length of the square along with 2D cumulative sum
 ```
 
-## backtrack
-
 * **fill matrix for sudoku**
 <details>
 
@@ -188,8 +186,6 @@ def solution(dominoes):
 ```
 </details>
 
-## others
-
 * **split arry into min number of decreasing subsequence**
 ```python
 same as getting longest increasing subsequence in the array
@@ -219,91 +215,6 @@ def closestPrice(pizzas, toppings, x):
                 elif diff < abs(closest - x):
                     closest = pizza + new_toppings[j]
     return closest
-```
-</details>
-
-* **box stacking**
-<details>
-
-```Java
-private static int solve1(int[][] nums) {
-	Arrays.sort(nums, (a, b) -> a[0] == b[0] ? a[1] == b[1] ? a[2] - b[2] : a[1] - b[1] : a[0] - b[0]);
-	int res = 0;
-	int dp[] = new int[nums.length];
-	for (int i = 0; i < nums.length; i++) {
-		dp[i] = 1;
-		for (int j = 0; j < i; j++) {
-			if (nums[j][0] < nums[i][0] && nums[j][1] < nums[i][1] && nums[j][2] < nums[i][2])
-				dp[i] = Math.max(dp[i], dp[j] + 1);
-		}
-		res = Math.max(dp[i], res);
-	}
-	return res;
-}
-```
-</details>
-
-* **Product of the Last K Numbers**
-<details>
-
-```python
-class ProductOfNumbers:
-    def __init__(self):
-        self.product_table = [1]
-        
-    def add(self, num):
-        if num != 0:
-            self.product_table.append( num * self.product_table[-1] )
-        else:
-            self.product_table = [1]
-            
-    def getProduct(self, k):
-        if k >= len( self.product_table ):
-            return 0
-        else:
-            return self.product_table[-1] // self.product_table[-(k+1)]
-```
-
-```java
-public class SlidingWindow {
-    private LinkedList<Integer> storage;
-    private int size;
-    private int numZeros;
-    private Integer product;
-
-    public SlidingWindow(int k) {
-        storage = new LinkedList<Integer>();
-        size = k;
-        product = new Integer(1);
-    }
-
-    public void add(int val) {
-        if (size < 1) {
-            return;
-        }
-        if (storage.size() >= size) {
-            int divisor = storage.pollFirst();
-            if (divisor == 0) {
-                --numZeros;
-            } else {
-                product /= divisor;
-            }
-        }
-        if (val == 0) {
-            ++numZeros;
-        } else {
-            product *= val;
-        }
-        storage.addLast(val);
-    }
-
-    public int getProduct() {
-        if (size == 0 || numZeros > 0) {
-            return 0;
-        }
-        return product;
-    }
-}
 ```
 </details>
 
