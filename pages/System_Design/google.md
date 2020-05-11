@@ -488,51 +488,6 @@ public class SlidingWindow {
 ```
 </details>
 
-* **Substring with all alphabets in sequence**
-
-https://leetcode.com/problems/minimum-window-subsequence/
-
-<details>
-
-```java
-class ShortestOrderSeq {
-    public String shortestSeq(String s) {
-        int[] alphabet = new int[26];
-        for (int i=0; i<26; i++) alphabet[i] = -1;
-
-        int start = 0; int end = Integer.MAX_VALUE;
-        for (int i=0; i<s.length(); i++) {
-            int ch = s.charAt(i) - 'a';
-
-            if (ch < 0 || ch > 25) continue;
-
-            if (ch == 25 && alphabet[24] != -1 && i+1-alphabet[24] < end-start) {
-                start = alphabet[24]; end = i+1;
-            }
-
-           // if char is 'a' assign alphabet[0] with new position value
-           // else assigning alphabet[ch] as alphabet[ch-1] ensures that alphabets are in proper sequence
-            alphabet[ch] = (ch == 0) ? i : alphabet[ch-1];
-        }
-
-        return end==Integer.MAX_VALUE ? "" : s.substring(start, end);
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String s = sc.nextLine();
-        System.out.println(new ShortestOrderSeq().shortestSeq(s));
-    }
-}
-```
-</details>
-
-* **Divide Array in Sets of Consecutive Numbers**
-
-https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
-
-https://leetcode.com/problems/split-array-into-consecutive-subsequences/
-
 * **binary searchable**
 <details>
 
