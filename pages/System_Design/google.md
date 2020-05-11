@@ -137,14 +137,12 @@ def solution(arr):
 
 ```python
 def hasRepeats(nums, repeats):
-
     histogram = {}
     for num in nums:
         if num not in histogram:
             histogram[num] = 0
-        
         histogram[num] += 1
-    
+
     budget = list(histogram.values())
 
     def helper(budget,costs):
@@ -153,18 +151,16 @@ def hasRepeats(nums, repeats):
             return True
 
         c = costs.pop()
-        result = False
         for i in range(len(budget)):
             if budget[i] < c:
                 continue
             
             budget[i] -= c
-            result = result or helper(budget,costs)
-            if result:
+            if helper(budget,costs)
                 return True
             budget[i] += c
         
-        return result
+        return False
     
     return helper(budget,repeats)
 ```
@@ -176,7 +172,6 @@ def hasRepeats(nums, repeats):
 ```python
 def solution(dominoes):
     def helper(dominoes, sol):
-        nonlocal res
         if len(sol) > len(res):
             res = sol[:]
 
@@ -193,106 +188,12 @@ def solution(dominoes):
 ```
 </details>
 
-
-## heapq
-
-* **Min Cost to Hire K Workers with quality**
-<details>
-
-```python
-def mincostToHireWorkers(quality, wage, K):
-    workers = sorted((w/q, q)
-                        for q, w in zip(quality, wage))
-
-    ans = float('inf')
-    pool = []
-    sumq = 0
-    for ratio, q in workers:
-        heapq.heappush(pool, -q)
-        sumq += q
-
-        if len(pool) > K:
-            sumq += heapq.heappop(pool)
-
-        if len(pool) == K:
-            ans = min(ans, ratio * sumq)
-
-    return float(ans)
-```
-</details>
-
-* **min cost to keep employees**
-<details>
-
-```python
-def solver(cost,salary,severance,nums):
-    dp = {0:0}
-    for req in nums:
-        tmp = collections.defaultdict(lambda: float('inf'))
-        for key in dp:
-            if key >= req:
-                for i in range(req,key+1):
-                    tmp[i] = min(tmp[i],dp[key]+i*salary+(key-i)*severance)
-            else:  tmp[req] = min(tmp[req],dp[key]+req*salary+(req-key)*cost)
-        dp = tmp
-    return min(dp.values())
-```
-</details>
-
 ## others
 
 * **split arry into min number of decreasing subsequence**
 ```python
 same as getting longest increasing subsequence in the array
 ```
-
-* **Maximum Subarray sum**
-<details>
-
-```python
-def maxSubArray(nums):
-    curr = nums[0]
-    res = nums[0]
-    for i in range(1, len(nums)):
-        curr = max(nums[i], nums[i]+curr)
-        res = max(res, curr)
-    return res
-
-# divide and conquer
-def cross_sum(nums, left, right, p): 
-        if left == right:
-            return nums[left]
-
-        left_subsum = float('-inf')
-        curr_sum = 0
-        for i in range(p, left - 1, -1):
-            curr_sum += nums[i]
-            left_subsum = max(left_subsum, curr_sum)
-
-        right_subsum = float('-inf')
-        curr_sum = 0
-        for i in range(p + 1, right + 1):
-            curr_sum += nums[i]
-            right_subsum = max(right_subsum, curr_sum)
-
-        return left_subsum + right_subsum   
-
-def helper(nums, left, right): 
-    if left == right:
-        return nums[left]
-    
-    p = (left + right) // 2
-        
-    left_sum = helper(nums, left, p)
-    right_sum = helper(nums, p + 1, right)
-    cross_sum = cross_sum(nums, left, right, p)
-    
-    return max(left_sum, right_sum, cross_sum)
-    
-def maxSubArray(nums):
-    return helper(nums, 0, len(nums) - 1)
-```
-</details>
 
 * **pizza shop - pizza price, and 0/1/2 toppings**
 <details>
@@ -318,54 +219,6 @@ def closestPrice(pizzas, toppings, x):
                 elif diff < abs(closest - x):
                     closest = pizza + new_toppings[j]
     return closest
-```
-</details>
-
-* **best fruit - n fruits and m ppl vote for the fruits, find best fruit; rank**
-<details>
-
-```python
-# O(n*(m+n))
-from collections import defaultdict
-import math
-
-def solve(N, M, A):
-    favorites = [row[::-1] for row in A]
-    remaining = set(range(1, N + 1))
-
-    for r in range(N - 1):
-        candidate_votes = {num: 0 for num in remaining}
-
-        for row in favorites:
-            while row[-1] not in remaining:
-                row.pop()
-
-            candidate_votes[row[-1]] += 1
-
-        eliminate_num = -1
-        eliminate_votes = math.inf
-
-        for num, votes in candidate_votes.items():
-            if votes < eliminate_votes or (
-                votes == eliminate_votes and num < eliminate_num
-            ):
-                eliminate_num, eliminate_votes = num, votes
-
-        remaining.discard(eliminate_num)
-
-    return remaining.pop()
-```
-
-```python
-def rankTeams(votes):
-    n = len(votes[0])
-    t = list(votes[0])
-    d = collections.defaultdict(lambda:[0]*n)
-    for i in votes:
-        for j in range(n):
-            d[i[j]][j] += 1
-    t.sort(key=lambda x: [-i for i in d[x]] + [x])
-    return "".join(t)
 ```
 </details>
 
