@@ -1,6 +1,5 @@
 ## What are you looking for in your next role?
-1. Focus on coding, be hands on
-2. I also want to work in a company that can make some impact to ppl's life.
+Go back to tech oriented companies, learn new technologies and use them.
 
 ## What’s an example of a difficult problem you solved? Be specific about how the problem was diagnosed and your process for approaching it.
 1. Find a problem that solved independently
